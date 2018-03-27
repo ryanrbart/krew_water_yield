@@ -44,10 +44,10 @@ mapset = "PERMANENT"
 typepars = "~/Box Sync/gis_krew/grass_KREW_netcdf/input_rasters/"
 
 # template is the path and name of your template file.
-template = "ws_p301_test/worldfiles/templates/p301.template"
+template = "ws_p301/worldfiles/templates/p301.template"
 
 # name for worldfile and flowtable ( .world and .flow suffixes will be appended) to be made
-name = "ws_p301_test/worldfiles/p301"
+name = "ws_p301/worldfiles/p301"
 
 # overwrite is a TRUE/FALSE indicating if you want to overwrite an existing worldfile and flowtable
 overwrite = FALSE

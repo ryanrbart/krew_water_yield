@@ -18,7 +18,7 @@ p301_shed <- readin_rhessys_output_cal(var_names = c("precip", "streamflow"),
 
 p301_shed$wy <- y_to_wy(lubridate::year(p301_shed$dates),lubridate::month(p301_shed$dates))
 p301_shed_sum <- p301_shed %>%
-  group_by(dated_id, lapse_rate_precip_default = ws_p301_test.defs.zone_p301.def.lapse_rate_precip_default, var_type) %>%
+  group_by(dated_id, lapse_rate_precip_default = ws_p301.defs.zone_p301.def.lapse_rate_precip_default, var_type) %>%
   summarize(sum_value = sum(value))
 
 # -----

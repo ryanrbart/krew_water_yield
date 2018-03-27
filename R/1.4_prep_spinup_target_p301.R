@@ -5,11 +5,11 @@
 # Generate target file for p301
 
 # read in, add basin, zone, stratum
-hill_ID=scan(file="ws_p301_test/auxdata/hill_p301.asc", skip=6, na.strings="*")
-patch_ID=scan(file="ws_p301_test/auxdata/patch_p301.asc", skip=6, na.strings="*")
+hill_ID=scan(file="ws_p301/auxdata/hill_p301.asc", skip=6, na.strings="*")
+patch_ID=scan(file="ws_p301/auxdata/patch_p301.asc", skip=6, na.strings="*")
 zone_ID = patch_ID
 stratum_ID = rep(1,length(hill_ID))
-LAI=scan(file="ws_p301_test/auxdata/lai_p301.asc", skip=6, na.strings="*")
+LAI=scan(file="ws_p301/auxdata/lai_p301.asc", skip=6, na.strings="*")
 #LAI=round(LAI, digits=5)
 
 x=rep(1,length(hill_ID)) # uses the number of cases
@@ -37,22 +37,22 @@ tmp = format(tmp, scientific=FALSE)
 
 #Export and merge with a file header and target list
 newheader = sprintf("%d num_stratum\n%d num_targets", nrow(tmp), length(tmp)-5)
-write(newheader, file="ws_p301_test/tecfiles/spinup_thresholds_p301.txt")
+write(newheader, file="ws_p301/tecfiles/spinup_thresholds_p301.txt")
 targets = colnames(tmp)
 targets = subset(targets, !targets=="basin_ID") 
 targets = subset(targets, !targets=="hill_ID") 
 targets = subset(targets, !targets=="zone_ID") 
 targets = subset(targets, !targets=="patch_ID")
 targets = subset(targets, !targets=="stratum_ID") 
-write(targets, file="ws_p301_test/tecfiles/spinup_thresholds_p301.txt", append=T)
-write.table(tmp, file="ws_p301_test/tecfiles/spinup_thresholds_p301.txt", append=T, quote=F, row.names=F)
+write(targets, file="ws_p301/tecfiles/spinup_thresholds_p301.txt", append=T)
+write.table(tmp, file="ws_p301/tecfiles/spinup_thresholds_p301.txt", append=T, quote=F, row.names=F)
 
 
 # ---------------------------------------------------------------------
 # Add spinup_default_ID at stratum-level for doing target based spinup
 
-world_name_in <- "ws_p301_test/worldfiles/p301.world"
-world_name_out <- "ws_p301_test/worldfiles/p301_spinup_pre.world"
+world_name_in <- "ws_p301/worldfiles/p301.world"
+world_name_out <- "ws_p301/worldfiles/p301_spinup_pre.world"
 
 newrow <- tibble(a=1, b="spinup_default_ID")
 
