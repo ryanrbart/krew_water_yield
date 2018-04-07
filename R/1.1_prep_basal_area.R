@@ -7,10 +7,10 @@ source("R/0_utilities.R")
 # Import data
 
 # Basal raw
-basal_data_raw <- read_csv("data/treatments_basal_data_raw.csv")
+basal_data_raw <- read_csv("data/treatments/treatments_basal_data_raw.csv")
 
 # Basal summary
-basal_data_sum <- read_csv("data/treatments_basal_data_summary.csv")
+basal_data_sum <- read_csv("data/treatments/treatments_basal_data_summary.csv")
 
 
 # ---------------------------------------------------------------------

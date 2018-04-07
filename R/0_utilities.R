@@ -6,6 +6,8 @@
 # Libraries
 
 library(tidyverse)
+library(broom)
+library(lubridate)
 library(beepr)
 library(lfstat)
 library(MCMCglmm)
@@ -17,27 +19,43 @@ library(sf)
 library(rgdal)
 
 
-
 # ---------------------------------------------------------------------
-# Files and Directories - Paired Watersheds
+# Files and Directories - Empirical Analysis
 
 # Original data
 
-# Generated data
-PAIR_MAM7_CSV <- "output/pair_mam7.csv"
-PAIR_MAM7_RDS <- "output/pair_mam7.rds"
+# ----
+# 2.1_paired_processing
 
-PAIR_Q95_CSV <- "output/pair_q95.csv"
-PAIR_Q95_RDS <- "output/pair_q95.rds"
+path <- "output/2.1_paired_processing"
+PAIR_MAM7_CSV <- file.path(path, "pair_mam7.csv")
+PAIR_MAM7_RDS <- file.path(path, "pair_mam7.rds")
 
-PAIR_MONTHLY_CSV <- "output/pair_monthly.csv"
-PAIR_MONTHLY_RDS <- "output/pair_monthly.rds"
+PAIR_Q95_CSV <- file.path(path, "pair_q95.csv")
+PAIR_Q95_RDS <- file.path(path, "pair_q95.rds")
 
-PAIR_SEASONAL_CSV <- "output/pair_seasonal.csv"
-PAIR_SEASONAL_RDS <- "output/pair_seasonal.rds"
+PAIR_MONTHLY_CSV <- file.path(path, "pair_monthly.csv")
+PAIR_MONTHLY_RDS <- file.path(path, "pair_monthly.rds")
 
-PAIR_WY_CSV <- "output/pair_wy.csv"
-PAIR_WY_RDS <- "output/pair_wy.rds"
+PAIR_SEASONAL_CSV <- file.path(path, "pair_seasonal.csv")
+PAIR_SEASONAL_RDS <- file.path(path, "pair_seasonal.rds")
+
+PAIR_WY_CSV <- file.path(path, "pair_wy.csv")
+PAIR_WY_RDS <- file.path(path, "pair_wy.rds")
+
+# ----
+# 2.3_paired_mixed_model
+
+path <- "output/2.3_mixed_model"
+
+
+
+# ----
+# 2.5_time_trend_analysis
+
+
+
+
 
 # ---------------------------------------------------------------------
 # Files and Directories - RHESSys
@@ -81,10 +99,6 @@ lfobj_function <- function(x){
     dplyr::select(year=Year, month=Month, day=Day, hyear=WY, flow=D102) %>% 
     createlfobj(baseflow=FALSE)
   
-  q_p300_lfobj <- q_daily %>% 
-    dplyr::select(year=Year, month=Month, day=Day, hyear=WY, flow=P300) %>% 
-    createlfobj(baseflow=FALSE)
-  
   q_b201_lfobj <- q_daily %>% 
     dplyr::select(year=Year, month=Month, day=Day, hyear=WY, flow=B201) %>% 
     createlfobj(baseflow=FALSE)
@@ -96,20 +110,15 @@ lfobj_function <- function(x){
   q_b204_lfobj <- q_daily %>% 
     dplyr::select(year=Year, month=Month, day=Day, hyear=WY, flow=B204) %>% 
     createlfobj(baseflow=FALSE)
-  
-  q_b200_lfobj <- q_daily %>% 
-    dplyr::select(year=Year, month=Month, day=Day, hyear=WY, flow=B200) %>% 
-    createlfobj(baseflow=FALSE)
-  
+
   q_t003_lfobj <- q_daily %>% 
     dplyr::select(year=Year, month=Month, day=Day, hyear=WY, flow=T003) %>% 
     createlfobj(baseflow=FALSE)
   
   q_lfobj <- list(p301=q_p301_lfobj,p303=q_p303_lfobj,
-                  p304=q_p304_lfobj,p300=q_p300_lfobj,
-                  d102=q_d102_lfobj,b201=q_b201_lfobj,
-                  b203=q_b203_lfobj,b204=q_b204_lfobj,
-                  b200=q_b200_lfobj,t003=q_t003_lfobj)
+                  p304=q_p304_lfobj,d102=q_d102_lfobj,
+                  b201=q_b201_lfobj,b203=q_b203_lfobj,
+                  b204=q_b204_lfobj,t003=q_t003_lfobj)
   
   return(q_lfobj)
 }
@@ -122,13 +131,11 @@ lfstat_MAM<- function(x){
                   P301=MAn.x,
                   P303=MAn.y,
                   P304=MAn.x.x,
-                  P300=MAn.y.y,
-                  D102=MAn.x.x.x,
-                  B201=MAn.y.y.y,
-                  B203=MAn.x.x.x.x,
-                  B204=MAn.y.y.y.y,
-                  B200=MAn.x.x.x.x.x,
-                  T003=MAn.y.y.y.y.y)
+                  D102=MAn.y.y,
+                  B201=MAn.x.x.x,
+                  B203=MAn.y.y.y,
+                  B204=MAn.x.x.x.x,
+                  T003=MAn.y.y.y.y)
 }
 
 lfstat_Qxx<- function(x){
@@ -138,12 +145,10 @@ lfstat_Qxx<- function(x){
                   P301=flow.x,
                   P303=flow.y,
                   P304=flow.x.x,
-                  P300=flow.y.y,
-                  D102=flow.x.x.x,
-                  B201=flow.y.y.y,
-                  B203=flow.x.x.x.x,
-                  B204=flow.y.y.y.y,
-                  B200=flow.x.x.x.x.x,
-                  T003=flow.y.y.y.y.y)
+                  D102=flow.y.y,
+                  B201=flow.x.x.x,
+                  B203=flow.y.y.y,
+                  B204=flow.x.x.x.x,
+                  T003=flow.y.y.y.y)
 }
 

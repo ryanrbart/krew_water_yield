@@ -20,9 +20,9 @@ pair_wy <- read_rds(PAIR_WY_RDS)
 
 # Plot pre and post streamflow for each watershed
 ggplot(pair_mam7, aes(x = q_control, y = q_treated)) +
-  geom_point(aes(shape = factor(treatment), color = factor(treatment)), size=3) +
+  geom_point(aes(shape = treatment, color = treatment), size=3) +
   stat_summary() + 
-  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=factor(treatment))) +
+  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment)) +
   facet_wrap(~shed_treated) +
   scale_x_log10() +
   scale_y_log10() +
@@ -35,6 +35,7 @@ ggplot(pair_mam7, aes(x = q_control, y = q_treated)) +
 
 # Create nested streamflow data within each watershed
 pair_nest <- pair_mam7 %>% 
+  dplyr::filter(shed_treated != "P303", shed_treated != "P301") %>%  # Note: An error with the number of factors in treatment can be problematic with P303
   group_by(shed_treated) %>% 
   nest() 
 
@@ -49,7 +50,7 @@ pair_lm <- pair_nest %>%
 # Plot the p-value for each treatment dummy variable
 pair_lm %>% 
   unnest(results_terms) %>% 
-  dplyr::filter(term=="treatment") %>% 
+  dplyr::filter(term=="treatment1") %>% 
   ggplot() +
   geom_bar(stat = "identity", aes(x=shed_treated,y=estimate))
 #geom_bar(stat = "identity", aes(x=shed_treated,y=p.value)) +
@@ -62,9 +63,9 @@ pair_lm %>%
 
 # Plot pre and post streamflow for each watershed
 ggplot(pair_q95, aes(x = q_control, y = q_treated)) +
-  geom_point(aes(shape = factor(treatment), color = factor(treatment)), size=3) +
+  geom_point(aes(shape = treatment, color = treatment), size=3) +
   stat_summary() + 
-  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=factor(treatment))) +
+  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment)) +
   facet_wrap(~shed_treated) +
   scale_x_log10() +
   scale_y_log10() +
@@ -77,6 +78,7 @@ ggplot(pair_q95, aes(x = q_control, y = q_treated)) +
 
 # Create nested streamflow data within each watershed
 pair_nest <- pair_q95 %>% 
+  dplyr::filter(shed_treated != "P303") %>%  # Note: An error with the number of factors in treatment can be problematic with P303
   group_by(shed_treated) %>% 
   nest() 
 
@@ -91,7 +93,7 @@ pair_lm <- pair_nest %>%
 # Plot the p-value for each treatment dummy variable
 pair_lm %>% 
   unnest(results_terms) %>% 
-  dplyr::filter(term=="treatment") %>% 
+  dplyr::filter(term=="treatment1") %>% 
   ggplot() +
   geom_bar(stat = "identity", aes(x=shed_treated,y=estimate))
 #geom_bar(stat = "identity", aes(x=shed_treated,y=p.value)) +
@@ -107,7 +109,7 @@ pair_monthly %>%
 #dplyr::filter(pair_monthly, shed_control == "P304") %>% 
 #dplyr::filter(pair_monthly, shed_control == "T003") %>% 
 ggplot() +
-  geom_point(aes(x = log(q_control), y = log(q_treated), shape = factor(treatment), color = factor(treatment))) +
+  geom_point(aes(x = log(q_control), y = log(q_treated), shape = treatment, color = treatment)) +
   facet_grid(shed_treated~Month) +
   theme(legend.position="none")
 
@@ -115,7 +117,8 @@ ggplot() +
 # Regression Analysis
 
 # Create nested streamflow data within each watershed
-pair_nest <- pair_monthly %>% 
+pair_nest <- pair_monthly %>%
+  dplyr::filter(shed_treated != "P303") %>%  # Note: An error with the number of factors in treatment can be problematic with P303
   group_by(shed_treated, Month) %>% 
   nest() 
 
@@ -130,7 +133,7 @@ pair_lm <- pair_nest %>%
 # Plot the p-value for each treatment dummy variable
 pair_lm %>% 
   unnest(results_terms) %>% 
-  dplyr::filter(term=="treatment") %>% 
+  dplyr::filter(term=="treatment1") %>% 
   ggplot() +
   geom_bar(stat = "identity", aes(x=shed_treated,y=estimate)) +
 #  geom_bar(stat = "identity", aes(x=shed_treated,y=p.value)) +
@@ -147,13 +150,13 @@ pair_seasonal %>%
 #dplyr::filter(pair_seasonal, shed_control == "P304") %>% 
 #dplyr::filter(pair_seasonal, shed_control == "T003") %>% 
   ggplot(aes(x = q_control, y = q_treated)) +
-  geom_point(aes(shape = factor(treatment), color = factor(treatment))) +
+  geom_point(aes(shape = treatment, color = treatment)) +
   facet_grid(shed_treated~Season) +
   theme(legend.position="none")
 ggplot(pair_seasonal, aes(x = q_control, y = q_treated)) +
-  geom_point(aes(shape = factor(treatment), color = factor(treatment)), size=3) +
+  geom_point(aes(shape = treatment, color = treatment), size=3) +
   stat_summary() + 
-  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=factor(treatment))) +
+  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment)) +
   facet_grid(shed_treated~Season) +
   scale_x_log10() +
   scale_y_log10() +
@@ -171,6 +174,7 @@ pair_nest <- pair_seasonal %>%
 
 # Generate regression models for each watershed
 pair_lm <- pair_nest %>% 
+  dplyr::filter(shed_treated != "P303") %>%  # Note: An error with the number of factors in treatment can be problematic with P303
   mutate(regr = map(data, ~ lm(log(q_treated) ~ log(q_control) + treatment, data = .)),
          results_terms = map(regr, tidy),
          results_fit = map(regr, glance))
@@ -180,7 +184,7 @@ pair_lm <- pair_nest %>%
 # Plot the p-value for each treatment dummy variable
 pair_lm %>% 
   unnest(results_terms) %>% 
-  dplyr::filter(term=="treatment") %>% 
+  dplyr::filter(term=="treatment1") %>% 
   ggplot() +
   geom_bar(stat = "identity", aes(x=shed_treated,y=estimate)) +
   #geom_bar(stat = "identity", aes(x=shed_treated,y=p.value)) +
@@ -193,9 +197,9 @@ pair_lm %>%
 
 # Plot pre and post streamflow for each watershed
 ggplot(pair_wy, aes(x = q_control, y = q_treated)) +
-  geom_point(aes(shape = factor(treatment), color = factor(treatment)), size=3) +
+  geom_point(aes(shape = treatment, color = treatment), size=3) +
   stat_summary() + 
-  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=factor(treatment))) +
+  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment)) +
   facet_wrap(~shed_treated) +
   scale_x_log10() +
   scale_y_log10() +
@@ -208,6 +212,7 @@ ggplot(pair_wy, aes(x = q_control, y = q_treated)) +
 
 # Create nested streamflow data within each watershed
 pair_nest <- pair_wy %>% 
+  dplyr::filter(shed_treated != "P303") %>%  # Note: An error with the number of factors in treatment can be problematic with P303
   group_by(shed_treated) %>% 
   nest() 
 
@@ -222,7 +227,7 @@ pair_lm <- pair_nest %>%
 # Plot the effect for each treatment dummy variable
 pair_lm %>% 
   unnest(results_terms) %>% 
-  dplyr::filter(term=="treatment") %>% 
+  dplyr::filter(term=="treatment1") %>% 
   ggplot() +
   geom_bar(stat = "identity", aes(x=shed_treated,y=estimate)) +
   #geom_bar(stat = "identity", aes(x=shed_treated,y=p.value)) +

@@ -1,5 +1,7 @@
-# Code for processing detailed thinning data
-# Note: This is incomplete since Safeeq completed this analysis
+# Code for processing detailed thinning data 
+# 
+# Note: This portion of the analysis
+# was abandoned because Safeeq completed the analysis
 
 source("R/0_utilities.R")
 
@@ -8,16 +10,16 @@ source("R/0_utilities.R")
 # Import data
 
 # Treatment azimuth data
-treat_azimuth <- read_csv("data/treatments_azimuth.csv")
+treat_azimuth <- read_csv("data/treatments/treatments_azimuth.csv")
 
 # Treatment coordinate data
-treat_prov_grid <- read_csv("data/treatments_prov_2006_veg_grid_coordinates.csv")
-treat_bull_grid <- read_csv("data/treatments_bull_2006_veg_grid_coordinates.csv")
+treat_prov_grid <- read_csv("data/treatments/treatments_prov_2006_veg_grid_coordinates.csv")
+treat_bull_grid <- read_csv("data/treatments/treatments_bull_2006_veg_grid_coordinates.csv")
 
 # Treatment basal raw
-basal_data_raw <- read_csv("data/treatments_basal_data_raw.csv")
+basal_data_raw <- read_csv("data/treatments/treatments_basal_data_raw.csv")
 # Treatment basal summary
-basal_data_sum <- read_csv("data/treatments_basal_data_summary.csv")
+basal_data_sum <- read_csv("data/treatments/treatments_basal_data_summary.csv")
 
 
 # ---------------------------------------------------------------------
