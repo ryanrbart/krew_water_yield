@@ -1,0 +1,17 @@
+1        num_basin_default_files
+ws_p301_test/defs/basin_p301.def        basin_default_file
+1        num_hillslope_default_files
+ws_p301_test/defs/hill_p301.def        hillslope_default_file
+1        num_zone_default_files
+ws_p301_test/defs/zone_p301.def        zone_default_file
+1        num_soil_default_files
+ws_p301_test/defs/patch_p301/patch_p301_1.def        soil_default_file
+1        num_landuse_default_files
+ws_p301_test/defs/lu_p301.def        landuse_default_file
+2        num_stratum_default_files
+ws_p301_test/defs/veg_p301_conifer/veg_p301_conifer_1.def        stratum_default_file
+ws_p301_test/defs/veg_p301_shrub/veg_p301_shrub_1.def        stratum_default_file
+1        num_spinup_default_files
+ws_p301_test/defs/spinup_p301.def        spinup_default_file
+1        num_base_stations_files
+ws_p301_test/clim/Grove_lowprov_clim_1942_2453.base        base_stations_file
