@@ -2,14 +2,14 @@
 
 
 # ---------------------------------------------------------------------
-# Generate target file for p301
+# Generate target file for b204
 
 # read in, add basin, zone, stratum
-hill_ID=scan(file="ws_p301/auxdata/hill.asc", skip=6, na.strings="*")
-patch_ID=scan(file="ws_p301/auxdata/patch.asc", skip=6, na.strings="*")
+hill_ID=scan(file="ws_b204/auxdata/hill.asc", skip=6, na.strings="*")
+patch_ID=scan(file="ws_b204/auxdata/patch.asc", skip=6, na.strings="*")
 zone_ID = patch_ID
 stratum_ID = rep(1,length(hill_ID))
-LAI=scan(file="ws_p301/auxdata/lai.asc", skip=6, na.strings="*")
+LAI=scan(file="ws_b204/auxdata/lai.asc", skip=6, na.strings="*")
 #LAI=round(LAI, digits=5)
 
 x=rep(1,length(hill_ID)) # uses the number of cases
@@ -37,22 +37,22 @@ tmp = format(tmp, scientific=FALSE)
 
 #Export and merge with a file header and target list
 newheader = sprintf("%d num_stratum\n%d num_targets", nrow(tmp), length(tmp)-5)
-write(newheader, file="ws_p301/tecfiles/spinup_thresholds.txt")
+write(newheader, file="ws_b204/tecfiles/spinup_thresholds.txt")
 targets = colnames(tmp)
 targets = subset(targets, !targets=="basin_ID") 
 targets = subset(targets, !targets=="hill_ID") 
 targets = subset(targets, !targets=="zone_ID") 
 targets = subset(targets, !targets=="patch_ID")
 targets = subset(targets, !targets=="stratum_ID") 
-write(targets, file="ws_p301/tecfiles/spinup_thresholds.txt", append=T)
-write.table(tmp, file="ws_p301/tecfiles/spinup_thresholds.txt", append=T, quote=F, row.names=F)
+write(targets, file="ws_b204/tecfiles/spinup_thresholds.txt", append=T)
+write.table(tmp, file="ws_b204/tecfiles/spinup_thresholds.txt", append=T, quote=F, row.names=F)
 
 
 # ---------------------------------------------------------------------
 # Add spinup_default_ID at stratum-level for doing target based spinup
 
-world_name_in <- "ws_p301/worldfiles/p301.world"
-world_name_out <- "ws_p301/worldfiles/p301_spinup_pre.world"
+world_name_in <- "ws_b204/worldfiles/b204.world"
+world_name_out <- "ws_b204/worldfiles/b204_spinup_pre.world"
 
 newrow <- tibble(a=1, b="spinup_default_ID")
 
@@ -74,8 +74,4 @@ while(aa < nrow(worldfile)){
 # Write new file
 worldfile$X1 <- format(worldfile$X1, scientific = FALSE)
 write.table(worldfile, file = world_name_out, row.names = FALSE, col.names = FALSE, quote=FALSE, sep="  ")
-
-
-
-
 
