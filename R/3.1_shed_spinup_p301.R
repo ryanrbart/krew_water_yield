@@ -23,7 +23,7 @@ input_rhessys$end_date <- "1941 11 1 1"
 input_rhessys$output_folder <- "ws_p301/out/3.1_p301_spinup"
 input_rhessys$output_filename <- "p301_spinup"
 input_rhessys$command_options <- c("-b -g -c 1 229 5103 5103 -p 1 229 5103 5103 -tchange 0 0")
-# Remember to switch on/off reference to spinup def file in input_hdr_list
+# Remember to switch on/off reference to spinup def file in input_hdr_list and extra line in worldfile
 #input_rhessys$command_options <- c("-vegspinup ws_p301/tecfiles/spinup_thresholds.txt -b -g -tchange 0 0")    # Can't use -c or -p with -vegspinup
 
 
