@@ -1,28 +1,35 @@
 "varname" "value"
-"Template" "ws_p301_test/worldfiles/templates/p301.template"
-"Worldfile" "ws_p301_test/worldfiles/p301"
-"Flowtable" "ws_p301_test/worldfiles/p301"
+"Project Name" "p301"
+"Template" "ws_p301/worldfiles/templates/p301.template"
+"Worldfile" "ws_p301/worldfiles/p301"
+"Flowtable" "ws_p301/worldfiles/p301"
 "Author" "ryanrbart"
 "Computer" "Ryans-MacBook-Pro-3.local"
-"Datetime" "2018-03-22 21:20:40"
+"Datetime" "2018-07-19 13:13:12"
 "GIS Type" "Raster"
-"Map Path" "/Users/ryanrbart/Box Sync/krew_water_yield~/Box Sync/gis_krew/grass_KREW_netcdf/input_rasters/"
+"Map Path" "/Users/ryanrbart/Box Sync/krew_water_yield~/Box Sync/gis_krew/grass_KREW_netcdf/input_rasters_p301/"
 "gisBase" NA
 "home" NA
 "gisDbase" NA
 "location" NA
 "mapset" NA
-"world" "basin_p301"
-"basin" "basin_p301"
-"hillslope" "h.t25"
-"zone" "p.30m.cl"
-"patch" "p.30m.cl"
-"strata" "p.30m.cl"
-"z" "dem_krew_lidar"
+"world" NA
+"basin" NA
+"zone" NA
+"hillslope" NA
+"patch" NA
+"strata" NA
+"streams" "streams"
+"roads" NA
+"impervious" NA
+"roofs" NA
+"asp_rule" NA
+"z" "dem"
 "slope" "slope"
 "aspect" "aspect"
-"cell_length" "29.9803259502257"
-"streams" "streams.t25"
-"roads" "none"
-"impervious" "none"
-"roofs" "none"
+"e_horizon" "ehr"
+"w_horizon" "whr"
+"gw.storage" NA
+"veg_parm_ID" NA
+"soil_parm_ID" NA
+"landuse_parm_ID" NA

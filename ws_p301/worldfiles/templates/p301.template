@@ -1,36 +1,36 @@
-_world 	basin_p301 1
- _basin 	basin_p301 1
+_world 	basin 1
+ _basin 	basin 1
 	x			value 0.0
 	y			value 0.0
-	z			aver dem_krew_lidar
+	z			aver dem
 	default_ID		dvalue 1
 	latitude		value 37.07
 	n_basestations 	dvalue 0	
-  	_hillslope h.t25 1
+  	_hillslope hill 1
 		x			value	0.0
 		y			value	0.0
-		z			aver dem_krew_lidar
+		z			aver dem
 		default_ID		value 1.0	
 		gw_storage		value 0.0
 		gw_NO3			value 0.0
 		n_basestations	dvalue 0 	
-		_zone p.30m.cl  1 
+		_zone patch  1 
 			x			value	0.0
 			y			value 0.0
-			z			aver dem_krew_lidar
+			z			aver dem
 			default_ID  	dvalue 1  
 			a_area		area	
 			slope			aver slope	
 			aspect		spavg aspect
 			isohyet		value 1.0		
-			e_horizon	value .17	
-			w_horizon	value .17
+			e_horizon	eqn 0.01 0.0 ehr	
+			w_horizon	eqn 0.01 0.0 whr
 			n_basestations	dvalue 1	
 			base_station_ID 	dvalue 101	
-			 _patch p.30m.cl 1
+			 _patch patch 1
 				x			value	0.0
 				y			value 0.0
-				z			aver dem_krew_lidar
+				z			aver dem
 				soil_default_ID		value 1.0	
 				landuse_default		dvalue 1	
 				area		area	
@@ -60,7 +60,7 @@ _world 	basin_p301 1
 				soil_cs.soil3c   	value	1.78074956	
 				soil_cs.soil4c	value	11.60850355
 				n_basestations	dvalue 0
-				  _stratum p.30m.cl 2	
+				  _stratum patch 2	
 					default_ID	dvalue 7 50	
 					cover_fraction		value 0.6 1.0  
 					gap_fraction		value 0.0 0.0	 	 
