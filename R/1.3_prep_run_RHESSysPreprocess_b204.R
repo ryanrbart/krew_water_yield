@@ -41,13 +41,13 @@ mapset = "PERMANENT"
 
 # IF USING RASTER DATA INPUT
 # Set typepars to a folder containing your raster spatial data.  Each raster should be named the same as it is referenced in the template file
-typepars = "~/Box Sync/gis_krew/grass_KREW_netcdf/input_rasters_p301/"
+typepars = "~/Box Sync/gis_krew/grass_KREW_netcdf/input_rasters_b204/"
 
 # template is the path and name of your template file.
-template = "ws_p301/worldfiles/templates/p301.template"
+template = "ws_b204/worldfiles/templates/b204.template"
 
 # name for worldfile and flowtable ( .world and .flow suffixes will be appended) to be made
-name = "ws_p301/worldfiles/p301"
+name = "ws_b204/worldfiles/b204"
 
 # overwrite is a TRUE/FALSE indicating if you want to overwrite an existing worldfile and flowtable
 overwrite = FALSE
