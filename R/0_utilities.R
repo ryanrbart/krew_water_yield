@@ -43,6 +43,12 @@ PAIR_SEASONAL_RDS <- file.path(path, "pair_seasonal.rds")
 PAIR_WY_CSV <- file.path(path, "pair_wy.csv")
 PAIR_WY_RDS <- file.path(path, "pair_wy.rds")
 
+QP_WY_CSV <- file.path(path, "qp_wy.csv")
+QP_WY_RDS <- file.path(path, "qp_wy.rds")
+
+QPT_WY_CSV <- file.path(path, "qpt_wy.csv")
+QPT_WY_RDS <- file.path(path, "qpt_wy.rds")
+
 # ----
 # 2.3_paired_mixed_model
 
@@ -74,6 +80,7 @@ RHESSYS_ALL_OPTION_21_P301 <- file.path(RHESSYS_OUT_DIR_21_P301, "p301_simulatio
 # ---------------------------------------------------------------------
 # Functions
 
+# Function to change year to wateryear
 y_to_wy = function(year, month, start.month=10){
   wateryear <- ifelse(month >= start.month, year + 1, year)
   return(wateryear)
