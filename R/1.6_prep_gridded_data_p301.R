@@ -6,8 +6,8 @@
 
 # readin patch, generate clim_ID
 
-patch_ID=scan(file="ws_p301/auxdata/patch_p301.asc", skip=6, na.strings="*")
-LAI=scan(file="ws_p301/auxdata/lai_p301.asc", skip=6, na.strings="*") # LAI used as placeholder for DEM
+patch_ID=scan(file="ws_p301/auxdata/patch.asc", skip=6, na.strings="*")
+LAI=scan(file="ws_p301/auxdata/lai.asc", skip=6, na.strings="*") # LAI used as placeholder for DEM
 
 tmp = as_tibble(cbind(clim_ID = patch_ID,dem_ID = LAI))
 tmp2 = subset(tmp, is.na(tmp$clim_ID)==F)
