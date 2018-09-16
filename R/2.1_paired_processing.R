@@ -7,7 +7,7 @@ source("R/0_utilities.R")
 # Import data
 
 # Daily streamflow
-q_daily <- read_csv("data/daily_discharge_filled_2003_2016.csv", 
+q_daily <- read_csv("data/daily_discharge_filled_2004_2016.csv", 
                     col_types = cols(
                       P300 = col_double(),
                       B200 = col_double()))
@@ -16,7 +16,7 @@ q_daily <- read_csv("data/daily_discharge_filled_2003_2016.csv",
 q_daily <- dplyr::select(q_daily, -P300, -B200)
 
 # Daily precipitation
-p_daily <-read_csv("data/daily_ppt_2003_2016.csv")
+p_daily <-read_csv("data/daily_ppt_2004_2016.csv")
 
 # Daily temperature
 t_daily <-read_csv("data/daily_air_temperature_2003_2015.csv")
@@ -257,26 +257,63 @@ pair_wy$treatment <- factor(pair_wy$treatment)
 # Generates a tibble with designated pre and post years.
 # (may need to add validation years) Based on Biederman2016-WRR
 
-
+# Organize streamflow by watershed and WY
+# Adding providence/bull location for joining P and T later
 Q <- map(treat_control$treatment, ~ dplyr::select(q_wy, ., WY)) %>% 
   map(., ~ gather(., key = "watershed", value = "q", -WY)) %>%
-  bind_rows() 
+  bind_rows() %>% 
+  full_join(., dplyr::select(treat_control,treatment,location), by=c("watershed"="treatment"))
 
-QP <- left_join(Q, p_wy, by="WY")
+# Process precipitation
+# Separate precipitation by location (bull/prov) and upper lower 
+p_wy_expand <- p_wy %>% 
+  tidyr::gather(key = "gauge", value = "precip", p_UP,p_UB,p_LP,p_LB) %>% 
+  dplyr::mutate(location = case_when(gauge=="p_UP" ~ "prov",
+                                     gauge=="p_LP" ~ "prov",
+                                     gauge=="p_UB" ~ "bull",
+                                     gauge=="p_LB" ~ "bull")) %>% 
+  dplyr::mutate(up_low = case_when(gauge=="p_UP" ~ "upper",
+                                   gauge=="p_LP" ~ "lower",
+                                   gauge=="p_UB" ~ "upper",
+                                   gauge=="p_LB" ~ "lower")) %>% 
+  dplyr::select(-gauge)
 
-QPT <- left_join(QP, t_wy, by="WY")
+# Join precipitation to streamflow. Each watershed is only associated with lower
+# and upper preciptiation gauge from its location.
+QP <- full_join(Q, p_wy_expand, by=c("WY","location"))
 
+
+# Note that temperature data goes from 2003-2015 while P and Q are from
+# 2014-2016. In order to combine, 2003 and 2016 are filtered out.
+QP1 <- dplyr::filter(QP, WY != 2016)
+t_wy1 <- dplyr::filter(t_wy, WY != 2003)
+
+# Process temperature
+# Separate temperature by location (bull/prov) and upper lower 
+t_wy_expand <- t_wy1 %>% 
+  tidyr::gather(key = "gauge", value = "temperature", t_UP,t_UB,t_LP,t_LB) %>% 
+  dplyr::mutate(location = case_when(gauge=="t_UP" ~ "prov",
+                                     gauge=="t_LP" ~ "prov",
+                                     gauge=="t_UB" ~ "bull",
+                                     gauge=="t_LB" ~ "bull")) %>% 
+  dplyr::mutate(up_low = case_when(gauge=="t_UP" ~ "upper",
+                                   gauge=="t_LP" ~ "lower",
+                                   gauge=="t_UB" ~ "upper",
+                                   gauge=="t_LB" ~ "lower")) %>% 
+  dplyr::select(-gauge)
+
+# Join temperature to streamflow. Each watershed is only associated with lower
+# and upper temperature gauge from its location.
+QPT <- full_join(QP1, t_wy_expand, by=c("WY","location","up_low"))
+
+# ----
+# Add fuel treatment indicator to QP and QPT dataframes, then convert to factor
+QP <- gather(treatment_wy, key = "watershed", value = "treatment",-WY) %>% 
+  left_join(QP, ., by=c("WY", "watershed"))
+QP$treatment <- factor(QP$treatment)
 QPT <- gather(treatment_wy, key = "watershed", value = "treatment",-WY) %>% 
   left_join(QPT, ., by=c("WY", "watershed"))
-
 QPT$treatment <- factor(QPT$treatment)
-
-# To do the above processing correctly, need to separate variables upper/lower
-# from Bull/Providence for precipitation and temperature data. Then need to
-# assign Bull/Providence to streamflow. Then can link so that only Bull
-# streamflow is associated with Bull precip/temp. Can still keep upper/lower as
-# independent variables.
-
 
 
 # ---------------------------------------------------------------------
@@ -298,6 +335,9 @@ write_rds(pair_seasonal, PAIR_SEASONAL_RDS)
 write.csv(pair_wy, PAIR_WY_CSV, row.names = FALSE, quote=FALSE)
 write_rds(pair_wy, PAIR_WY_RDS)
 
+write.csv(QP, QP_WY_CSV, row.names = FALSE, quote=FALSE)
+write_rds(QP, QP_WY_RDS)
 
-
+write.csv(QPT, QPT_WY_CSV, row.names = FALSE, quote=FALSE)
+write_rds(QPT, QPT_WY_RDS)
 

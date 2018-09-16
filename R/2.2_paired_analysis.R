@@ -15,6 +15,19 @@ pair_seasonal <- read_rds(PAIR_SEASONAL_RDS)
 pair_wy <- read_rds(PAIR_WY_RDS)
 
 
+# Removes P303. Remove this code when WY2017 is added
+pair_mam7 <- pair_mam7 %>% 
+  dplyr::filter(shed_treated != "P303")
+pair_q95 <- pair_q95 %>% 
+  dplyr::filter(shed_treated != "P303")
+pair_monthly <- pair_monthly %>% 
+  dplyr::filter(shed_treated != "P303")
+pair_seasonal <- pair_seasonal %>% 
+  dplyr::filter(shed_treated != "P303")
+pair_wy <- pair_wy %>% 
+  dplyr::filter(shed_treated != "P303")
+
+
 # ---------------------------------------------------------------------
 # Analyze paired_mam7 data
 
@@ -62,16 +75,24 @@ pair_lm %>%
 # Analyze paired_q95 data
 
 # Plot pre and post streamflow for each watershed
-ggplot(pair_q95, aes(x = q_control, y = q_treated)) +
+x <- ggplot(pair_q95, aes(x = q_control, y = q_treated)) +
   geom_point(aes(shape = treatment, color = treatment), size=3) +
   stat_summary() + 
   geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment)) +
-  facet_wrap(~shed_treated) +
+  facet_wrap(~shed_treated, ncol=2, dir="v") +
   scale_x_log10() +
   scale_y_log10() +
-  scale_shape_discrete(name="Thinning", labels = c("Pre", "Post")) +
-  scale_color_brewer(palette = "Set1", name="Thinning", labels = c("Pre", "Post")) +  
-  labs(title="Pre and Post-Thinning Q95", y="Treated Watershed - Q95 (mm)", x="Control Watershed - Q95 (mm)")
+  scale_shape_discrete(name="Treatment",
+                       labels = c("Pre", "Post")) +
+  scale_color_brewer(palette = "Set1", name="Treatment",
+                     labels = c("Pre", "Post")) +  
+  labs(title="Pre and Post-Treatment Q95",
+       y = "Q95 (mm) - Treated",
+       x = "Q95 (mm) - Control") +
+  theme_set(theme_bw(base_size = 17)) +
+  NULL
+ggsave("output/2.2_paired_analysis/paired_q95.jpg", plot=x, width = 7, height = 7)
+
 
 # ----
 # Regression Analysis
@@ -146,23 +167,23 @@ pair_lm %>%
 # Analyze paired_seasonal data
 
 # Plot pre and post streamflow for each watershed
-pair_seasonal %>% 
-#dplyr::filter(pair_seasonal, shed_control == "P304") %>% 
-#dplyr::filter(pair_seasonal, shed_control == "T003") %>% 
-  ggplot(aes(x = q_control, y = q_treated)) +
-  geom_point(aes(shape = treatment, color = treatment)) +
-  facet_grid(shed_treated~Season) +
-  theme(legend.position="none")
-ggplot(pair_seasonal, aes(x = q_control, y = q_treated)) +
+x <- ggplot(pair_seasonal, aes(x = q_control, y = q_treated)) +
   geom_point(aes(shape = treatment, color = treatment), size=3) +
   stat_summary() + 
   geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment)) +
   facet_grid(shed_treated~Season) +
   scale_x_log10() +
   scale_y_log10() +
-  scale_shape_discrete(name="Thinning", labels = c("Pre", "Post")) +
-  scale_color_brewer(palette = "Set1", name="Thinning", labels = c("Pre", "Post")) +  
-  labs(title="Pre and Post-Thinning Seasonal Streamflow", y="Treated Watershed - Q (mm)", x="Control Watershed - Q (mm)")
+  scale_shape_discrete(name="Treatment",
+                       labels = c("Pre", "Post")) +
+  scale_color_brewer(palette = "Set1", name="Treatment",
+                     labels = c("Pre", "Post")) +  
+  labs(title="Pre and Post-Treatment Seasonal Streamflow",
+       y="Seasonal Streamflow (mm) - Treated",
+       x="Seasonal Streamflow (mm) - Control") +
+  theme_set(theme_bw(base_size = 17)) +
+  NULL
+ggsave("output/2.2_paired_analysis/paired_seasonal.jpg", plot=x, width = 9, height = 7)
 
 # ----
 # Regression Analysis
@@ -196,16 +217,25 @@ pair_lm %>%
 # Analyze paired_wy data
 
 # Plot pre and post streamflow for each watershed
-ggplot(pair_wy, aes(x = q_control, y = q_treated)) +
+x <- ggplot(pair_wy, aes(x = q_control, y = q_treated)) +
   geom_point(aes(shape = treatment, color = treatment), size=3) +
   stat_summary() + 
   geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment)) +
-  facet_wrap(~shed_treated) +
+  facet_wrap(~shed_treated, ncol=2, dir="v") +
   scale_x_log10() +
   scale_y_log10() +
-  scale_shape_discrete(name="Thinning", labels = c("Pre", "Post")) +
-  scale_color_brewer(palette = "Set1", name="Thinning", labels = c("Pre", "Post")) +  
-  labs(title="Pre and Post-Thinning Annual Streamflow", y="Treated Watershed - Annual Q (mm)", x="Control Watershed - Annual Q (mm)")
+  scale_shape_discrete(name="Treatment",
+                       labels = c("Pre", "Post")) +
+  scale_color_brewer(palette = "Set1", name="Treatment",
+                     labels = c("Pre", "Post")) +  
+  labs(title="Pre and Post-Treatment Annual Streamflow",
+       y = "Annual Streamflow (mm) - Treated",
+       x = "Annual Streamflow (mm) - Control") +
+  #theme(legend.position="bottom") +
+  theme_set(theme_bw(base_size = 17)) +
+  NULL
+ggsave("output/2.2_paired_analysis/paired_wy.jpg", plot=x, width = 7, height = 7)
+
 
 # ----
 # Regression Analysis
