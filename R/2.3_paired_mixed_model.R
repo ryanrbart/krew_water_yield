@@ -1,5 +1,6 @@
 # KREW mixed-model analysis
 
+# Note: Code could be updated using tidybayes!!!
 
 source("R/0_utilities.R")
 
@@ -14,6 +15,19 @@ pair_q95 <- read_rds(PAIR_Q95_RDS)
 pair_monthly <- read_rds(PAIR_MONTHLY_RDS)
 pair_seasonal <- read_rds(PAIR_SEASONAL_RDS)
 pair_wy <- read_rds(PAIR_WY_RDS)
+
+
+# Removes P303. Remove this code when WY2017 is added
+pair_mam7 <- pair_mam7 %>% 
+  dplyr::filter(shed_treated != "P303")
+pair_q95 <- pair_q95 %>% 
+  dplyr::filter(shed_treated != "P303")
+pair_monthly <- pair_monthly %>% 
+  dplyr::filter(shed_treated != "P303")
+pair_seasonal <- pair_seasonal %>% 
+  dplyr::filter(shed_treated != "P303")
+pair_wy <- pair_wy %>% 
+  dplyr::filter(shed_treated != "P303")
 
 
 # ---------------------------------------------------------------------
@@ -120,6 +134,15 @@ beep(4)
 # ----------
 # Analysis
 
+
+out_mcmc_mam7 <- read_rds("output/2.3_mixed_model/out_mcmc_mam7.rds")
+out_mcmc_q95 <- read_rds("output/2.3_mixed_model/out_mcmc_q95.rds")
+out_mcmc_seasonal_1 <- read_rds("output/2.3_mixed_model/out_mcmc_seasonal_1.rds")
+out_mcmc_seasonal_2 <- read_rds("output/2.3_mixed_model/out_mcmc_seasonal_2.rds")
+out_mcmc_seasonal_3 <- read_rds("output/2.3_mixed_model/out_mcmc_seasonal_3.rds")
+out_mcmc_seasonal_4 <- read_rds("output/2.3_mixed_model/out_mcmc_seasonal_4.rds")
+out_mcmc_wy <- read_rds("output/2.3_mixed_model/out_mcmc_wy.rds")
+
 #out_mcmc <- out_mcmc_mam7
 #out_mcmc <- out_mcmc_q95
 #out_mcmc <- out_mcmc_seasonal_1
@@ -146,6 +169,8 @@ posterior.mode(out_mcmc$VCV)
 HPDinterval(out_mcmc$Sol, 0.95)
 HPDinterval(out_mcmc$VCV, 0.95)
 
+
+# Do a plot like the ones in Bart & Tague (fig 5 & 6) with each response variable (e.g. WY, Q95, etc) on left axis.
 
 
 

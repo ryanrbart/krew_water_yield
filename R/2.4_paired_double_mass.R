@@ -17,6 +17,19 @@ pair_seasonal <- read_rds(PAIR_SEASONAL_RDS)
 pair_wy <- read_rds(PAIR_WY_RDS)
 
 
+# Removes P303. Remove this code when WY2017 is added
+pair_mam7 <- pair_mam7 %>% 
+  dplyr::filter(shed_treated != "P303")
+pair_q95 <- pair_q95 %>% 
+  dplyr::filter(shed_treated != "P303")
+pair_monthly <- pair_monthly %>% 
+  dplyr::filter(shed_treated != "P303")
+pair_seasonal <- pair_seasonal %>% 
+  dplyr::filter(shed_treated != "P303")
+pair_wy <- pair_wy %>% 
+  dplyr::filter(shed_treated != "P303")
+
+
 # ---------------------------------------------------------------------
 # Double Mass of Control Streamflow to Treated Streamflow
 
