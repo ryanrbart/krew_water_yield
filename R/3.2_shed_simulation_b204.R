@@ -1,4 +1,4 @@
-# Watershed Simulation for P301
+# Watershed Simulation for b204
 # 
 #
 
@@ -14,26 +14,26 @@ parameter_method <- "all_combinations"
 # RHESSys Inputs
 input_rhessys <- list()
 input_rhessys$rhessys_version <- "bin/rhessys5.20.1"
-input_rhessys$tec_file <- "ws_p301/tecfiles/p301.tec"
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_spinup_pre.world.Y2041M9D30H1.state"
-input_rhessys$world_hdr_prefix <- "p301"
-input_rhessys$flow_file <- "ws_p301/flowtables/p301.flow"
+input_rhessys$tec_file <- "ws_b204/tecfiles/b204.tec"
+input_rhessys$world_file <- "ws_b204/worldfiles/b204_spinup_pre.world.Y1992M9D30H25.state"
+input_rhessys$world_hdr_prefix <- "b204"
+input_rhessys$flow_file <- "ws_b204/flowtables/b204.flow"
 input_rhessys$start_date <- "1941 10 1 1"
 input_rhessys$end_date <- "1942 10 1 1"
-input_rhessys$output_folder <- "ws_p301/out/21_p301_year1"
-input_rhessys$output_filename <- "p301_simulation"
+input_rhessys$output_folder <- "ws_b204/out/3.2_b204_year1"
+input_rhessys$output_filename <- "b204_simulation"
 input_rhessys$command_options <- c("-b -g -c 1 189 8081 8081 -p 1 189 8081 8081 -tchange 0 0")
 
 
 # HDR (header) file
 input_hdr_list <- list()
-input_hdr_list$basin_def <- c("ws_p301/defs/basin_p301.def")
-input_hdr_list$hillslope_def <- c("ws_p301/defs/hill_p301.def")
-input_hdr_list$zone_def <- c("ws_p301/defs/zone_p301.def")
-input_hdr_list$soil_def <- c("ws_p301/defs/patch_p301.def")
-input_hdr_list$landuse_def <- c("ws_p301/defs/lu_p301.def")
-input_hdr_list$stratum_def <- c("ws_p301/defs/veg_p301_conifer.def", "ws_p301/defs/veg_p301_shrub.def")
-input_hdr_list$base_stations <- c("ws_p301/clim/Grove_lowprov_clim_1942_2453.base")
+input_hdr_list$basin_def <- c("ws_b204/defs/basin_b204.def")
+input_hdr_list$hillslope_def <- c("ws_b204/defs/hill_b204.def")
+input_hdr_list$zone_def <- c("ws_b204/defs/zone_b204.def")
+input_hdr_list$soil_def <- c("ws_b204/defs/patch_b204.def")
+input_hdr_list$landuse_def <- c("ws_b204/defs/lu_b204.def")
+input_hdr_list$stratum_def <- c("ws_b204/defs/veg_b204_conifer.def", "ws_b204/defs/veg_b204_shrub.def")
+input_hdr_list$base_stations <- c("ws_b204/clim/Grove_lowprov_clim_1942_2453.base")
 
 
 # Define path to a pre-selected df containing parameter sets
@@ -111,7 +111,7 @@ input_clim_base_list[[1]][[2]][2,] <- data.frame(c1=0, c2="number_non_critical_a
 input_clim_base_list[[1]][[3]][1,] <- data.frame(c1="monthly", c2="monthly_climate_prefix",stringsAsFactors=FALSE)
 input_clim_base_list[[1]][[3]][2,] <- data.frame(c1=0, c2="number_non_critical_monthly_sequences",stringsAsFactors=FALSE)
 
-input_clim_base_list[[1]][[4]][1,] <- data.frame(c1="ws_p301/clim/Grove_lowprov_clim_1942_2453", c2="daily_climate_prefix",stringsAsFactors=FALSE)
+input_clim_base_list[[1]][[4]][1,] <- data.frame(c1="ws_b204/clim/Grove_lowprov_clim_1942_2453", c2="daily_climate_prefix",stringsAsFactors=FALSE)
 input_clim_base_list[[1]][[4]][2,] <- data.frame(c1=0, c2="number_non_critical_daily_sequences",stringsAsFactors=FALSE)
 
 input_clim_base_list[[1]][[5]][1,] <- data.frame(c1="hourly", c2="hourly_climate_prefix",stringsAsFactors=FALSE)
@@ -145,10 +145,10 @@ input_tec_data[2,] <- data.frame(1941, 10, 1, 2, "print_daily_growth_on", string
 # file location), and the location/name of rhessys output file with variable of interest.
 # output_variables <- NULL
 output_variables <- data.frame(variable=character(),awk_path=character(),out_file=character(),stringsAsFactors=FALSE)
-output_variables[1,] <- data.frame("lai", "awks/output_var_bd_lai.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
-output_variables[2,] <- data.frame("height", "awks/output_var_cd_height.awk","p301_simulation_stratum.daily",stringsAsFactors=FALSE)
-output_variables[3,] <- data.frame("streamflow", "awks/output_var_bd_streamflow.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
-output_variables[4,] <- data.frame("precip", "awks/output_var_bd_precip.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
+output_variables[1,] <- data.frame("lai", "awks/output_var_bd_lai.awk","b204_simulation_basin.daily",stringsAsFactors=FALSE)
+output_variables[2,] <- data.frame("height", "awks/output_var_cd_height.awk","b204_simulation_stratum.daily",stringsAsFactors=FALSE)
+output_variables[3,] <- data.frame("streamflow", "awks/output_var_bd_streamflow.awk","b204_simulation_basin.daily",stringsAsFactors=FALSE)
+output_variables[4,] <- data.frame("precip", "awks/output_var_bd_precip.awk","b204_simulation_basin.daily",stringsAsFactors=FALSE)
 
 
 # ---------------------------------------------------------------------

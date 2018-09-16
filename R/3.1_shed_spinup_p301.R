@@ -19,12 +19,12 @@ input_rhessys$world_file <- "ws_p301/worldfiles/p301_spinup_pre.world"
 input_rhessys$world_hdr_prefix <- "p301_spinup"
 input_rhessys$flow_file <- "ws_p301/flowtables/p301.flow"
 input_rhessys$start_date <- "1941 10 1 1"
-#input_rhessys$end_date <- "2041 10 1 1"
-input_rhessys$end_date <- "1947 10 1 1"
+input_rhessys$end_date <- "1941 11 1 1"
 input_rhessys$output_folder <- "ws_p301/out/3.1_p301_spinup"
 input_rhessys$output_filename <- "p301_spinup"
-#input_rhessys$command_options <- c("-b -g -c 1 229 5103 5103 -p 1 229 5103 5103 -tchange 0 0")
-input_rhessys$command_options <- c("-vegspinup ws_p301/tecfiles/spinup_thresholds_p301.txt -b -g -c 1 229 5103 5103 -p 1 229 5103 5103 -tchange 0 0")
+input_rhessys$command_options <- c("-b -g -c 1 229 5103 5103 -p 1 229 5103 5103 -tchange 0 0")
+# Remember to switch on/off reference to spinup def file in input_hdr_list
+#input_rhessys$command_options <- c("-vegspinup ws_p301/tecfiles/spinup_thresholds.txt -b -g -tchange 0 0")    # Can't use -c or -p with -vegspinup
 
 
 # HDR (header) file
@@ -36,7 +36,7 @@ input_hdr_list$soil_def <- c("ws_p301/defs/patch_p301.def")
 input_hdr_list$landuse_def <- c("ws_p301/defs/lu_p301.def")
 #input_hdr_list$stratum_def <- c("ws_p301/defs/veg_p301_conifer.def")
 input_hdr_list$stratum_def <- c("ws_p301/defs/veg_p301_conifer.def", "ws_p301/defs/veg_p301_shrub.def")
-input_hdr_list$spinup_def <- c("ws_p301/defs/spinup_p301.def")
+#input_hdr_list$spinup_def <- c("ws_p301/defs/spinup_p301.def")
 input_hdr_list$base_stations <- c("ws_p301/clim/Grove_lowprov_clim_1942_2453.base")
 
 
@@ -69,7 +69,7 @@ input_def_list <- list(
 # Standard sub-surface parameters
 # input_standard_par_list <- NULL
 input_standard_par_list <- list(
-  m = c(1.792761,2),
+  m = c(1.792761),
   k = c(1.566492),
   m_v = c(1.792761),
   k_v = c(1.566492),
@@ -111,9 +111,9 @@ input_clim_base_list[[1]][[5]][2,] <- data.frame(c1=0, c2="number_non_critical_h
 
 
 # Make a list of dated sequence data.frames (file name, year, month, day, hour, value)
-input_dated_seq_list <- NULL
-#input_dated_seq_list = list()
-#input_dated_seq_list[[1]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1941,month=10,day=3,hour=1,value=0.95,stringsAsFactors=FALSE)
+#input_dated_seq_list <- NULL
+input_dated_seq_list = list()
+input_dated_seq_list[[1]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1941,month=10,day=3,hour=1,value=0.95,stringsAsFactors=FALSE)
 
 
 # Make tec-file
