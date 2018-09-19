@@ -19,12 +19,15 @@ cd$stratumID <- factor(cd$stratumID, levels=c(1,2))
 
 # Compare height
 x <- ggplot(data = cd) +
-  geom_line(aes(x=wy, y=height, linetype=stratumID, color=watershed))
+  geom_line(aes(x=wy, y=height, linetype=stratumID, color=watershed)) +
+  #ylim(0,4) +
+  NULL
 plot(x)
 
 
 # Compare LAI
 x <- ggplot(data = cd) +
-  geom_line(aes(x=wy, y=lai, linetype=stratumID, color=watershed))
+  geom_line(aes(x=wy, y=lai, linetype=stratumID, color=watershed)) +
+  NULL
 plot(x)
 

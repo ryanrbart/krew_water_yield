@@ -57,10 +57,14 @@ input_def_list <- list(
   list(input_hdr_list$stratum_def[2], "epc.branch_turnover", c(0.02)),
   list(input_hdr_list$stratum_def[2], "epc.height_to_stem_exp", c(0.57)),
   list(input_hdr_list$stratum_def[2], "epc.height_to_stem_coef", c(4.0)),
+  list(input_hdr_list$stratum_def[2], "epc.resprout_leaf_carbon", c(0.02)),
   # -----
   # Upper canopy parameters
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_exp", c(0.57)),
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_coef", c(11.39)),
+  list(input_hdr_list$stratum_def[1], "epc.proj_sla", c(8)),
+  list(input_hdr_list$stratum_def[1], "epc.resprout_leaf_carbon", c(0.02)),
+  
   # Patch level parameters
   list(input_hdr_list$soil_def[1], "soil_depth", c(2.0))
 )
