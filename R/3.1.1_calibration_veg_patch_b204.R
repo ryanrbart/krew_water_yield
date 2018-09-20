@@ -18,7 +18,7 @@ input_rhessys$world_file <- "ws_b204/worldfiles/b204_patch_31786.world"
 input_rhessys$world_hdr_prefix <- "b204_3.1_cal"
 input_rhessys$flow_file <- "ws_b204/flowtables/b204_patch_31786.flow"
 input_rhessys$start_date <- "1941 10 1 1"
-input_rhessys$end_date <- "2041 10 1 1"
+input_rhessys$end_date <- "2341 10 1 1"
 input_rhessys$output_folder <- "ws_b204/out/3.1_b204_cal_veg_patch"
 input_rhessys$output_filename <- "b204_cal"
 input_rhessys$command_options <- c("-b -g -c -p -tchange 0 0")
@@ -47,7 +47,8 @@ input_preexisting_table <- NULL
 # List of lists containing def_file, parameter and parameters values
 #input_def_list <- NULL
 input_def_list <- list(
-  # Lower canopy parameters
+  # Lower canopy parameters (Note that parameters epc.leaf_turnover &
+  # epc.branch_turnover differ from P301)
   list(input_hdr_list$stratum_def[2], "epc.leaf_turnover", c(0.32)),
   list(input_hdr_list$stratum_def[2], "epc.livewood_turnover", c(0.1)),
   list(input_hdr_list$stratum_def[2], "epc.alloc_frootc_leafc", c(1.4)),
@@ -62,8 +63,8 @@ input_def_list <- list(
   # Upper canopy parameters
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_exp", c(0.57)),
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_coef", c(11.39)),
-  list(input_hdr_list$stratum_def[1], "epc.proj_sla", c(8)),
   list(input_hdr_list$stratum_def[1], "epc.resprout_leaf_carbon", c(0.02)),
+  # -----
   # Patch level parameters
   list(input_hdr_list$soil_def[1], "soil_depth", c(2.0))
 )

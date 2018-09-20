@@ -31,3 +31,22 @@ x <- ggplot(data = cd) +
   NULL
 plot(x)
 
+
+
+# ---------------------------------------------------------------------
+# Plot test of soil C/N variables (to get estimate of spinup time in 3.2)
+
+# Combine canopy data
+bd <- as_tibble(dplyr::bind_rows("p301" = happy_p301$bdg, "b204" = happy_b204$bdg, .id = "watershed"))
+
+# Compare Soilc
+x <- ggplot(data = bd) +
+  geom_line(aes(x=wy, y=soilc, linetype=watershed, color=watershed)) +
+  NULL
+plot(x)
+
+# Compare Soiln
+x <- ggplot(data = bd) +
+  geom_line(aes(x=wy, y=soiln, linetype=watershed, color=watershed)) +
+  NULL
+plot(x)

@@ -18,7 +18,7 @@ input_rhessys$world_file <- "ws_p301/worldfiles/p301_patch_5103.world"
 input_rhessys$world_hdr_prefix <- "p301_3.1_cal"
 input_rhessys$flow_file <- "ws_p301/flowtables/p301_patch_5103.flow"
 input_rhessys$start_date <- "1941 10 1 1"
-input_rhessys$end_date <- "2041 10 1 1"
+input_rhessys$end_date <- "2341 10 1 1"
 input_rhessys$output_folder <- "ws_p301/out/3.1_p301_cal_veg_patch"
 input_rhessys$output_filename <- "p301_cal"
 input_rhessys$command_options <- c("-b -g -c -p -tchange 0 0")
@@ -62,9 +62,8 @@ input_def_list <- list(
   # Upper canopy parameters
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_exp", c(0.57)),
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_coef", c(11.39)),
-  list(input_hdr_list$stratum_def[1], "epc.proj_sla", c(8)),
   list(input_hdr_list$stratum_def[1], "epc.resprout_leaf_carbon", c(0.02)),
-  
+  # -----
   # Patch level parameters
   list(input_hdr_list$soil_def[1], "soil_depth", c(2.0))
 )
