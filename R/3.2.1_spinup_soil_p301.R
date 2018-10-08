@@ -1,7 +1,11 @@
-# Spinup of soil, nutrient and litter pools for P301
+# Spinup of soil C and N pools for P301
 #
 # This code with a worldfile with no vegetation and carbon pools from a previous
 # P301 worldfile. The watershed is spun up for ** years.
+
+# Need to export world at end and rerun for 2 days with patch/canopy output.
+# This will be used to determine average LAI and used to scale LAI target in
+# 3.3
 
 source("R/0_utilities.R")
 
@@ -15,9 +19,9 @@ parameter_method <- "all_combinations"
 # RHESSys Inputs
 input_rhessys <- list()
 input_rhessys$rhessys_version <- "bin/rhessys5.20.1"
-input_rhessys$tec_file <- "ws_p301/tecfiles/p301_3.1_spinup.tec"
+input_rhessys$tec_file <- "ws_p301/tecfiles/p301_3.2_spinup.tec"
 input_rhessys$world_file <- "ws_p301/worldfiles/p301.world"
-input_rhessys$world_hdr_prefix <- "p301_spinup"
+input_rhessys$world_hdr_prefix <- "p301_3.2_spinup"
 input_rhessys$flow_file <- "ws_p301/flowtables/p301.flow"
 input_rhessys$start_date <- "1941 10 1 1"
 input_rhessys$end_date <- "1951 10 1 1"
@@ -59,10 +63,13 @@ input_def_list <- list(
   list(input_hdr_list$stratum_def[2], "epc.branch_turnover", c(0.02)),
   list(input_hdr_list$stratum_def[2], "epc.height_to_stem_exp", c(0.57)),
   list(input_hdr_list$stratum_def[2], "epc.height_to_stem_coef", c(4.0)),
+  list(input_hdr_list$stratum_def[2], "epc.resprout_leaf_carbon", c(0.02)),
   # -----
   # Upper canopy parameters
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_exp", c(0.57)),
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_coef", c(11.39)),
+  list(input_hdr_list$stratum_def[1], "epc.resprout_leaf_carbon", c(0.02)),
+  # -----
   # Patch level parameters
   list(input_hdr_list$soil_def[1], "soil_depth", c(2.0))
 )

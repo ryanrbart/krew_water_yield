@@ -1,11 +1,12 @@
-# Contains scripts for evaluating spinup of soils, nutrients and litter
+# Contains scripts for evaluating spinup of soil C and N
 # P301 and B204
-  
+
 
 # To-do list 
-# Figures showing stable nutrients
-# Figure showing understory growing properly
-# Code to null out vegetation stores in worldfile for 3.3.1
+# Figures showing stable soilc & soiln
+# Figure showing understory growing properly.
+# Code to null out vegetation stores in worldfile for 3.3.1.
+# Adjust LAI spinup targets in correspond to mean RHESSys LAI.
 
 
 source("R/0_utilities.R")
