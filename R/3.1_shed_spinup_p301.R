@@ -63,7 +63,7 @@ input_def_list <- list(
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_exp", c(0.57)),
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_coef", c(11.39)),
   # Patch level parameters
-  list(input_hdr_list$soil_def[1], "soil_depth", c(2.0))
+  list(input_hdr_list$soil_def[1], "soil_depth", c(1, 3, 5))
 )
 
 # Standard sub-surface parameters
@@ -150,22 +150,33 @@ input_tec_data[3,] <- data.frame(2041, 9, 30, 1, "output_current_state", strings
 
 
 # ---------------------------------------------------------------------
-
-system.time(
-  run_rhessys(parameter_method = parameter_method,
-              output_method="awk",
-              input_rhessys = input_rhessys,
-              input_hdr_list = input_hdr_list,
-              input_preexisting_table = input_preexisting_table,
-              input_def_list = input_def_list,
-              input_standard_par_list = input_standard_par_list,
-              input_clim_base_list = input_clim_base_list,
-              input_dated_seq_list = input_dated_seq_list,
-              input_tec_data = input_tec_data,
-              output_variables = output_variables)
-)
-
-beep(1)
-
-
-
+ 
+ 
+ # Step through Sobol parameter sets
+ system.time(
+   for (aa in seq(1,3)){
+     
+     worldfile_out <- list(data.frame(2041, 9, 30, 1, "output_current_state", stringsAsFactors=FALSE),
+                           data.frame(2041, 9, 30, 2, "output_current_state", stringsAsFactors=FALSE),
+                           data.frame(2041, 9, 30, 3, "output_current_state", stringsAsFactors=FALSE))
+     
+     input_tec_data[3,] <- worldfile_out[[aa]]
+     
+     run_rhessys(parameter_method = parameter_method,
+                 output_method="awk",
+                 input_rhessys = input_rhessys,
+                 input_hdr_list = input_hdr_list,
+                 input_preexisting_table = input_preexisting_table,
+                 input_def_list = input_def_list,
+                 input_standard_par_list = input_standard_par_list,
+                 input_clim_base_list = input_clim_base_list,
+                 input_dated_seq_list = input_dated_seq_list,
+                 input_tec_data = input_tec_data,
+                 output_variables = output_variables)
+     
+     print("----------------------------------------------------------")
+     print(paste("Simulation: Run #", aa, "of", nrow(sobol_ps)))
+   }
+ )
+ beep(1)
+ 
