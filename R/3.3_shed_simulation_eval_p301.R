@@ -4,24 +4,23 @@
 
 source("R/0_utilities.R")
 
-theme_set(theme_bw(base_size = 20))
+theme_set(theme_bw(base_size = 15))
 
 # ---------------------------------------------------------------------
-# P300 Patch Simulation data processing
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# P301 - Differences in Variables
 
-
-p301_shed <- readin_rhessys_output_cal(var_names = c("precip", "streamflow"),
-                                        path = RHESSYS_ALLSIM_DIR_21_P301,
-                                        initial_date = ymd("1941-10-01"),
-                                        parameter_file = RHESSYS_ALL_OPTION_21_P301,
-                                        num_canopies = 1)
+p301_shed <- readin_rhessys_output_cal(var_names = c("precip", "streamflow", "et", "trans", "evap"),
+                                       path = RHESSYS_ALLSIM_DIR_21_P301,
+                                       initial_date = ymd("1941-10-01"),
+                                       parameter_file = RHESSYS_ALL_OPTION_21_P301,
+                                       num_canopies = 1)
 
 p301_shed$wy <- y_to_wy(lubridate::year(p301_shed$dates),lubridate::month(p301_shed$dates))
 p301_shed_sum <- p301_shed %>%
   group_by(dated_id, lapse_rate_precip_default = ws_p301.defs.zone_p301.def.lapse_rate_precip_default, var_type) %>%
   summarize(sum_value = sum(value))
-
-# -----
 
 p301_shed_diff <- p301_shed_sum %>%
   tidyr::spread(dated_id, sum_value) %>%
@@ -44,16 +43,74 @@ p301_shed_diff <- p301_shed_sum %>%
 # Generate a easy display, mostly realistic, conversion for lapse_rate_precip_default
 p301_shed_diff <- mutate(p301_shed_diff, annual_precip = (lapse_rate_precip_default*250000)+1250)
 
+# ---------------------------------------------------------------------
+# P301 Streamflow
+
 # Comparison plot
 x <- filter(p301_shed_diff, var_type == "streamflow") %>%
   ggplot() +
   geom_point(aes(x=annual_precip,y=change, shape=as.character(thinning)), size = 1.5) +
-  scale_shape_manual(values=seq(1,9), name="Forest\nThinned (%)", labels=c(10,20,30,40,50,60,70,80,90)) +
-  labs(x = "Annual Precipitation (mm)", y = "Change in annual streamflow (mm)")
+  scale_shape_manual(values=seq(1,9), name="Percent\nForest\nThinned", labels=c(10,20,30,40,50,60,70,80,90)) +
+  labs(x = "Annual Precipitation (mm)", y = "Change in Annual Streamflow (mm)")
 print(x)
+ggsave("output/icrw_branch/precip_vs_change_in_q.jpg", plot=x, width = 6, height = 4)
 
-# -----
-# Percent change in streamflow
+# ---------------------------------------------------------------------
+# P301 Basin ET
+
+# Comparison plot
+x <- filter(p301_shed_diff, var_type == "et") %>%
+  ggplot() +
+  geom_point(aes(x=annual_precip,y=change, shape=as.character(thinning)), size = 1.5) +
+  scale_shape_manual(values=seq(1,9), name="Percent\nForest\nThinned", labels=c(10,20,30,40,50,60,70,80,90)) +
+  labs(x = "Annual Precipitation (mm)", y = "Change in Annual ET (mm)")
+print(x)
+ggsave("output/icrw_branch/precip_vs_change_in_et.jpg", plot=x, width = 6, height = 4)
+
+
+# ---------------------------------------------------------------------
+# P301 Basin Transpriration
+
+# Comparison plot
+x <- filter(p301_shed_diff, var_type == "trans") %>%
+  ggplot() +
+  geom_point(aes(x=annual_precip,y=change, shape=as.character(thinning)), size = 1.5) +
+  scale_shape_manual(values=seq(1,9), name="Percent\nForest\nThinned", labels=c(10,20,30,40,50,60,70,80,90)) +
+  labs(x = "Annual Precipitation (mm)", y = "Change in Annual Transpiration (mm)")
+print(x)
+ggsave("output/icrw_branch/precip_vs_change_in_trans.jpg", plot=x, width = 6, height = 4)
+
+
+# ---------------------------------------------------------------------
+# P301 Basin Evaporation
+
+# Comparison plot
+x <- filter(p301_shed_diff, var_type == "evap") %>%
+  ggplot() +
+  geom_point(aes(x=annual_precip,y=change, shape=as.character(thinning)), size = 1.5) +
+  scale_shape_manual(values=seq(1,9), name="Percent\nForest\nThinned", labels=c(10,20,30,40,50,60,70,80,90)) +
+  labs(x = "Annual Precipitation (mm)", y = "Change in Annual Evaporation (mm)")
+print(x)
+ggsave("output/icrw_branch/precip_vs_change_in_evap.jpg", plot=x, width = 6, height = 4)
+
+
+
+
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# P301 - Percent change in Variables
+
+p301_shed <- readin_rhessys_output_cal(var_names = c("precip", "streamflow", "et"),
+                                       path = RHESSYS_ALLSIM_DIR_21_P301,
+                                       initial_date = ymd("1941-10-01"),
+                                       parameter_file = RHESSYS_ALL_OPTION_21_P301,
+                                       num_canopies = 1)
+
+p301_shed$wy <- y_to_wy(lubridate::year(p301_shed$dates),lubridate::month(p301_shed$dates))
+p301_shed_sum <- p301_shed %>%
+  group_by(dated_id, lapse_rate_precip_default = ws_p301.defs.zone_p301.def.lapse_rate_precip_default, var_type) %>%
+  summarize(sum_value = sum(value))
 
 p301_shed_diff <- p301_shed_sum %>%
   tidyr::spread(dated_id, sum_value) %>%
@@ -76,15 +133,22 @@ p301_shed_diff <- p301_shed_sum %>%
 # Generate a easy display, mostly realistic, conversion for lapse_rate_precip_default
 p301_shed_diff <- mutate(p301_shed_diff, annual_precip = (lapse_rate_precip_default*250000)+1250)
 
-# Comparison plot
+# ---------------------------------------------------------------------
+# P301 Streamflow percent
+
 x <- filter(p301_shed_diff, var_type == "streamflow") %>%
   ggplot() +
   geom_point(aes(x=annual_precip,y=change, shape=as.character(thinning)), size = 1.5) +
-  scale_shape_manual(values=seq(1,9), name="Forest\nThinned (%)", labels=c(10,20,30,40,50,60,70,80,90)) +
+  scale_shape_manual(values=seq(1,9), name="Percent\nForest\nThinned", labels=c(10,20,30,40,50,60,70,80,90)) +
   labs(x = "Annual Precipitation (mm)", y = "Change in annual streamflow (%)")
 print(x)
+ggsave("output/icrw_branch/precip_vs_change_in_q_percent.jpg", plot=x, width = 6, height = 4)
 
 
+
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 
 
 

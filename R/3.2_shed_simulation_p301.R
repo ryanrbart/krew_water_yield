@@ -15,14 +15,14 @@ parameter_method <- "all_combinations"
 input_rhessys <- list()
 input_rhessys$rhessys_version <- "bin/rhessys5.20.1"
 input_rhessys$tec_file <- "ws_p301/tecfiles/p301.tec"
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_spinup_pre.world.Y2041M9D30H1.state"
+input_rhessys$world_file <- "ws_p301/worldfiles/p301_icrw.world.Y2041M9D30H1.state"
 input_rhessys$world_hdr_prefix <- "p301"
 input_rhessys$flow_file <- "ws_p301/flowtables/p301.flow"
 input_rhessys$start_date <- "1941 10 1 1"
 input_rhessys$end_date <- "1942 10 1 1"
 input_rhessys$output_folder <- "ws_p301/out/21_p301_year1"
 input_rhessys$output_filename <- "p301_simulation"
-input_rhessys$command_options <- c("-b -g -c 1 189 8081 8081 -p 1 189 8081 8081 -tchange 0 0")
+input_rhessys$command_options <- c("-b -g -c 1 229 5103 5103 -p 1 229 5103 5103 -tchange 0 0")
 
 
 # HDR (header) file
@@ -149,12 +149,18 @@ output_variables[1,] <- data.frame("lai", "awks/output_var_bd_lai.awk","p301_sim
 output_variables[2,] <- data.frame("height", "awks/output_var_cd_height.awk","p301_simulation_stratum.daily",stringsAsFactors=FALSE)
 output_variables[3,] <- data.frame("streamflow", "awks/output_var_bd_streamflow.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
 output_variables[4,] <- data.frame("precip", "awks/output_var_bd_precip.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
+output_variables[5,] <- data.frame("et", "awks/output_var_bd_et.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
+output_variables[6,] <- data.frame("evap", "awks/output_var_bd_evap.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
+output_variables[7,] <- data.frame("trans", "awks/output_var_bd_trans.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
+output_variables[8,] <- data.frame("c_evap", "awks/output_var_cd_evap.awk","p301_simulation_stratum.daily",stringsAsFactors=FALSE)
+output_variables[9,] <- data.frame("c_trans", "awks/output_var_cd_trans.awk","p301_simulation_stratum.daily",stringsAsFactors=FALSE)
 
 
 # ---------------------------------------------------------------------
 
 system.time(
   run_rhessys(parameter_method = parameter_method,
+              output_method="awk",
               input_rhessys = input_rhessys,
               input_hdr_list = input_hdr_list,
               input_preexisting_table = input_preexisting_table,
@@ -167,4 +173,12 @@ system.time(
 )
 
 beep(1)
+
+
+
+happy <-readin_rhessys_output("ws_p301/out/21_p301_year1/p301_simulation", c=0, g=1)
+
+plot(happy$bd$height)
+
+
 
