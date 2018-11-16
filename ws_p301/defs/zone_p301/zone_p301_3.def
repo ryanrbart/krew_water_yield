@@ -14,4 +14,4 @@
    0.001600       n_deposition
    0.006300       lapse_rate_Tmax
   -0.006400       lapse_rate_Tmin
-  -0.003000       lapse_rate_precip_default
+  -0.001810       lapse_rate_precip_default
