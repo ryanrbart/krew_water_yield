@@ -8,7 +8,7 @@
     0.2230       pore_size_index
     0.0900       psi_air_entry
     0.0100       psi_max
-    5.0000       soil_depth
+    2.0000       soil_depth
     0.2000       m_z
     0.0000       detention_store_size
     1.0000       deltaZ

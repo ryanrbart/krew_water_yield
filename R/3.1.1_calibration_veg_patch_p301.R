@@ -123,7 +123,7 @@ input_dated_seq_list[[1]] <- data.frame(name="lowProv",type="biomass_removal_per
 input_tec_data <- data.frame(year=integer(),month=integer(),day=integer(),hour=integer(),name=character(),stringsAsFactors=FALSE)
 input_tec_data[1,] <- data.frame(1941, 10, 1, 1, "print_daily_on", stringsAsFactors=FALSE)
 input_tec_data[2,] <- data.frame(1941, 10, 1, 2, "print_daily_growth_on", stringsAsFactors=FALSE)
-#input_tec_data[3,] <- data.frame(2041, 9, 30, 1, "output_current_state", stringsAsFactors=FALSE)
+#input_tec_data[3,] <- data.frame(2241, 9, 30, 1, "output_current_state", stringsAsFactors=FALSE)
 
 
 # List of lists containing variable of interest, location/name of awk file (relative to output
@@ -135,6 +135,7 @@ output_variables <- NULL
 
 system.time(
   run_rhessys(parameter_method = parameter_method,
+              output_method="awk",
               input_rhessys = input_rhessys,
               input_hdr_list = input_hdr_list,
               input_preexisting_table = input_preexisting_table,

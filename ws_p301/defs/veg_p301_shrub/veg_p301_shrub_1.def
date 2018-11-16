@@ -81,4 +81,4 @@ waring       epc.allocation_flag
 1       vapor_loss_rel
 -10       biomass_loss_rel_k1
 1       biomass_loss_rel_k2
-0.01       epc.resprout_leaf_carbon
+0.02       epc.resprout_leaf_carbon
