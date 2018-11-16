@@ -15,12 +15,12 @@ parameter_method <- "all_combinations"
 input_rhessys <- list()
 input_rhessys$rhessys_version <- "bin/rhessys5.20.1"
 input_rhessys$tec_file <- "ws_p301/tecfiles/p301.tec"
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_spinup_pre.world"
+input_rhessys$world_file <- "ws_p301/worldfiles/p301_icrw.world"
 input_rhessys$world_hdr_prefix <- "p301_spinup"
 input_rhessys$flow_file <- "ws_p301/flowtables/p301.flow"
 input_rhessys$start_date <- "1941 10 1 1"
-input_rhessys$end_date <- "1941 11 1 1"
-input_rhessys$output_folder <- "ws_p301/out/3.1_p301_spinup"
+input_rhessys$end_date <- "2041 10 1 1"
+input_rhessys$output_folder <- "ws_p301/out/20_p301_simulation"
 input_rhessys$output_filename <- "p301_spinup"
 input_rhessys$command_options <- c("-b -g -c 1 229 5103 5103 -p 1 229 5103 5103 -tchange 0 0")
 # Remember to switch on/off reference to spinup def file in input_hdr_list and extra line in worldfile
@@ -63,7 +63,7 @@ input_def_list <- list(
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_exp", c(0.57)),
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_coef", c(11.39)),
   # Patch level parameters
-  list(input_hdr_list$soil_def[1], "soil_depth", c(2.0))
+  list(input_hdr_list$soil_def[1], "soil_depth", c(1))
 )
 
 # Standard sub-surface parameters
@@ -121,7 +121,7 @@ input_dated_seq_list[[1]] <- data.frame(name="lowProv",type="biomass_removal_per
 input_tec_data <- data.frame(year=integer(),month=integer(),day=integer(),hour=integer(),name=character(),stringsAsFactors=FALSE)
 input_tec_data[1,] <- data.frame(1941, 10, 1, 1, "print_daily_on", stringsAsFactors=FALSE)
 input_tec_data[2,] <- data.frame(1941, 10, 1, 2, "print_daily_growth_on", stringsAsFactors=FALSE)
-#input_tec_data[3,] <- data.frame(2041, 9, 30, 1, "output_current_state", stringsAsFactors=FALSE)
+input_tec_data[3,] <- data.frame(2041, 9, 30, 1, "output_current_state", stringsAsFactors=FALSE)
 
 
 # List of lists containing variable of interest, location/name of awk file (relative to output
@@ -150,18 +150,34 @@ input_tec_data[2,] <- data.frame(1941, 10, 1, 2, "print_daily_growth_on", string
 
 
 # ---------------------------------------------------------------------
+ 
 
 system.time(
-  run_rhessys(parameter_method = parameter_method,
-              input_rhessys = input_rhessys,
-              input_hdr_list = input_hdr_list,
-              input_preexisting_table = input_preexisting_table,
-              input_def_list = input_def_list,
-              input_standard_par_list = input_standard_par_list,
-              input_clim_base_list = input_clim_base_list,
-              input_dated_seq_list = input_dated_seq_list,
-              input_tec_data = input_tec_data,
-              output_variables = output_variables)
+  for (aa in seq(1,3)){
+
+    worldfile_out <- list(data.frame(2041, 9, 30, 1, "output_current_state", stringsAsFactors=FALSE),
+                          data.frame(2041, 9, 30, 2, "output_current_state", stringsAsFactors=FALSE),
+                          data.frame(2041, 9, 30, 3, "output_current_state", stringsAsFactors=FALSE))
+    soil_depth <- c(1,3,5)
+  
+    input_tec_data[3,] <- worldfile_out[[aa]]
+    input_def_list[[12]][[3]] <- soil_depth[aa]
+    
+    run_rhessys(parameter_method = parameter_method,
+                output_method="awk",
+                input_rhessys = input_rhessys,
+                input_hdr_list = input_hdr_list,
+                input_preexisting_table = input_preexisting_table,
+                input_def_list = input_def_list,
+                input_standard_par_list = input_standard_par_list,
+                input_clim_base_list = input_clim_base_list,
+                input_dated_seq_list = input_dated_seq_list,
+                input_tec_data = input_tec_data,
+                output_variables = output_variables)
+    
+    print("----------------------------------------------------------")
+    print(paste("Simulation: Run #", aa))
+  }
 )
 
 beep(1)
