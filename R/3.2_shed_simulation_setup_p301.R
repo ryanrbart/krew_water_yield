@@ -1,6 +1,7 @@
-# Watershed Simulation for P301
+# Watershed Setup for P301
 # 
-#
+# Repeats 1943 (Uses different clim than normal)
+
 
 source("R/0_utilities.R")
 
@@ -18,9 +19,9 @@ input_rhessys$tec_file <- "ws_p301/tecfiles/p301.tec"
 input_rhessys$world_file <- "ws_p301/worldfiles/p301_icrw.world.Y2041M9D30H1.state"
 input_rhessys$world_hdr_prefix <- "p301"
 input_rhessys$flow_file <- "ws_p301/flowtables/p301.flow"
-input_rhessys$start_date <- "1941 10 1 1"
-input_rhessys$end_date <- "1942 10 1 1"
-input_rhessys$output_folder <- "ws_p301/out/21_p301_year1"
+input_rhessys$start_date <- "1942 10 1 1"
+input_rhessys$end_date <- "1946 10 1 1"
+input_rhessys$output_folder <- "ws_p301/out/21_p301_soil1"
 input_rhessys$output_filename <- "p301_simulation"
 input_rhessys$command_options <- c("-b -g -c 1 229 5103 5103 -p 1 229 5103 5103 -tchange 0 0")
 
@@ -33,7 +34,7 @@ input_hdr_list$zone_def <- c("ws_p301/defs/zone_p301.def")
 input_hdr_list$soil_def <- c("ws_p301/defs/patch_p301.def")
 input_hdr_list$landuse_def <- c("ws_p301/defs/lu_p301.def")
 input_hdr_list$stratum_def <- c("ws_p301/defs/veg_p301_conifer.def", "ws_p301/defs/veg_p301_shrub.def")
-input_hdr_list$base_stations <- c("ws_p301/clim/Grove_lowprov_clim_1942_2453.base")
+input_hdr_list$base_stations <- c("ws_p301/clim/Grove_lowprov_clim_1943_repeat.base")
 
 
 # Define path to a pre-selected df containing parameter sets
@@ -61,18 +62,20 @@ input_def_list <- list(
   # Patch level parameters
   list(input_hdr_list$soil_def[1], "soil_depth", c(2.0)),
   # Zone level parameters
-  list(input_hdr_list$zone_def[1], "lapse_rate_precip_default", c(-0.005,
-                                                                  -0.004,
-                                                                  -0.003,
-                                                                  -0.002,
-                                                                  -0.001,
-                                                                  0,
-                                                                  0.001,
-                                                                  0.002,
-                                                                  0.003,
-                                                                  0.004,
-                                                                  0.005))
+  list(input_hdr_list$zone_def[1], "lapse_rate_precip_default", c(-0.00352,
+                                                                  -0.00265,
+                                                                  -0.00181,
+                                                                  -0.00097,
+                                                                  -0.00013,
+                                                                  0.00071,
+                                                                  0.00155,
+                                                                  0.00239,
+                                                                  0.00323,
+                                                                  0.00407,
+                                                                  0.00491,
+                                                                  0.00575))
 )
+
 
 # Standard sub-surface parameters
 # input_standard_par_list <- NULL
@@ -111,7 +114,7 @@ input_clim_base_list[[1]][[2]][2,] <- data.frame(c1=0, c2="number_non_critical_a
 input_clim_base_list[[1]][[3]][1,] <- data.frame(c1="monthly", c2="monthly_climate_prefix",stringsAsFactors=FALSE)
 input_clim_base_list[[1]][[3]][2,] <- data.frame(c1=0, c2="number_non_critical_monthly_sequences",stringsAsFactors=FALSE)
 
-input_clim_base_list[[1]][[4]][1,] <- data.frame(c1="ws_p301/clim/Grove_lowprov_clim_1942_2453", c2="daily_climate_prefix",stringsAsFactors=FALSE)
+input_clim_base_list[[1]][[4]][1,] <- data.frame(c1="ws_p301/clim/Grove_lowprov_clim_1943_repeat", c2="daily_climate_prefix",stringsAsFactors=FALSE)
 input_clim_base_list[[1]][[4]][2,] <- data.frame(c1=0, c2="number_non_critical_daily_sequences",stringsAsFactors=FALSE)
 
 input_clim_base_list[[1]][[5]][1,] <- data.frame(c1="hourly", c2="hourly_climate_prefix",stringsAsFactors=FALSE)
@@ -121,23 +124,23 @@ input_clim_base_list[[1]][[5]][2,] <- data.frame(c1=0, c2="number_non_critical_h
 # Make a list of dated sequence data.frames (file name, year, month, day, hour, value)
 # input_dated_seq_list <- NULL
 input_dated_seq_list = list()
-input_dated_seq_list[[1]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1941,month=10,day=3,hour=1,value=0.0,stringsAsFactors=FALSE)
-input_dated_seq_list[[2]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1941,month=10,day=3,hour=1,value=0.1,stringsAsFactors=FALSE)
-input_dated_seq_list[[3]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1941,month=10,day=3,hour=1,value=0.2,stringsAsFactors=FALSE)
-input_dated_seq_list[[4]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1941,month=10,day=3,hour=1,value=0.3,stringsAsFactors=FALSE)
-input_dated_seq_list[[5]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1941,month=10,day=3,hour=1,value=0.4,stringsAsFactors=FALSE)
-input_dated_seq_list[[6]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1941,month=10,day=3,hour=1,value=0.5,stringsAsFactors=FALSE)
-input_dated_seq_list[[7]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1941,month=10,day=3,hour=1,value=0.6,stringsAsFactors=FALSE)
-input_dated_seq_list[[8]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1941,month=10,day=3,hour=1,value=0.7,stringsAsFactors=FALSE)
-input_dated_seq_list[[9]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1941,month=10,day=3,hour=1,value=0.8,stringsAsFactors=FALSE)
-input_dated_seq_list[[10]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1941,month=10,day=3,hour=1,value=0.9,stringsAsFactors=FALSE)
+input_dated_seq_list[[1]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1942,month=10,day=3,hour=1,value=0.0,stringsAsFactors=FALSE)
+input_dated_seq_list[[2]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1942,month=10,day=3,hour=1,value=0.1,stringsAsFactors=FALSE)
+input_dated_seq_list[[3]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1942,month=10,day=3,hour=1,value=0.2,stringsAsFactors=FALSE)
+input_dated_seq_list[[4]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1942,month=10,day=3,hour=1,value=0.3,stringsAsFactors=FALSE)
+input_dated_seq_list[[5]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1942,month=10,day=3,hour=1,value=0.4,stringsAsFactors=FALSE)
+input_dated_seq_list[[6]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1942,month=10,day=3,hour=1,value=0.5,stringsAsFactors=FALSE)
+input_dated_seq_list[[7]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1942,month=10,day=3,hour=1,value=0.6,stringsAsFactors=FALSE)
+input_dated_seq_list[[8]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1942,month=10,day=3,hour=1,value=0.7,stringsAsFactors=FALSE)
+input_dated_seq_list[[9]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1942,month=10,day=3,hour=1,value=0.8,stringsAsFactors=FALSE)
+input_dated_seq_list[[10]] <- data.frame(name="lowProv",type="biomass_removal_percent",year=1942,month=10,day=3,hour=1,value=0.9,stringsAsFactors=FALSE)
 
 
 # Make tec-file
 #input_tec_data <- NULL
 input_tec_data <- data.frame(year=integer(),month=integer(),day=integer(),hour=integer(),name=character(),stringsAsFactors=FALSE)
-input_tec_data[1,] <- data.frame(1941, 10, 1, 1, "print_daily_on", stringsAsFactors=FALSE)
-input_tec_data[2,] <- data.frame(1941, 10, 1, 2, "print_daily_growth_on", stringsAsFactors=FALSE)
+input_tec_data[1,] <- data.frame(1942, 10, 1, 1, "print_daily_on", stringsAsFactors=FALSE)
+input_tec_data[2,] <- data.frame(1942, 10, 1, 2, "print_daily_growth_on", stringsAsFactors=FALSE)
 #input_tec_data[3,] <- data.frame(2041, 9, 30, 1, "output_current_state", stringsAsFactors=FALSE)
 
 
@@ -154,31 +157,10 @@ output_variables[6,] <- data.frame("evap", "awks/output_var_bd_evap.awk","p301_s
 output_variables[7,] <- data.frame("trans", "awks/output_var_bd_trans.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
 output_variables[8,] <- data.frame("c_evap", "awks/output_var_cd_evap.awk","p301_simulation_stratum.daily",stringsAsFactors=FALSE)
 output_variables[9,] <- data.frame("c_trans", "awks/output_var_cd_trans.awk","p301_simulation_stratum.daily",stringsAsFactors=FALSE)
+output_variables[10,] <- data.frame("rz_storage", "awks/output_var_bd_rz_storage.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
+output_variables[11,] <- data.frame("sat_def", "awks/output_var_bd_sat_def.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
+output_variables[12,] <- data.frame("unsat_stor", "awks/output_var_bd_unsat_stor.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
 
-
-# ---------------------------------------------------------------------
-
-system.time(
-  run_rhessys(parameter_method = parameter_method,
-              output_method="awk",
-              input_rhessys = input_rhessys,
-              input_hdr_list = input_hdr_list,
-              input_preexisting_table = input_preexisting_table,
-              input_def_list = input_def_list,
-              input_standard_par_list = input_standard_par_list,
-              input_clim_base_list = input_clim_base_list,
-              input_dated_seq_list = input_dated_seq_list,
-              input_tec_data = input_tec_data,
-              output_variables = output_variables)
-)
-
-beep(1)
-
-
-
-happy <-readin_rhessys_output("ws_p301/out/21_p301_year1/p301_simulation", c=0, g=1)
-
-plot(happy$bd$height)
 
 
 
