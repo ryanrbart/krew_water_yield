@@ -71,15 +71,15 @@ RHESSYS_OUT_DIR_10_P300 <- "ws_p300_patch/out/10_p300_patch_simulation"
 RHESSYS_ALLSIM_DIR_10_P300 <- file.path(RHESSYS_OUT_DIR_10_P300, "allsim")
 RHESSYS_ALL_OPTION_10_P300 <- file.path(RHESSYS_OUT_DIR_10_P300, "patch_sim_all_options.csv")
 
-RHESSYS_OUT_DIR_21_P301_1 <- "ws_p301/out/21_p301_soil1"
+RHESSYS_OUT_DIR_21_P301_1 <- "ws_p301/out/icrw_out/21_p301_soil1"
 RHESSYS_ALLSIM_DIR_21_P301_1 <- file.path(RHESSYS_OUT_DIR_21_P301_1, "allsim")
 RHESSYS_ALL_OPTION_21_P301_1 <- file.path(RHESSYS_OUT_DIR_21_P301_1, "p301_simulation_all_options.csv")
 
-RHESSYS_OUT_DIR_21_P301_2 <- "ws_p301/out/21_p301_soil3"
+RHESSYS_OUT_DIR_21_P301_2 <- "ws_p301/out/icrw_out/21_p301_soil3"
 RHESSYS_ALLSIM_DIR_21_P301_2 <- file.path(RHESSYS_OUT_DIR_21_P301_2, "allsim")
 RHESSYS_ALL_OPTION_21_P301_2 <- file.path(RHESSYS_OUT_DIR_21_P301_2, "p301_simulation_all_options.csv")
 
-RHESSYS_OUT_DIR_21_P301_3 <- "ws_p301/out/21_p301_soil5"
+RHESSYS_OUT_DIR_21_P301_3 <- "ws_p301/out/icrw_out/21_p301_soil5"
 RHESSYS_ALLSIM_DIR_21_P301_3 <- file.path(RHESSYS_OUT_DIR_21_P301_3, "allsim")
 RHESSYS_ALL_OPTION_21_P301_3 <- file.path(RHESSYS_OUT_DIR_21_P301_3, "p301_simulation_all_options.csv")
 
