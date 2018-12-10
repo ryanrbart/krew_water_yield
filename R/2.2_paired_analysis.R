@@ -166,14 +166,21 @@ pair_lm %>%
 # ---------------------------------------------------------------------
 # Analyze paired_seasonal data
 
+season_id <- c(
+  `1` = "Oct-Dec",
+  `2` = "Jan-Mar",
+  `3` = "Apr-Jun",
+  `4` = "Jul-Aug" 
+)
+
 # Plot pre and post streamflow for each watershed
 x <- ggplot(pair_seasonal, aes(x = q_control, y = q_treated)) +
   geom_point(aes(shape = treatment, color = treatment), size=3) +
   stat_summary() + 
   geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment)) +
-  facet_grid(shed_treated~Season) +
+  facet_grid(shed_treated~Season, labeller = labeller(.cols=season_id)) +
   scale_x_log10() +
-  scale_y_log10() +
+  scale_y_log10(labels = comma) +
   scale_shape_discrete(name="Treatment",
                        labels = c("Pre", "Post")) +
   scale_color_brewer(palette = "Set1", name="Treatment",
