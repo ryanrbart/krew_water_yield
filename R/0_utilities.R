@@ -17,7 +17,7 @@ library(raster)
 library(sp)
 library(sf)
 library(rgdal)
-
+library(hydroGOF)
 
 # ---------------------------------------------------------------------
 # Files and Directories - Empirical Analysis
