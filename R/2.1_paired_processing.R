@@ -7,7 +7,7 @@ source("R/0_utilities.R")
 # Import data
 
 # Daily streamflow
-q_daily <- read_csv("data/daily_discharge_filled_2004_2016.csv", 
+q_daily <- read_csv("data/daily_discharge_filled_2004_2017.csv", 
                     col_types = cols(
                       P300 = col_double(),
                       B200 = col_double()))
@@ -16,7 +16,7 @@ q_daily <- read_csv("data/daily_discharge_filled_2004_2016.csv",
 q_daily <- dplyr::select(q_daily, -P300, -B200)
 
 # Daily precipitation
-p_daily <-read_csv("data/daily_ppt_2004_2016.csv")
+p_daily <-read_csv("data/daily_ppt_2004_2017.csv")
 
 # Daily temperature
 t_daily <-read_csv("data/daily_air_temperature_2003_2015.csv")
@@ -25,8 +25,12 @@ t_daily <-read_csv("data/daily_air_temperature_2003_2015.csv")
 treat_control <-read_csv("data/treated_control.csv")
 
 # Treatment summary by wateryear 
+treatment_dummy <-read_csv("data/treatment_dummy.csv")
 treatment_wy <-read_csv("data/treatment_wy.csv")
-
+thinning_dummy <-read_csv("data/thinning_dummy.csv")
+thinning_wy <-read_csv("data/thinning_wy.csv")
+prescribed_fire_dummy <-read_csv("data/prescribed_fire_dummy.csv")
+prescribed_fire_wy <-read_csv("data/prescribed_fire_wy.csv")
 
 # ---------------------------------------------------------------------
 # Summarize data to monthly and annual timesteps
@@ -36,12 +40,14 @@ treatment_wy <-read_csv("data/treatment_wy.csv")
 
 # Daily
 q_daily$Day <- day(mdy(q_daily$Date))
-q_daily$Year <- year(mdy(q_daily$Date))  
+q_daily$Year <- year(mdy(q_daily$Date))
 
 # Create lfobj for functions that require lfstat library
 q_lfobj <- lfobj_function(q_daily)
 
 # Mean Annual Minimum-7
+# Note: There is an issue with MAM7. The first and last years generate NAs, possibly due to errors at very beginning and end of time-series.
+# Note: MAM1 does work, which represents the Mean Annual Minimum daily flow.
 q_mam7 <- q_lfobj %>% 
   map(., ~MAM(.x, n=7, yearly=TRUE)) %>% 
   lfstat_MAM(.)
@@ -144,6 +150,30 @@ t_wy <- t_daily %>%
   ungroup()
 
 # ---------------------------------------------------------------------
+# Process treatment data
+
+treatment_dummy <- gather(treatment_dummy, key = "shed_treated", value = "treatment_dummy",-WY)
+treatment_wy <- gather(treatment_wy, key = "shed_treated", value = "treatment_wy",-WY)
+thinning_dummy <- gather(thinning_dummy, key = "shed_treated", value = "thinning_dummy",-WY)
+thinning_wy <- gather(thinning_wy, key = "shed_treated", value = "thinning_wy",-WY)
+prescribed_fire_dummy <- gather(prescribed_fire_dummy, key = "shed_treated", value = "prescribed_fire_dummy",-WY)
+prescribed_fire_wy <- gather(prescribed_fire_wy, key = "shed_treated", value = "prescribed_fire_wy",-WY)
+
+treatment_sheds <- treatment_dummy %>% 
+  left_join(., treatment_wy, by=c("WY", "shed_treated")) %>% 
+  left_join(., thinning_dummy, by=c("WY", "shed_treated")) %>% 
+  left_join(., thinning_wy, by=c("WY", "shed_treated")) %>% 
+  left_join(., prescribed_fire_dummy, by=c("WY", "shed_treated")) %>% 
+  left_join(., prescribed_fire_wy, by=c("WY", "shed_treated"))
+
+treatment_sheds$treatment_dummy <- factor(treatment_sheds$treatment_dummy)
+treatment_sheds$treatment_wy <- factor(treatment_sheds$treatment_wy)
+treatment_sheds$thinning_dummy <- factor(treatment_sheds$thinning_dummy)
+treatment_sheds$thinning_wy <- factor(treatment_sheds$thinning_wy)
+treatment_sheds$prescribed_fire_dummy <- factor(treatment_sheds$prescribed_fire_dummy)
+treatment_sheds$prescribed_fire_wy <- factor(treatment_sheds$prescribed_fire_wy)
+
+# ---------------------------------------------------------------------
 # Combine paired watershed data
 # Generates a tibble with for comparing treated and control streamflow 
 
@@ -159,13 +189,12 @@ control <- map(treat_control$control, ~ dplyr::select(q_mam7, .)) %>%
 
 pair_tmp <- bind_cols(treat, control)
 
-pair_mam7 <- gather(treatment_wy, key = "shed_treated", value = "treatment",-WY) %>% 
+pair_mam7 <- treatment_sheds %>% 
   left_join(pair_tmp, ., by=c("WY", "shed_treated"))
 
-pair_mam7$q_treated[pair_mam7$q_treated == 0] <- NA
-pair_mam7$q_control[pair_mam7$q_control == 0] <- NA
+pair_mam7$q_treated[pair_mam7$q_treated < 0.0001] <- NA
+pair_mam7$q_control[pair_mam7$q_control < 0.0001] <- NA
 
-pair_mam7$treatment <- factor(pair_mam7$treatment)
 
 # ----
 # Paired watershed - Q95
@@ -179,13 +208,12 @@ control <- map(treat_control$control, ~ dplyr::select(q_95, .)) %>%
 
 pair_tmp <- bind_cols(treat, control)
 
-pair_q95 <- gather(treatment_wy, key = "shed_treated", value = "treatment",-WY) %>% 
+pair_q95 <- treatment_sheds %>% 
   left_join(pair_tmp, ., by=c("WY", "shed_treated"))
 
-pair_q95$q_treated[pair_q95$q_treated == 0] <- NA
-pair_q95$q_control[pair_q95$q_control == 0] <- NA
+pair_q95$q_treated[pair_q95$q_treated < 0.0001] <- NA
+pair_q95$q_control[pair_q95$q_control < 0.0001] <- NA
 
-pair_q95$treatment <- factor(pair_q95$treatment)
 
 # ----
 # Paired watershed - Monthly
@@ -200,13 +228,12 @@ control <- map(treat_control$control, ~ dplyr::select(q_monthly, .)) %>%
 
 pair_tmp <- bind_cols(treat, control)
 
-pair_monthly <- gather(treatment_wy, key = "shed_treated", value = "treatment",-WY) %>% 
+pair_monthly <- treatment_sheds %>% 
   left_join(pair_tmp, ., by=c("WY", "shed_treated"))
 
-pair_monthly$q_treated[pair_monthly$q_treated == 0] <- NA
-pair_monthly$q_control[pair_monthly$q_control == 0] <- NA
+pair_monthly$q_treated[pair_monthly$q_treated < 0.0001] <- NA
+pair_monthly$q_control[pair_monthly$q_control < 0.0001] <- NA
 
-pair_monthly$treatment <- factor(pair_monthly$treatment)
 
 # ----
 # Paired watershed - Seasonal
@@ -221,13 +248,12 @@ control <- map(treat_control$control, ~ dplyr::select(q_seasonal, .)) %>%
 
 pair_tmp <- bind_cols(treat, control)
 
-pair_seasonal <- gather(treatment_wy, key = "shed_treated", value = "treatment",-WY) %>% 
+pair_seasonal <- treatment_sheds %>% 
   left_join(pair_tmp, ., by=c("WY", "shed_treated"))
 
-pair_seasonal$q_treated[pair_seasonal$q_treated == 0] <- NA
-pair_seasonal$q_control[pair_seasonal$q_control == 0] <- NA
+pair_seasonal$q_treated[pair_seasonal$q_treated < 0.0001] <- NA
+pair_seasonal$q_control[pair_seasonal$q_control < 0.0001] <- NA
 
-pair_seasonal$treatment <- factor(pair_seasonal$treatment)
 
 # ----
 # Paired watershed - WY
@@ -242,13 +268,12 @@ control <- map(treat_control$control, ~ dplyr::select(q_wy, .)) %>%
 
 pair_tmp <- bind_cols(treat, control)
 
-pair_wy <- gather(treatment_wy, key = "shed_treated", value = "treatment",-WY) %>% 
+pair_wy <- treatment_sheds %>% 
   left_join(pair_tmp, ., by=c("WY", "shed_treated"))
 
-pair_wy$q_treated[pair_wy$q_treated == 0] <- NA
-pair_wy$q_control[pair_wy$q_control == 0] <- NA
+pair_wy$q_treated[pair_wy$q_treated < 0.0001] <- NA
+pair_wy$q_control[pair_wy$q_control < 0.0001] <- NA
 
-pair_wy$treatment <- factor(pair_wy$treatment)
 
 # ---------------------------------------------------------------------
 # Combine streamflow, precipitation and temperature for double mass and
@@ -260,9 +285,9 @@ pair_wy$treatment <- factor(pair_wy$treatment)
 # Organize streamflow by watershed and WY
 # Adding providence/bull location for joining P and T later
 Q <- map(treat_control$treatment, ~ dplyr::select(q_wy, ., WY)) %>% 
-  map(., ~ gather(., key = "watershed", value = "q", -WY)) %>%
+  map(., ~ gather(., key = "shed_treated", value = "q", -WY)) %>%
   bind_rows() %>% 
-  full_join(., dplyr::select(treat_control,treatment,location), by=c("watershed"="treatment"))
+  full_join(., dplyr::select(treat_control,treatment,location), by=c("shed_treated"="treatment"))
 
 # Process precipitation
 # Separate precipitation by location (bull/prov) and upper lower 
@@ -284,9 +309,9 @@ QP <- full_join(Q, p_wy_expand, by=c("WY","location"))
 
 
 # Note that temperature data goes from 2003-2015 while P and Q are from
-# 2014-2016. In order to combine, 2003 and 2016 are filtered out.
-QP1 <- dplyr::filter(QP, WY != 2016)
-t_wy1 <- dplyr::filter(t_wy, WY != 2003)
+# 2014-2017. In order to combine, 2003, 2016 and 2017 are filtered out.
+QP1 <- dplyr::filter(QP, WY %in% seq(2004,2015))
+t_wy1 <- dplyr::filter(t_wy, WY %in% seq(2004,2015))
 
 # Process temperature
 # Separate temperature by location (bull/prov) and upper lower 
@@ -308,12 +333,10 @@ QPT <- full_join(QP1, t_wy_expand, by=c("WY","location","up_low"))
 
 # ----
 # Add fuel treatment indicator to QP and QPT dataframes, then convert to factor
-QP <- gather(treatment_wy, key = "watershed", value = "treatment",-WY) %>% 
-  left_join(QP, ., by=c("WY", "watershed"))
-QP$treatment <- factor(QP$treatment)
-QPT <- gather(treatment_wy, key = "watershed", value = "treatment",-WY) %>% 
-  left_join(QPT, ., by=c("WY", "watershed"))
-QPT$treatment <- factor(QPT$treatment)
+QP <- treatment_sheds %>% 
+  left_join(QP, ., by=c("WY", "shed_treated"))
+QPT <- treatment_sheds %>% 
+  left_join(QPT, ., by=c("WY", "shed_treated"))
 
 
 # ---------------------------------------------------------------------
