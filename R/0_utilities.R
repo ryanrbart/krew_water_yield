@@ -10,7 +10,6 @@ library(broom)
 library(lubridate)
 library(beepr)
 library(lfstat)
-library(MCMCglmm)
 library(RHESSysIOinR)
 library(RHESSysPreprocessing)
 library(raster)
@@ -18,6 +17,14 @@ library(sp)
 library(sf)
 library(rgdal)
 library(hydroGOF)
+
+library(MCMCglmm)
+library(rstanarm)
+library(tidybayes)
+library(ggstance)
+library(rstantools)
+library(cowplot)
+
 
 # ---------------------------------------------------------------------
 # Files and Directories - Empirical Analysis
@@ -53,8 +60,22 @@ QPT_WY_RDS <- file.path(path, "qpt_wy.rds")
 # 2.3_paired_mixed_model
 
 path <- "output/2.3_mixed_model"
+TREATED_DUMMY_RDS <- file.path(path, "treated_dummy.rds")
+THINNING_DUMMY_RDS <- file.path(path, "thinning_dummy.rds")
+PRESCRIBED_FIRE_DUMMY_RDS <- file.path(path, "prescribed_fire_dummy.rds")
+TREATED_DUMMY_INT_RDS <- file.path(path, "treated_dummy_int.rds")
 
+TREATED_WY_RDS <- file.path(path, "treated_wy.rds")
+THINNING_WY_RDS <- file.path(path, "thinning_wy.rds")
+PRESCRIBED_FIRE_WY_RDS <- file.path(path, "prescribed_fire_wy.rds")
+TREATED_WY_INT_RDS <- file.path(path, "treated_wy_int.rds")
 
+# ----
+# 2.4_paired_mixed_model
+
+path <- "output/2.4_mixed_model_analysis"
+DUMMY_PDF <- file.path(path, "dummy.pdf")
+WY_PDF <- file.path(path, "wy.pdf")
 
 # ----
 # 2.5_time_trend_analysis
@@ -67,17 +88,17 @@ path <- "output/2.3_mixed_model"
 # Files and Directories - RHESSys
 
 
-RHESSYS_OUT_DIR_21_P301_1 <- "ws_p301/out/21_p301_soil1"
+RHESSYS_OUT_DIR_21_P301_1 <- "ws_p301/out/3.5.1_p301_soil1"
 RHESSYS_ALLSIM_DIR_21_P301_1 <- file.path(RHESSYS_OUT_DIR_21_P301_1, "allsim")
 RHESSYS_ALL_OPTION_21_P301_1 <- file.path(RHESSYS_OUT_DIR_21_P301_1, "p301_simulation_all_options.csv")
 
-RHESSYS_OUT_DIR_21_P301_2 <- "ws_p301/out/21_p301_soil3"
+RHESSYS_OUT_DIR_21_P301_2 <- "ws_p301/out/3.5.1_p301_soil3"
 RHESSYS_ALLSIM_DIR_21_P301_2 <- file.path(RHESSYS_OUT_DIR_21_P301_2, "allsim")
 RHESSYS_ALL_OPTION_21_P301_2 <- file.path(RHESSYS_OUT_DIR_21_P301_2, "p301_simulation_all_options.csv")
 
-RHESSYS_OUT_DIR_21_P301_3 <- "ws_p301/out/21_p301_soil5"
-RHESSYS_ALLSIM_DIR_21_P301_3 <- file.path(RHESSYS_OUT_DIR_21_P301_3, "allsim")
-RHESSYS_ALL_OPTION_21_P301_3 <- file.path(RHESSYS_OUT_DIR_21_P301_3, "p301_simulation_all_options.csv")
+RHESSYS_OUT_DIR_3.5.1_P301_5 <- "ws_p301/out/3.5.1_p301_soil5"
+RHESSYS_ALLSIM_DIR_3.5.1_P301_5 <- file.path(RHESSYS_OUT_DIR_3.5.1_P301_5, "allsim")
+RHESSYS_ALL_OPTION_3.5.1_P301_5 <- file.path(RHESSYS_OUT_DIR_3.5.1_P301_5, "p301_simulation_all_options.csv")
 
 
 # ---------------------------------------------------------------------
