@@ -10,8 +10,6 @@ library(broom)
 library(lubridate)
 library(beepr)
 library(lfstat)
-library(RHESSysIOinR)
-library(RHESSysPreprocessing)
 library(raster)
 library(sp)
 library(sf)
@@ -84,21 +82,6 @@ WY_PDF <- file.path(path, "wy.pdf")
 
 
 
-# ---------------------------------------------------------------------
-# Files and Directories - RHESSys
-
-
-RHESSYS_OUT_DIR_21_P301_1 <- "ws_p301/out/3.5.1_p301_soil1"
-RHESSYS_ALLSIM_DIR_21_P301_1 <- file.path(RHESSYS_OUT_DIR_21_P301_1, "allsim")
-RHESSYS_ALL_OPTION_21_P301_1 <- file.path(RHESSYS_OUT_DIR_21_P301_1, "p301_simulation_all_options.csv")
-
-RHESSYS_OUT_DIR_21_P301_2 <- "ws_p301/out/3.5.1_p301_soil3"
-RHESSYS_ALLSIM_DIR_21_P301_2 <- file.path(RHESSYS_OUT_DIR_21_P301_2, "allsim")
-RHESSYS_ALL_OPTION_21_P301_2 <- file.path(RHESSYS_OUT_DIR_21_P301_2, "p301_simulation_all_options.csv")
-
-RHESSYS_OUT_DIR_3.5.1_P301_5 <- "ws_p301/out/3.5.1_p301_soil5"
-RHESSYS_ALLSIM_DIR_3.5.1_P301_5 <- file.path(RHESSYS_OUT_DIR_3.5.1_P301_5, "allsim")
-RHESSYS_ALL_OPTION_3.5.1_P301_5 <- file.path(RHESSYS_OUT_DIR_3.5.1_P301_5, "p301_simulation_all_options.csv")
 
 
 # ---------------------------------------------------------------------
