@@ -27,13 +27,108 @@ pair_seasonal_4 <- dplyr::filter(pair_seasonal, Season==4)
 # Mixed modeling with rstanarm
 
 # Inputs
-ITER <- 5000
+ITER <- 15000
 WARMUP <- 1000
 CHAINS <- 4
 CORES <- 2
 THIN <- 5
 SEED <- 49
-ADAPT_DELTA <- 0.98
+ADAPT_DELTA <- 0.99
+
+# ---------------------------------------------------------------------
+# NDVI: Treated and control variable
+
+paired_q_ndvi_var <- function(DATA, ITER, WARMUP, CHAINS,
+                                 CORES, THIN, SEED, ADAPT_DELTA){
+  out <- stan_glmer(log(q_treated) ~ log(q_control) + ndvi_treated + ndvi_control +
+                      (1 | shed_treated),
+                    data = DATA,
+                    family = gaussian, 
+                    prior = normal(),
+                    prior_intercept = normal(),
+                    chains = CHAINS, cores = CORES, seed = SEED,
+                    iter = ITER, warmup = WARMUP, thin = THIN,
+                    adapt_delta = ADAPT_DELTA)
+  return(out)
+}
+
+# out_mam7_q_ndvi_var <- paired_q_ndvi_var(DATA=pair_mam7, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+#                                                      CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_q95_q_ndvi_var <- paired_q_ndvi_var(DATA=pair_q95, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                                              CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_s1_q_ndvi_var <- paired_q_ndvi_var(DATA=pair_seasonal_1, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                                             CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_s2_q_ndvi_var <- paired_q_ndvi_var(DATA=pair_seasonal_2, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                                             CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_s3_q_ndvi_var <- paired_q_ndvi_var(DATA=pair_seasonal_3, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                                             CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_s4_q_ndvi_var <- paired_q_ndvi_var(DATA=pair_seasonal_4, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                                             CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_wy_q_ndvi_var <- paired_q_ndvi_var(DATA=pair_wy, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                                             CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_q_ndvi_var <- list(#out_mam7_q_ndvi_var,
+  out_q95_q_ndvi_var,
+  out_s1_q_ndvi_var,
+  out_s2_q_ndvi_var,
+  out_s3_q_ndvi_var,
+  out_s4_q_ndvi_var,
+  out_wy_q_ndvi_var)
+
+
+# ---------------------------------------------------------------------
+# NDVI: Ratio variable
+
+paired_q_ndvi_ratio <- function(DATA, ITER, WARMUP, CHAINS,
+                                 CORES, THIN, SEED, ADAPT_DELTA){
+  out <- stan_glmer(log(q_treated) ~ log(q_control) + ndvi_ratio +
+                      (1 | shed_treated),
+                    data = DATA,
+                    family = gaussian, 
+                    prior = normal(),
+                    prior_intercept = normal(),
+                    chains = CHAINS, cores = CORES, seed = SEED,
+                    iter = ITER, warmup = WARMUP, thin = THIN,
+                    adapt_delta = ADAPT_DELTA)
+  return(out)
+}
+
+# out_mam7_q_ndvi_ratio <- paired_q_ndvi_ratio(DATA=pair_mam7, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+#                                                      CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_q95_q_ndvi_ratio <- paired_q_ndvi_ratio(DATA=pair_q95, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                                              CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_s1_q_ndvi_ratio <- paired_q_ndvi_ratio(DATA=pair_seasonal_1, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                                             CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_s2_q_ndvi_ratio <- paired_q_ndvi_ratio(DATA=pair_seasonal_2, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                                             CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_s3_q_ndvi_ratio <- paired_q_ndvi_ratio(DATA=pair_seasonal_3, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                                             CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_s4_q_ndvi_ratio <- paired_q_ndvi_ratio(DATA=pair_seasonal_4, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                                             CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_wy_q_ndvi_ratio <- paired_q_ndvi_ratio(DATA=pair_wy, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                                             CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_q_ndvi_ratio <- list(#out_mam7_q_ndvi_ratio,
+  out_q95_q_ndvi_ratio,
+  out_s1_q_ndvi_ratio,
+  out_s2_q_ndvi_ratio,
+  out_s3_q_ndvi_ratio,
+  out_s4_q_ndvi_ratio,
+  out_wy_q_ndvi_ratio)
+
+
 
 # ---------------------------------------------------------------------
 # Dummy: Treated variable
@@ -230,6 +325,9 @@ out_treated_dummy_int <- list(#out_mam7_treated_dummy_int,
 # Save modeling output
 
 # Treated dummy
+write_rds(out_q_ndvi_var, Q_NDVI_VAR_RDS)
+write_rds(out_q_ndvi_ratio, Q_NDVI_RATIO_RDS)
+
 write_rds(out_treated_dummy, TREATED_DUMMY_RDS)
 write_rds(out_thinning_dummy, THINNING_DUMMY_RDS)
 write_rds(out_prescribed_fire_dummy, PRESCRIBED_FIRE_DUMMY_RDS)

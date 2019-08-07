@@ -32,6 +32,10 @@ thinning_wy <-read_csv("data/thinning_wy.csv")
 prescribed_fire_dummy <-read_csv("data/prescribed_fire_dummy.csv")
 prescribed_fire_wy <-read_csv("data/prescribed_fire_wy.csv")
 
+# Import processed NDVI data
+krew_paired <- read_rds("output/3.5/krew_paired.rds")
+krew_paired <- dplyr::select(krew_paired, shed_treated, year, ndvi_treated, shed_control, ndvi_control)
+
 # ---------------------------------------------------------------------
 # Summarize data to monthly and annual timesteps
 
@@ -195,6 +199,11 @@ pair_mam7 <- treatment_sheds %>%
 pair_mam7$q_treated[pair_mam7$q_treated < 0.0001] <- NA
 pair_mam7$q_control[pair_mam7$q_control < 0.0001] <- NA
 
+pair_mam7 <- pair_mam7 %>% 
+  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
+  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control)
+
+
 
 # ----
 # Paired watershed - Q95
@@ -213,6 +222,10 @@ pair_q95 <- treatment_sheds %>%
 
 pair_q95$q_treated[pair_q95$q_treated < 0.0001] <- NA
 pair_q95$q_control[pair_q95$q_control < 0.0001] <- NA
+
+pair_q95 <- pair_q95 %>% 
+  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
+  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control)
 
 
 # ----
@@ -234,6 +247,10 @@ pair_monthly <- treatment_sheds %>%
 pair_monthly$q_treated[pair_monthly$q_treated < 0.0001] <- NA
 pair_monthly$q_control[pair_monthly$q_control < 0.0001] <- NA
 
+pair_monthly <- pair_monthly %>% 
+  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
+  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control)
+
 
 # ----
 # Paired watershed - Seasonal
@@ -254,6 +271,9 @@ pair_seasonal <- treatment_sheds %>%
 pair_seasonal$q_treated[pair_seasonal$q_treated < 0.0001] <- NA
 pair_seasonal$q_control[pair_seasonal$q_control < 0.0001] <- NA
 
+pair_seasonal <- pair_seasonal %>% 
+  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
+  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control)
 
 # ----
 # Paired watershed - WY
@@ -273,6 +293,11 @@ pair_wy <- treatment_sheds %>%
 
 pair_wy$q_treated[pair_wy$q_treated < 0.0001] <- NA
 pair_wy$q_control[pair_wy$q_control < 0.0001] <- NA
+
+pair_wy <- pair_wy %>% 
+  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
+  # dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control)
+  dplyr::mutate(ndvi_ratio = ndvi_control - ndvi_treated)
 
 
 # ---------------------------------------------------------------------

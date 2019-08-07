@@ -58,6 +58,10 @@ QPT_WY_RDS <- file.path(path, "qpt_wy.rds")
 # 2.3_paired_mixed_model
 
 path <- "output/2.3_mixed_model"
+
+Q_NDVI_VAR_RDS <- file.path(path, "q_ndvi_var.rds")
+Q_NDVI_RATIO_RDS <- file.path(path, "q_ndvi_ratio.rds")
+
 TREATED_DUMMY_RDS <- file.path(path, "treated_dummy.rds")
 THINNING_DUMMY_RDS <- file.path(path, "thinning_dummy.rds")
 PRESCRIBED_FIRE_DUMMY_RDS <- file.path(path, "prescribed_fire_dummy.rds")
@@ -81,7 +85,12 @@ WY_PDF <- file.path(path, "wy.pdf")
 
 
 
+# ---------------------------------------------------------------------
+# Projections
 
+proj_longlat <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+proj_prism <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80 +towgs84=0,0,0"
+proj_landsat <- "+proj=utm +zone=11 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
 
 
 # ---------------------------------------------------------------------

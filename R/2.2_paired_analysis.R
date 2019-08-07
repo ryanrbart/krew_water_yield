@@ -143,7 +143,7 @@ plot_wy <- ggplot(pair_wy, aes(x = q_control, y = q_treated)) +
   theme_bw(base_size = 7) +
   theme(legend.position="bottom") +
   NULL
-#ggsave("output/2.2_paired_analysis/paired_wy.jpg", plot=x, width = 7, height = 7)
+#ggsave("output/2.2_paired_analysis/paired_wy.jpg", plot=plot_wy, width = 7, height = 7)
 
 
 
@@ -177,8 +177,49 @@ cowplot::save_plot("output/2.2_paired_analysis/plot_paired_all.pdf",
 
 
 
+# -------------
+# Individual plots
+
+# Plot pre and post streamflow for each watershed with dummy variable
+plot_wy <- ggplot(pair_wy, aes(x = q_control, y = q_treated)) +
+  geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=3) +
+  stat_summary() + 
+  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
+  facet_wrap(.~shed_treated, ncol=3) +
+  scale_x_log10() +
+  scale_y_log10() +
+  scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
+  scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
+  labs(title="Annual Streamflow",
+       y = "Treated Watershed:\nAnnual Streamflow (mm)",
+       x = "Control Watershed: Annual Streamflow (mm)") +
+  theme_bw(base_size = 12) +
+  theme(legend.position="bottom") +
+  NULL
+ggsave("output/2.2_paired_analysis/paired_wy.jpg", plot=plot_wy, width = 7, height = 7)
 
 
+
+# Plot pre and post streamflow for each watershed with ndvi_ratio as treatment variable
+plot_wy <- ggplot(pair_wy, aes(x = q_control, y = q_treated)) +
+  geom_point(aes(size = ndvi_ratio, color = ndvi_ratio)) +
+# plot_wy <- ggplot(pair_wy, aes(x = ndvi_ratio, y = q_treated)) +
+#   geom_point(aes(size = q_control, color = q_control)) +
+  #stat_summary() + 
+  #geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
+  facet_wrap(.~shed_treated, ncol=3) +
+  scale_x_log10() +
+  scale_y_log10() +
+  #scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
+  scale_size_continuous() +  
+  #scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
+  labs(title="Annual Streamflow",
+       y = "Treated Watershed:\nAnnual Streamflow (mm)",
+       x = "Control Watershed: Annual Streamflow (mm)") +
+  theme_bw(base_size = 12) +
+  theme(legend.position="bottom") +
+  NULL
+ggsave("output/2.2_paired_analysis/paired_wy_ndvi.jpg", plot=plot_wy, width = 7, height = 7)
 
 
 
