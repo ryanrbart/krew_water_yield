@@ -201,7 +201,8 @@ pair_mam7$q_control[pair_mam7$q_control < 0.0001] <- NA
 
 pair_mam7 <- pair_mam7 %>% 
   dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
-  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control)
+  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
+                ndvi_diff = ndvi_treated - ndvi_control)
 
 
 
@@ -225,7 +226,8 @@ pair_q95$q_control[pair_q95$q_control < 0.0001] <- NA
 
 pair_q95 <- pair_q95 %>% 
   dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
-  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control)
+  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
+                ndvi_diff = ndvi_treated - ndvi_control)
 
 
 # ----
@@ -249,7 +251,8 @@ pair_monthly$q_control[pair_monthly$q_control < 0.0001] <- NA
 
 pair_monthly <- pair_monthly %>% 
   dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
-  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control)
+  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
+                ndvi_diff = ndvi_treated - ndvi_control)
 
 
 # ----
@@ -273,7 +276,8 @@ pair_seasonal$q_control[pair_seasonal$q_control < 0.0001] <- NA
 
 pair_seasonal <- pair_seasonal %>% 
   dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
-  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control)
+  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
+                ndvi_diff = ndvi_treated - ndvi_control)
 
 # ----
 # Paired watershed - WY
@@ -296,8 +300,11 @@ pair_wy$q_control[pair_wy$q_control < 0.0001] <- NA
 
 pair_wy <- pair_wy %>% 
   dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
-  # dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control)
-  dplyr::mutate(ndvi_ratio = ndvi_control - ndvi_treated)
+  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
+                ndvi_diff = ndvi_treated - ndvi_control)
+
+
+
 
 
 # ---------------------------------------------------------------------
