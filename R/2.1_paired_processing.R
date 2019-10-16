@@ -22,8 +22,9 @@ p_daily <-read_csv("data/daily_ppt_2004_2017.csv")
 t_daily <-read_csv("data/daily_air_temperature_2003_2015.csv")
 
 # Table describing which watersheds are designated as control/treated pairs
-treat_control <-read_csv("data/treated_control.csv")
-
+treat_control <- read_csv("data/treated_control.csv")
+shed_all <- read_csv("data/shed_all.csv")
+  
 # Treatment summary by wateryear 
 treatment_dummy <-read_csv("data/treatment_dummy.csv")
 treatment_wy <-read_csv("data/treatment_wy.csv")
@@ -33,8 +34,9 @@ prescribed_fire_dummy <-read_csv("data/prescribed_fire_dummy.csv")
 prescribed_fire_wy <-read_csv("data/prescribed_fire_wy.csv")
 
 # Import processed NDVI data
-krew_paired <- read_rds("output/3.5/krew_paired.rds")
+krew_paired <- read_rds("output/1.5/krew_paired.rds")
 krew_paired <- dplyr::select(krew_paired, shed_treated, year, ndvi_treated, shed_control, ndvi_control)
+krew_annual <- read_rds("output/1.5/krew_annual.rds")
 
 # ---------------------------------------------------------------------
 # Summarize data to monthly and annual timesteps
@@ -129,10 +131,10 @@ p_wy <- p_daily %>%
 # Temperature
 
 t_daily <- t_daily %>% 
-  mutate(t_UP = Tmax_UP + Tmin_UP,
-         t_LP = Tmax_LP + Tmin_LP,
-         t_UB = Tmax_UB + Tmin_UB,
-         t_LB = Tmax_LB + Tmin_LB)
+  mutate(t_UP = (Tmax_UP + Tmin_UP)/2,
+         t_LP = (Tmax_LP + Tmin_LP)/2,
+         t_UB = (Tmax_UB + Tmin_UB)/2,
+         t_LB = (Tmax_LB + Tmin_LB)/2)
 
 
 # Monthly
@@ -202,7 +204,13 @@ pair_mam7$q_control[pair_mam7$q_control < 0.0001] <- NA
 pair_mam7 <- pair_mam7 %>% 
   dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
   dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
-                ndvi_diff = ndvi_treated - ndvi_control)
+                ndvi_diff = ndvi_treated - ndvi_control) %>% 
+  dplyr::group_by(shed_treated) %>% 
+  dplyr::mutate(ndvi_treated_n = (ndvi_treated - min(ndvi_treated))/(max(ndvi_treated) - min(ndvi_treated)),
+                ndvi_control_n = (ndvi_control - min(ndvi_control))/(max(ndvi_control) - min(ndvi_control)),
+                ndvi_ratio_n = ndvi_treated_n/ndvi_control_n,
+                ndvi_diff_n = ndvi_treated_n - ndvi_control_n) %>% 
+  dplyr::ungroup()
 
 
 
@@ -227,7 +235,13 @@ pair_q95$q_control[pair_q95$q_control < 0.0001] <- NA
 pair_q95 <- pair_q95 %>% 
   dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
   dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
-                ndvi_diff = ndvi_treated - ndvi_control)
+                ndvi_diff = ndvi_treated - ndvi_control) %>% 
+  dplyr::group_by(shed_treated) %>% 
+  dplyr::mutate(ndvi_treated_n = (ndvi_treated - min(ndvi_treated))/(max(ndvi_treated) - min(ndvi_treated)),
+                ndvi_control_n = (ndvi_control - min(ndvi_control))/(max(ndvi_control) - min(ndvi_control)),
+                ndvi_ratio_n = ndvi_treated_n/ndvi_control_n,
+                ndvi_diff_n = ndvi_treated_n - ndvi_control_n) %>% 
+  dplyr::ungroup()
 
 
 # ----
@@ -252,7 +266,13 @@ pair_monthly$q_control[pair_monthly$q_control < 0.0001] <- NA
 pair_monthly <- pair_monthly %>% 
   dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
   dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
-                ndvi_diff = ndvi_treated - ndvi_control)
+                ndvi_diff = ndvi_treated - ndvi_control) %>% 
+  dplyr::group_by(shed_treated) %>% 
+  dplyr::mutate(ndvi_treated_n = (ndvi_treated - min(ndvi_treated))/(max(ndvi_treated) - min(ndvi_treated)),
+                ndvi_control_n = (ndvi_control - min(ndvi_control))/(max(ndvi_control) - min(ndvi_control)),
+                ndvi_ratio_n = ndvi_treated_n/ndvi_control_n,
+                ndvi_diff_n = ndvi_treated_n - ndvi_control_n) %>% 
+  dplyr::ungroup()
 
 
 # ----
@@ -277,7 +297,13 @@ pair_seasonal$q_control[pair_seasonal$q_control < 0.0001] <- NA
 pair_seasonal <- pair_seasonal %>% 
   dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
   dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
-                ndvi_diff = ndvi_treated - ndvi_control)
+                ndvi_diff = ndvi_treated - ndvi_control) %>% 
+  dplyr::group_by(shed_treated) %>% 
+  dplyr::mutate(ndvi_treated_n = (ndvi_treated - min(ndvi_treated))/(max(ndvi_treated) - min(ndvi_treated)),
+                ndvi_control_n = (ndvi_control - min(ndvi_control))/(max(ndvi_control) - min(ndvi_control)),
+                ndvi_ratio_n = ndvi_treated_n/ndvi_control_n,
+                ndvi_diff_n = ndvi_treated_n - ndvi_control_n) %>% 
+  dplyr::ungroup()
 
 # ----
 # Paired watershed - WY
@@ -301,7 +327,13 @@ pair_wy$q_control[pair_wy$q_control < 0.0001] <- NA
 pair_wy <- pair_wy %>% 
   dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
   dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
-                ndvi_diff = ndvi_treated - ndvi_control)
+                ndvi_diff = ndvi_treated - ndvi_control) %>% 
+  dplyr::group_by(shed_treated) %>% 
+  dplyr::mutate(ndvi_treated_n = (ndvi_treated - min(ndvi_treated))/(max(ndvi_treated) - min(ndvi_treated)),
+                ndvi_control_n = (ndvi_control - min(ndvi_control))/(max(ndvi_control) - min(ndvi_control)),
+                ndvi_ratio_n = ndvi_treated_n/ndvi_control_n,
+                ndvi_diff_n = ndvi_treated_n - ndvi_control_n) %>% 
+  dplyr::ungroup()
 
 
 
@@ -316,19 +348,19 @@ pair_wy <- pair_wy %>%
 
 # Organize streamflow by watershed and WY
 # Adding providence/bull location for joining P and T later
-Q <- map(treat_control$treatment, ~ dplyr::select(q_wy, ., WY)) %>% 
-  map(., ~ gather(., key = "shed_treated", value = "q", -WY)) %>%
+Q <- map(shed_all$watershed, ~ dplyr::select(q_wy, ., WY)) %>% 
+  map(., ~ gather(., key = "watershed", value = "q", -WY)) %>%
   bind_rows() %>% 
-  full_join(., dplyr::select(treat_control,treatment,location), by=c("shed_treated"="treatment"))
+  full_join(., dplyr::select(shed_all,watershed,location), by=c("watershed"="watershed"))
 
 # Process precipitation
 # Separate precipitation by location (bull/prov) and upper lower 
 p_wy_expand <- p_wy %>% 
   tidyr::gather(key = "gauge", value = "precip", p_UP,p_UB,p_LP,p_LB) %>% 
-  dplyr::mutate(location = case_when(gauge=="p_UP" ~ "prov",
-                                     gauge=="p_LP" ~ "prov",
-                                     gauge=="p_UB" ~ "bull",
-                                     gauge=="p_LB" ~ "bull")) %>% 
+  dplyr::mutate(location = case_when(gauge=="p_UP" ~ "Prov",
+                                     gauge=="p_LP" ~ "Prov",
+                                     gauge=="p_UB" ~ "Bull",
+                                     gauge=="p_LB" ~ "Bull")) %>% 
   dplyr::mutate(up_low = case_when(gauge=="p_UP" ~ "upper",
                                    gauge=="p_LP" ~ "lower",
                                    gauge=="p_UB" ~ "upper",
@@ -337,7 +369,9 @@ p_wy_expand <- p_wy %>%
 
 # Join precipitation to streamflow. Each watershed is only associated with lower
 # and upper preciptiation gauge from its location.
-QP <- full_join(Q, p_wy_expand, by=c("WY","location"))
+# Also, add NDVI
+QP <- full_join(Q, p_wy_expand, by=c("WY","location")) %>% 
+  dplyr::left_join(krew_annual, by=c("WY"="year", "watershed"="shed", "location"))
 
 
 # Note that temperature data goes from 2003-2015 while P and Q are from
@@ -349,10 +383,10 @@ t_wy1 <- dplyr::filter(t_wy, WY %in% seq(2004,2015))
 # Separate temperature by location (bull/prov) and upper lower 
 t_wy_expand <- t_wy1 %>% 
   tidyr::gather(key = "gauge", value = "temperature", t_UP,t_UB,t_LP,t_LB) %>% 
-  dplyr::mutate(location = case_when(gauge=="t_UP" ~ "prov",
-                                     gauge=="t_LP" ~ "prov",
-                                     gauge=="t_UB" ~ "bull",
-                                     gauge=="t_LB" ~ "bull")) %>% 
+  dplyr::mutate(location = case_when(gauge=="t_UP" ~ "Prov",
+                                     gauge=="t_LP" ~ "Prov",
+                                     gauge=="t_UB" ~ "Bull",
+                                     gauge=="t_LB" ~ "Bull")) %>% 
   dplyr::mutate(up_low = case_when(gauge=="t_UP" ~ "upper",
                                    gauge=="t_LP" ~ "lower",
                                    gauge=="t_UB" ~ "upper",
@@ -366,9 +400,9 @@ QPT <- full_join(QP1, t_wy_expand, by=c("WY","location","up_low"))
 # ----
 # Add fuel treatment indicator to QP and QPT dataframes, then convert to factor
 QP <- treatment_sheds %>% 
-  left_join(QP, ., by=c("WY", "shed_treated"))
+  left_join(QP, ., by=c("WY", "watershed"="shed_treated"))
 QPT <- treatment_sheds %>% 
-  left_join(QPT, ., by=c("WY", "shed_treated"))
+  left_join(QPT, ., by=c("WY", "watershed"="shed_treated"))
 
 
 # ---------------------------------------------------------------------
