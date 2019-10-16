@@ -27,6 +27,12 @@ kings <- kings %>%
 kings_e <- extent(kings)
 
 
+b202 <- st_read("data/GIS/b202.kml")
+b202 <- b202 %>% 
+  st_transform(crs = proj_landsat)
+b202_e <- extent(b202)
+
+
 # ---------------------------------------------------------------------
 # Pull in NDVI layers and determine which are required for analysis 
 
@@ -89,17 +95,17 @@ beep(1)
 # Save landsat NDVI data for KREW
 
 # KREW watersheds: Vector 
-write_rds(prov, "output/3.1/prov.rds")
-write_rds(bull, "output/3.1/bull.rds")
+write_rds(prov, "output/1.1/prov.rds")
+write_rds(bull, "output/1.1/bull.rds")
 
 # KREW watersheds: Raster 
-write_rds(prov_rast, "output/3.1/prov_rast.rds")
-write_rds(bull_rast, "output/3.1/bull_rast.rds")
+write_rds(prov_rast, "output/1.1/prov_rast.rds")
+write_rds(bull_rast, "output/1.1/bull_rast.rds")
 
 # NDVI table and data
-write_rds(ndvi_table, "output/3.1/ndvi_table.rds")
-write_rds(ndvi_prov, "output/3.1/ndvi_prov.rds")
-write_rds(ndvi_bull, "output/3.1/ndvi_bull.rds")
+write_rds(ndvi_table, "output/1.1/ndvi_table.rds")
+write_rds(ndvi_prov, "output/1.1/ndvi_prov.rds")
+write_rds(ndvi_bull, "output/1.1/ndvi_bull.rds")
 
 
 

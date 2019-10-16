@@ -7,8 +7,8 @@ source("R/0_utilities.R")
 # ---------------------------------------------------------------------
 # Import processed NDVI data
 
-ndvi_prov_final <- read_rds("output/3.3/ndvi_prov_final.rds")
-ndvi_bull_final <- read_rds("output/3.3/ndvi_bull_final.rds")
+ndvi_prov_final <- read_rds("output/1.3/ndvi_prov_final.rds")
+ndvi_bull_final <- read_rds("output/1.3/ndvi_bull_final.rds")
 
 # ---------------------------------------------------------------------
 # Change NDVI to ET
@@ -34,8 +34,8 @@ et_bull_final <- setNames(123.8243*exp(2.5456*ndvi_bull_final), names(ndvi_bull_
 # ---------------------------------------------------------------------
 # Save processed ET data
 
-write_rds(et_prov_final, "output/3.4/et_prov_final.rds")
-write_rds(et_bull_final, "output/3.4/et_bull_final.rds")
+write_rds(et_prov_final, "output/1.4/et_prov_final.rds")
+write_rds(et_bull_final, "output/1.4/et_bull_final.rds")
 
 
 

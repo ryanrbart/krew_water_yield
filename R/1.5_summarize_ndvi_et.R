@@ -10,17 +10,17 @@ source("R/0_utilities.R")
 # Import processed NDVI/ET data
 
 # Table of NDVI files
-ndvi_table_final <- read_rds("output/3.3/ndvi_table_final.rds")
+ndvi_table_final <- read_rds("output/1.3/ndvi_table_final.rds")
 
 # KREW watersheds: Raster 
-prov_rast <- read_rds("output/3.1/prov_rast.rds")
-bull_rast <- read_rds("output/3.1/bull_rast.rds")
+prov_rast <- read_rds("output/1.1/prov_rast.rds")
+bull_rast <- read_rds("output/1.1/bull_rast.rds")
 
 # Rasterbricks of ndvi and et
-ndvi_prov_final <- read_rds("output/3.3/ndvi_prov_final.rds")
-ndvi_bull_final <- read_rds("output/3.3/ndvi_bull_final.rds")
-et_prov_final <- read_rds("output/3.4/et_prov_final.rds")
-et_bull_final <- read_rds("output/3.4/et_bull_final.rds")
+ndvi_prov_final <- read_rds("output/1.3/ndvi_prov_final.rds")
+ndvi_bull_final <- read_rds("output/1.3/ndvi_bull_final.rds")
+et_prov_final <- read_rds("output/1.4/et_prov_final.rds")
+et_bull_final <- read_rds("output/1.4/et_bull_final.rds")
 
 # Table describing which watersheds are designated as control/treated pairs
 treat_control <-read_csv("data/treated_control.csv")
@@ -181,6 +181,6 @@ krew_paired <- krew_treat %>%
 # ---------------------------------------------------------------------
 # Save krew annual data grouped by watershed
 
-write_rds(krew_annual, "output/3.5/krew_annual.rds")
-write_rds(krew_paired, "output/3.5/krew_paired.rds")
+write_rds(krew_annual, "output/1.5/krew_annual.rds")
+write_rds(krew_paired, "output/1.5/krew_paired.rds")
 

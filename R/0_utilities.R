@@ -15,6 +15,7 @@ library(sp)
 library(sf)
 library(rgdal)
 library(hydroGOF)
+library(ggrepel)
 
 library(MCMCglmm)
 library(rstanarm)
@@ -61,6 +62,8 @@ path <- "output/2.3_mixed_model"
 
 Q_NDVI_VAR_RDS <- file.path(path, "q_ndvi_var.rds")
 Q_NDVI_RATIO_RDS <- file.path(path, "q_ndvi_ratio.rds")
+Q_NDVI_DIFF_RDS <- file.path(path, "q_ndvi_diff.rds")
+Q_NDVI_DIFF_INT_RDS <- file.path(path, "q_ndvi_diff_int.rds")
 
 TREATED_DUMMY_RDS <- file.path(path, "treated_dummy.rds")
 THINNING_DUMMY_RDS <- file.path(path, "thinning_dummy.rds")

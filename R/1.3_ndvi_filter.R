@@ -8,9 +8,9 @@ source("R/0_utilities.R")
 # ---------------------------------------------------------------------
 # Import KREW NDVI QC data
 
-ndvi_table_qc <- read_rds("output/3.2/ndvi_table_qc.rds")
-ndvi_prov_qc <- read_rds("output/3.2/ndvi_prov_qc.rds")
-ndvi_bull_qc <- read_rds("output/3.2/ndvi_bull_qc.rds")
+ndvi_table_qc <- read_rds("output/1.2/ndvi_table_qc.rds")
+ndvi_prov_qc <- read_rds("output/1.2/ndvi_prov_qc.rds")
+ndvi_bull_qc <- read_rds("output/1.2/ndvi_bull_qc.rds")
 
 # ---------------------------------------------------------------------
 # This file may be obsolete (retained for the time-being)
@@ -51,9 +51,9 @@ ndvi_bull_final <- ndvi_bull_qc
 # ---------------------------------------------------------------------
 # Save processed NDVI data
 
-write_rds(ndvi_table_final, "output/3.3/ndvi_table_final.rds")
-write_rds(ndvi_prov_final, "output/3.3/ndvi_prov_final.rds")
-write_rds(ndvi_bull_final, "output/3.3/ndvi_bull_final.rds")
+write_rds(ndvi_table_final, "output/1.3/ndvi_table_final.rds")
+write_rds(ndvi_prov_final, "output/1.3/ndvi_prov_final.rds")
+write_rds(ndvi_bull_final, "output/1.3/ndvi_bull_final.rds")
 
 
 # ---------------------------------------------------------------------

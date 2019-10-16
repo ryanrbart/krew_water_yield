@@ -10,8 +10,8 @@ source("R/0_utilities.R")
 # ---------------------------------------------------------------------
 # Import data
 
-krew_annual <- read_rds("output/3.5/krew_annual.rds")
-krew_paired <- read_rds("output/3.5/krew_paired.rds")
+krew_annual <- read_rds("output/1.5/krew_annual.rds")
+krew_paired <- read_rds("output/1.5/krew_paired.rds")
 
 
 # --------------------------------------------------------------------- Figure:
@@ -30,11 +30,9 @@ x <- ggplot(krew_paired_p303, aes(x = ndvi_control, y = ndvi_treated, label=trea
   geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
   stat_summary() + 
   geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
-  geom_text(size = 2.5, check_overlap = FALSE) +
+  geom_text_repel(size = 2.5) +
   geom_abline(aes(intercept = 0, slope = 1), linetype = 2) +
   facet_wrap(~shed_treated, nrow = 2) +
-  scale_x_log10() +
-  scale_y_log10() +
   scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
   scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
   labs(title="Paired Watershed: NDVI (with P303 labeled as\npost-treatment after 2013)",
@@ -44,7 +42,7 @@ x <- ggplot(krew_paired_p303, aes(x = ndvi_control, y = ndvi_treated, label=trea
   theme_bw(base_size = 9) +
   theme(legend.position="bottom") +
   NULL
-ggsave("output/3.6/plot_paired_ndvi_p303.jpg", plot=x, width = 5, height = 5)
+ggsave("output/1.6/plot_paired_ndvi_p303.jpg", plot=x, width = 5, height = 5)
 #plot(x)
 
 
@@ -90,11 +88,9 @@ x <- ggplot(krew_paired_new, aes(x = ndvi_control, y = ndvi_treated, label=treat
   geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
   stat_summary() + 
   geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
-  geom_text(size = 2.5, check_overlap = FALSE) +
+  geom_text_repel(size = 2.5) +
   geom_abline(aes(intercept = 0, slope = 1), linetype = 2) +
   facet_wrap(~shed_treated, nrow = 1) +
-  scale_x_log10() +
-  scale_y_log10() +
   scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
   scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
   labs(title="Paired Watershed: NDVI (with P303 as a control\nand P304 labeled as post-treatment after 2013)",
@@ -104,7 +100,7 @@ x <- ggplot(krew_paired_new, aes(x = ndvi_control, y = ndvi_treated, label=treat
   theme_bw(base_size = 9) +
   theme(legend.position="bottom") +
   NULL
-ggsave("output/3.6/plot_paired_ndvi_p303_alt_control.jpg", plot=x, width = 5, height = 5)
+ggsave("output/1.6/plot_paired_ndvi_p303_alt_control.jpg", plot=x, width = 5, height = 5)
 #plot(x)
 
 

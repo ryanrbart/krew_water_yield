@@ -10,9 +10,9 @@ source("R/0_utilities.R")
 # ---------------------------------------------------------------------
 # Import KREW NDVI data
 
-ndvi_table <- read_rds("output/3.1/ndvi_table.rds")
-ndvi_prov <- read_rds("output/3.1/ndvi_prov.rds")
-ndvi_bull <- read_rds("output/3.1/ndvi_bull.rds")
+ndvi_table <- read_rds("output/1.1/ndvi_table.rds")
+ndvi_prov <- read_rds("output/1.1/ndvi_prov.rds")
+ndvi_bull <- read_rds("output/1.1/ndvi_bull.rds")
 
 
 # ---------------------------------------------------------------------
@@ -85,9 +85,9 @@ names(ndvi_bull_qc) <- ndvi_table_label$short_name
 # ---------------------------------------------------------------------
 # Save landsat NDVI data for KREW
 
-write_rds(ndvi_table_qc, "output/3.2/ndvi_table_qc.rds")
-write_rds(ndvi_prov_qc, "output/3.2/ndvi_prov_qc.rds")
-write_rds(ndvi_bull_qc, "output/3.2/ndvi_bull_qc.rds")
+write_rds(ndvi_table_qc, "output/1.2/ndvi_table_qc.rds")
+write_rds(ndvi_prov_qc, "output/1.2/ndvi_prov_qc.rds")
+write_rds(ndvi_bull_qc, "output/1.2/ndvi_bull_qc.rds")
 
 
 
