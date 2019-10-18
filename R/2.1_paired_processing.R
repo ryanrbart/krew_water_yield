@@ -3,9 +3,13 @@
 
 source("R/0_utilities.R")
 
+
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # Import data
 
+# ----
 # Daily streamflow
 q_daily <- read_csv("data/daily_discharge_filled_2004_2017.csv", 
                     col_types = cols(
@@ -15,12 +19,18 @@ q_daily <- read_csv("data/daily_discharge_filled_2004_2017.csv",
 # Remove P300 and B200 since they have missing data and contain nested watersheds
 q_daily <- dplyr::select(q_daily, -P300, -B200)
 
+
+# ----
 # Daily precipitation
 p_daily <-read_csv("data/daily_ppt_2004_2017.csv")
 
+
+# ----
 # Daily temperature
 t_daily <-read_csv("data/daily_air_temperature_2003_2015.csv")
 
+
+# ----
 # Table describing which watersheds are designated as control/treated pairs
 treat_control <- read_csv("data/treated_control.csv")
 shed_all <- read_csv("data/shed_all.csv")
@@ -33,16 +43,23 @@ thinning_wy <-read_csv("data/thinning_wy.csv")
 prescribed_fire_dummy <-read_csv("data/prescribed_fire_dummy.csv")
 prescribed_fire_wy <-read_csv("data/prescribed_fire_wy.csv")
 
-# Import processed NDVI data
-krew_paired <- read_rds("output/1.5/krew_paired.rds")
-krew_paired <- dplyr::select(krew_paired, shed_treated, year, ndvi_treated, shed_control, ndvi_control)
-krew_annual <- read_rds("output/1.5/krew_annual.rds")
-
-# ---------------------------------------------------------------------
-# Summarize data to monthly and annual timesteps
 
 # ----
-# Streamflow
+# Import processed NDVI data
+krew_paired <- read_rds("output/1.5/krew_paired.rds")
+krew_paired <- dplyr::select(krew_paired, -c(et_treated, et_control, treatment_dummy, treatment_wy, thinning_dummy,
+                                             thinning_wy, prescribed_fire_dummy, prescribed_fire_wy, treatment_label))
+krew_annual <- read_rds("output/1.5/krew_annual.rds")
+
+
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# Process paired data
+
+
+# ---------------------------------------------------------------------
+# Summarize streamflow to timesteps
 
 # Daily
 q_daily$Day <- day(mdy(q_daily$Date))
@@ -51,6 +68,8 @@ q_daily$Year <- year(mdy(q_daily$Date))
 # Create lfobj for functions that require lfstat library
 q_lfobj <- lfobj_function(q_daily)
 
+
+# ----
 # Mean Annual Minimum-7
 # Note: There is an issue with MAM7. The first and last years generate NAs, possibly due to errors at very beginning and end of time-series.
 # Note: MAM1 does work, which represents the Mean Annual Minimum daily flow.
@@ -58,11 +77,13 @@ q_mam7 <- q_lfobj %>%
   map(., ~MAM(.x, n=7, yearly=TRUE)) %>% 
   lfstat_MAM(.)
 
+# ----
 # Q95
 q_95 <- q_lfobj %>% 
   map(., ~Qxx(.x, Qxx=95, yearly=TRUE)) %>% 
   lfstat_Qxx(.)
 
+# ----
 # Monthly
 q_monthly <- q_daily %>% 
   dplyr::group_by(WY, Month) %>%
@@ -77,6 +98,7 @@ q_monthly <- q_daily %>%
                    P303 = sum(P303)) %>% 
   ungroup()
 
+# ----
 # Seasonal
 q_seasonal <- q_daily %>% 
   dplyr::group_by(WY, Season) %>%
@@ -91,6 +113,7 @@ q_seasonal <- q_daily %>%
                    P303 = sum(P303)) %>% 
   ungroup()
 
+# ----
 # Wateryear
 q_wy <- q_daily %>% 
   dplyr::group_by(WY) %>%
@@ -105,8 +128,9 @@ q_wy <- q_daily %>%
                    P303 = sum(P303)) %>% 
   ungroup()
 
-# ----
-# Precipitation
+
+# ---------------------------------------------------------------------
+# Summarize precipitation to timesteps
 
 # Monthly
 p_monthly <- p_daily %>% 
@@ -127,8 +151,8 @@ p_wy <- p_daily %>%
   ungroup()
 
 
-# ----
-# Temperature
+# ---------------------------------------------------------------------
+# Summarize temperature to timesteps
 
 t_daily <- t_daily %>% 
   mutate(t_UP = (Tmax_UP + Tmin_UP)/2,
@@ -155,6 +179,7 @@ t_wy <- t_daily %>%
                    t_LB = mean(t_LB)) %>% 
   ungroup()
 
+
 # ---------------------------------------------------------------------
 # Process treatment data
 
@@ -179,6 +204,7 @@ treatment_sheds$thinning_wy <- factor(treatment_sheds$thinning_wy)
 treatment_sheds$prescribed_fire_dummy <- factor(treatment_sheds$prescribed_fire_dummy)
 treatment_sheds$prescribed_fire_wy <- factor(treatment_sheds$prescribed_fire_wy)
 
+
 # ---------------------------------------------------------------------
 # Combine paired watershed data
 # Generates a tibble with for comparing treated and control streamflow 
@@ -202,15 +228,7 @@ pair_mam7$q_treated[pair_mam7$q_treated < 0.0001] <- NA
 pair_mam7$q_control[pair_mam7$q_control < 0.0001] <- NA
 
 pair_mam7 <- pair_mam7 %>% 
-  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
-  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
-                ndvi_diff = ndvi_treated - ndvi_control) %>% 
-  dplyr::group_by(shed_treated) %>% 
-  dplyr::mutate(ndvi_treated_n = (ndvi_treated - min(ndvi_treated))/(max(ndvi_treated) - min(ndvi_treated)),
-                ndvi_control_n = (ndvi_control - min(ndvi_control))/(max(ndvi_control) - min(ndvi_control)),
-                ndvi_ratio_n = ndvi_treated_n/ndvi_control_n,
-                ndvi_diff_n = ndvi_treated_n - ndvi_control_n) %>% 
-  dplyr::ungroup()
+  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control"))
 
 
 
@@ -233,15 +251,7 @@ pair_q95$q_treated[pair_q95$q_treated < 0.0001] <- NA
 pair_q95$q_control[pair_q95$q_control < 0.0001] <- NA
 
 pair_q95 <- pair_q95 %>% 
-  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
-  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
-                ndvi_diff = ndvi_treated - ndvi_control) %>% 
-  dplyr::group_by(shed_treated) %>% 
-  dplyr::mutate(ndvi_treated_n = (ndvi_treated - min(ndvi_treated))/(max(ndvi_treated) - min(ndvi_treated)),
-                ndvi_control_n = (ndvi_control - min(ndvi_control))/(max(ndvi_control) - min(ndvi_control)),
-                ndvi_ratio_n = ndvi_treated_n/ndvi_control_n,
-                ndvi_diff_n = ndvi_treated_n - ndvi_control_n) %>% 
-  dplyr::ungroup()
+  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control"))
 
 
 # ----
@@ -264,16 +274,7 @@ pair_monthly$q_treated[pair_monthly$q_treated < 0.0001] <- NA
 pair_monthly$q_control[pair_monthly$q_control < 0.0001] <- NA
 
 pair_monthly <- pair_monthly %>% 
-  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
-  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
-                ndvi_diff = ndvi_treated - ndvi_control) %>% 
-  dplyr::group_by(shed_treated) %>% 
-  dplyr::mutate(ndvi_treated_n = (ndvi_treated - min(ndvi_treated))/(max(ndvi_treated) - min(ndvi_treated)),
-                ndvi_control_n = (ndvi_control - min(ndvi_control))/(max(ndvi_control) - min(ndvi_control)),
-                ndvi_ratio_n = ndvi_treated_n/ndvi_control_n,
-                ndvi_diff_n = ndvi_treated_n - ndvi_control_n) %>% 
-  dplyr::ungroup()
-
+  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control"))
 
 # ----
 # Paired watershed - Seasonal
@@ -295,15 +296,7 @@ pair_seasonal$q_treated[pair_seasonal$q_treated < 0.0001] <- NA
 pair_seasonal$q_control[pair_seasonal$q_control < 0.0001] <- NA
 
 pair_seasonal <- pair_seasonal %>% 
-  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
-  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
-                ndvi_diff = ndvi_treated - ndvi_control) %>% 
-  dplyr::group_by(shed_treated) %>% 
-  dplyr::mutate(ndvi_treated_n = (ndvi_treated - min(ndvi_treated))/(max(ndvi_treated) - min(ndvi_treated)),
-                ndvi_control_n = (ndvi_control - min(ndvi_control))/(max(ndvi_control) - min(ndvi_control)),
-                ndvi_ratio_n = ndvi_treated_n/ndvi_control_n,
-                ndvi_diff_n = ndvi_treated_n - ndvi_control_n) %>% 
-  dplyr::ungroup()
+  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control"))
 
 # ----
 # Paired watershed - WY
@@ -325,20 +318,13 @@ pair_wy$q_treated[pair_wy$q_treated < 0.0001] <- NA
 pair_wy$q_control[pair_wy$q_control < 0.0001] <- NA
 
 pair_wy <- pair_wy %>% 
-  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control")) %>% 
-  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
-                ndvi_diff = ndvi_treated - ndvi_control) %>% 
-  dplyr::group_by(shed_treated) %>% 
-  dplyr::mutate(ndvi_treated_n = (ndvi_treated - min(ndvi_treated))/(max(ndvi_treated) - min(ndvi_treated)),
-                ndvi_control_n = (ndvi_control - min(ndvi_control))/(max(ndvi_control) - min(ndvi_control)),
-                ndvi_ratio_n = ndvi_treated_n/ndvi_control_n,
-                ndvi_diff_n = ndvi_treated_n - ndvi_control_n) %>% 
-  dplyr::ungroup()
+  dplyr::left_join(krew_paired, by=c("WY"="year", "shed_treated", "shed_control"))
 
 
 
 
-
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # Combine streamflow, precipitation and temperature for double mass and
 # time-trend analysis 
@@ -405,6 +391,9 @@ QPT <- treatment_sheds %>%
   left_join(QPT, ., by=c("WY", "watershed"="shed_treated"))
 
 
+
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # Save processed data
 
