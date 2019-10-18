@@ -161,7 +161,7 @@ krew_treat <- krew_annual %>%
   dplyr::rename(shed_treated=shed,
                 ndvi_treated=ndvi_annual,
                 et_treated=et_annual) %>% 
-  dplyr::left_join(dplyr::select(treat_control, -year_thin, -year_burn), by=c("shed_treated"="treatment"))
+  dplyr::left_join(dplyr::select(treat_control, -wy_thin, -wy_burn), by=c("shed_treated"="treatment"))
 
 krew_control <- krew_annual %>% 
   dplyr::select(-c(location, control)) %>%   # Removes the columns added for time-series plot
@@ -176,6 +176,28 @@ krew_paired <- krew_treat %>%
   dplyr::rename(shed_control=control) %>% 
   dplyr::mutate(treatment_label = if_else(treatment_dummy==1,year,NA_real_))
 
+
+
+# ---------------------------------------------------------------------
+# Add normalized NDVI value
+
+
+krew_annual <- krew_annual %>% 
+  dplyr::group_by(shed) %>% 
+  dplyr::mutate(ndvi_annual_n = (ndvi_annual - min(ndvi_annual))/
+                  (max(ndvi_annual) - min(ndvi_annual))) %>% 
+  dplyr::ungroup()
+
+
+krew_paired <- krew_paired %>% 
+  dplyr::mutate(ndvi_ratio = ndvi_treated/ndvi_control,
+                ndvi_diff = ndvi_treated - ndvi_control) %>% 
+  dplyr::group_by(shed_treated) %>% 
+  dplyr::mutate(ndvi_treated_n = (ndvi_treated - min(ndvi_treated))/(max(ndvi_treated) - min(ndvi_treated)),
+                ndvi_control_n = (ndvi_control - min(ndvi_control))/(max(ndvi_control) - min(ndvi_control)),
+                ndvi_ratio_n = ndvi_treated_n/ndvi_control_n,
+                ndvi_diff_n = ndvi_treated_n - ndvi_control_n) %>% 
+  dplyr::ungroup()
 
 
 # ---------------------------------------------------------------------
