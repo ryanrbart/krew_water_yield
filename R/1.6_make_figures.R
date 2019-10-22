@@ -115,7 +115,7 @@ x <- ggplot(krew_paired, aes(x = ndvi_control, y = ndvi_treated, label=treatment
   scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
   labs(title="Paired NDVI: All Watersheds",
        y = "Annual NDVI: Treated Watershed",
-       x = "Annual NDVI: Control Watershed (T003)") +
+       x = "Annual NDVI: Control Watershed") +
   coord_fixed(ratio = 1) +
   theme_bw(base_size = 10) +
   theme(legend.position="bottom") +
@@ -165,13 +165,13 @@ x <- krew_paired %>%
   #geom_abline(aes(intercept = 0, slope = 1), linetype = 2) +
   facet_wrap(.~shed_treated, labeller = labeller(shed_treated = watershed_id)) +
   # labeller = labeller(.cols = label_parsed, .rows = label_parsed)
-  scale_x_continuous(breaks=c(0.6,0.65,0.7,0.75,0.8), label=c(0.6,0.65,0.7,0.75,0.8), limits=c(0.64,0.8)) +
+  scale_x_continuous(breaks=c(0.6,0.65,0.7,0.75,0.8), label=c(0.6,0.65,0.7,0.75,0.8), limits=c(0.67,0.8)) +
   scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7,0.75,0.8), label=c(0.55,0.6,0.65,0.7,0.75,0.8), limits=c(0.57,0.77)) +
   scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
   scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
   labs(title="Paired NDVI: Providence Watersheds",
        y = "Annual NDVI: Treated Watershed",
-       x = "Annual NDVI: Control Watershed (T003)") +
+       x = "Annual NDVI: Control Watershed (P304)") +
   coord_fixed(ratio = 1) +
   theme_bw(base_size = 10) +
   theme(legend.position="bottom") +
@@ -197,7 +197,7 @@ x <- ggplot(krew_paired, aes(x = ndvi_control_n, y = ndvi_treated_n, label=treat
   scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
   labs(title="Paired nNDVI: All Watersheds",
        y = "Annual nNDVI: Treated Watershed",
-       x = "Annual nNDVI: Control Watershed (T003)") +
+       x = "Annual nNDVI: Control Watershed") +
   coord_fixed(ratio = 1) +
   theme_bw(base_size = 10) +
   theme(legend.position="bottom") +
@@ -253,7 +253,7 @@ x <- krew_paired %>%
   scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
   labs(title="Paired nNDVI: Providence Watersheds",
        y = "Annual nNDVI: Treated Watershed",
-       x = "Annual nNDVI: Control Watershed (T003)") +
+       x = "Annual nNDVI: Control Watershed (P304)") +
   coord_fixed(ratio = 1) +
   theme_bw(base_size = 10) +
   theme(legend.position="bottom") +
@@ -262,88 +262,6 @@ ggsave("output/1.6/plot_paired_ndvi_n_prov.jpg", plot=x, width = 5, height = 3.5
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-# ---------------------------------------------------------------------
-# ---------------------------------------------------------------------
-# ---------------------------------------------------------------------
-# Code for reversing control watershed from P304 to P303
-# Plot pre and post streamflow for Prov watersheds
-
-# Removes P304 control from the tibble
-krew_paired_tmp <- krew_paired %>% 
-  dplyr::filter(shed_treated != "P303", shed_control != "T003") %>% 
-  dplyr::select(-c(shed_control, ndvi_control))
-
-# Isolates P303 so it can be joined as a control
-control_new <- krew_paired %>% 
-  dplyr::filter(shed_treated == "P303") %>% 
-  dplyr::select(c(shed_treated, year, ndvi_treated)) %>% 
-  dplyr::rename(shed_control = shed_treated, ndvi_control = ndvi_treated)
-
-# Rearranges the control P304 to be put in the treated position
-treated_new <- krew_paired %>% 
-  dplyr::filter(shed_treated == "P303") %>% 
-  dplyr::ungroup() %>% 
-  dplyr::select(-c(shed_treated, ndvi_treated)) %>% 
-  dplyr::rename(shed_treated = shed_control, ndvi_treated = ndvi_control)
-
-# Combine everything
-krew_paired_new <- dplyr::full_join(krew_paired_tmp, control_new, by="year")
-krew_paired_new <- bind_rows(krew_paired_new,
-                             dplyr::full_join(treated_new, control_new, by="year"))
-
-# Adjust treatment period
-krew_paired_new$treatment_dummy[53:56] <- 1
-
-# Adjust labels (This creates a dataset equivalent to krew_paired)
-krew_paired_new <- krew_paired_new %>% 
-  # dplyr::mutate(treatment_label = if_else(year<2002 | year>2011,year,NA_real_))
-  dplyr::mutate(treatment_label = if_else(year>2012,year,NA_real_))
-
-# ---
-# Combine krew_paired_new with krew_paired. Filter for P301 and D103 and remove year 2017 for the control P303
-
-krew_paired_prov <- krew_paired %>% 
-  dplyr::filter(location == "prov") %>% 
-  dplyr::bind_rows(., krew_paired_new) %>% 
-  dplyr::filter(shed_treated %in% c("P301","D102")) %>% 
-  dplyr::filter(!(year==2017 & shed_control=="P303"))
-krew_paired_prov$shed_control <- factor(krew_paired_prov$shed_control,
-                                        levels = c("P304", "P303"))
-
-prov_control_labels <- c("P303"="P303",
-                         "P304"="P304")
-
-x <- krew_paired_prov %>% 
-  ggplot(., aes(x = ndvi_control, y = ndvi_treated, label=treatment_label)) +
-  geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
-  stat_summary() + 
-  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
-  geom_text_repel(size = 2.5) +
-  facet_grid(shed_control~shed_treated, labeller = labeller(shed_control = watershed_id, shed_treated = watershed_id)) +
-  scale_x_continuous(breaks=c(0.65,0.7,0.75,0.8), label=c(0.65,0.7,0.75,0.8), limits=c(0.645,0.805)) +
-  # scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7), label=c(0.55,0.6,0.65,0.7), limits=c(0.53,0.7)) +
-  scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
-  scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
-  labs(title="Paired NDVI: Providence Watersheds",
-       y = "Annual NDVI: Treated Watershed",
-       x = "Annual NDVI: Control Watershed") +
-  coord_fixed(ratio = 1) +
-  theme_bw(base_size = 10) +
-  theme(legend.position="bottom") +
-  NULL
-ggsave("output/1.6/plot_paired_ndvi_prov.jpg", plot=x, width = 4, height = 4)
-#plot(x)
 
 
 
