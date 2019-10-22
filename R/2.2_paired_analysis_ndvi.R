@@ -1,11 +1,7 @@
 # KREW paired streamflow plots
 
-# To-Do
-# Possibly incorporate split graph that includes 0 flows (if I can find r package).
-
 
 source("R/0_utilities.R")
-
 
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
@@ -24,403 +20,378 @@ pair_seasonal_4 <- dplyr::filter(pair_seasonal, Season==4)
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
-# Make paired watershed plots with ndvi_diff_n
-
-plot_q95 <- ggplot(pair_q95, aes(x = q_control, y = q_treated)) +
-  geom_point(aes(size = ndvi_diff_n, color = ndvi_diff_n)) +
-  scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +  
-  scale_color_continuous(name = expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                         low= "blue", high="green") +  
-  labs(title="Q95",
-       y = "Treated Watershed:\nQ95 (mm)",
-       x = "Control Watershed: Q95 (mm)") +
-  NULL
+# Paired Function
 
 
-plot_s1 <- ggplot(pair_seasonal_1, aes(x = q_control, y = q_treated)) +
-  geom_point(aes(size = ndvi_diff_n, color = ndvi_diff_n)) +
-  scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +  
-  scale_color_continuous(name = expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                         low= "blue", high="green") +  
-  labs(title="October-December Streamflow",
-       y="Treated Watershed:\nOct-Dec Streamflow (mm)",
-       x="Control Watershed: Oct-Dec Streamflow (mm)") +
-  NULL
-
-
-plot_s2 <- ggplot(pair_seasonal_2, aes(x = q_control, y = q_treated)) +
-  geom_point(aes(size = ndvi_diff_n, color = ndvi_diff_n)) +
-  scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +  
-  scale_color_continuous(name = expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                         low= "blue", high="green") +  
-  labs(title="January-March Streamflow",
-       y="Treated Watershed:\nJan-Mar Streamflow (mm)",
-       x="Control Watershed: Jan-Mar Streamflow (mm)") +
-  NULL
-
-
-plot_s3 <- ggplot(pair_seasonal_3, aes(x = q_control, y = q_treated)) +
-  geom_point(aes(size = ndvi_diff_n, color = ndvi_diff_n)) +
-  scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +  
-  scale_color_continuous(name = expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                         low= "blue", high="green") +  
-  labs(title="April-June Streamflow",
-       y="Treated Watershed:\nApr-Jun Streamflow (mm)",
-       x="Control Watershed: Apr-Jun Streamflow (mm)") +
-  NULL
-
-
-plot_s4 <- ggplot(pair_seasonal_4, aes(x = q_control, y = q_treated)) +
-  geom_point(aes(size = ndvi_diff_n, color = ndvi_diff_n)) +
-  scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +  
-  scale_color_continuous(name = expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                         low= "blue", high="green") +  
-  labs(title="July-September Streamflow",
-       y="Treated Watershed:\nJul-Sep Streamflow (mm)",
-       x="Control Watershed: Jul-Sep Streamflow (mm)") +
-  NULL
-
-
-# Plot pre and post streamflow for each watershed
-plot_wy <- ggplot(pair_wy, aes(x = q_control, y = q_treated)) +
-  geom_point(aes(size = ndvi_diff_n, color = ndvi_diff_n)) +
-  scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +  
-  scale_color_continuous(name = expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                         low= "blue", high="green") +  
-  labs(title="Annual Streamflow",
-       y = "Treated Watershed:\nAnnual Streamflow (mm)",
-       x = "Control Watershed: Annual Streamflow (mm)") +
-  theme(legend.position="bottom") +
-  NULL
-
-
-# ---------------------------------------------------------------------
-# Plot all paired watershed plots together
-
-plot_q95_all <- plot_q95 +
-  facet_grid(.~shed_treated) +
-  theme_bw(base_size = 7)
-plot_s1_all <- plot_s1 +
-  facet_grid(.~shed_treated) +
-  theme_bw(base_size = 7)
-plot_s2_all <- plot_s2 +
-  facet_grid(.~shed_treated) +
-  theme_bw(base_size = 7)
-plot_s3_all <- plot_s3 +
-  facet_grid(.~shed_treated) +
-  theme_bw(base_size = 7)
-plot_s4_all <- plot_s4 +
-  facet_grid(.~shed_treated) +
-  theme_bw(base_size = 7)
-plot_wy_all <- plot_wy +
-  facet_grid(.~shed_treated) +
-  theme_bw(base_size = 7)
-
-plot_legend <- get_legend(plot_wy)
-
-plot_paired_ndvi <- cowplot::plot_grid(plot_q95_all+ theme(legend.position="none"),
-                                       plot_s1_all+ theme(legend.position="none"),
-                                       plot_s2_all+ theme(legend.position="none"),
-                                       plot_s3_all+ theme(legend.position="none"),
-                                       plot_s4_all+ theme(legend.position="none"),
-                                       plot_wy_all+ theme(legend.position="none"),
-                                       plot_legend,
-                                       nrow=7,
-                                       rel_heights = c(1,1,1,1,1,1,0.35))
-
-# Save the plot
-cowplot::save_plot("output/2.2_paired_analysis/plot_paired_q_all.pdf",
-                   plot_paired_ndvi,
-                   ncol=1,
-                   nrow=7,
-                   base_height=1.4,
-                   base_width=8)
-
-
-# ---------------------------------------------------------------------
-# Plot paired streamflow plots individually by variable type
-
-
-plot_q95_var <- plot_q95 +
-  facet_wrap(.~shed_treated, ncol=3) +
-  theme_bw(base_size = 12)
-plot_s1_var <- plot_s1 +
-  facet_wrap(.~shed_treated, ncol=3) +
-  theme_bw(base_size = 12)
-plot_s2_var <- plot_s2 +
-  facet_wrap(.~shed_treated, ncol=3) +
-  theme_bw(base_size = 12)
-plot_s3_var <- plot_s3 +
-  facet_wrap(.~shed_treated, ncol=3) +
-  theme_bw(base_size = 12)
-plot_s4_var <- plot_s4 +
-  facet_wrap(.~shed_treated, ncol=3) +
-  theme_bw(base_size = 12)
-plot_wy_var <- plot_wy +
-  facet_wrap(.~shed_treated, ncol=3) +
-  theme_bw(base_size = 12)
-
-ggsave("output/2.2_paired_analysis/paired_q_q95.jpg", plot=plot_wy_var, width = 7, height = 7)
-ggsave("output/2.2_paired_analysis/paired_q_s1.jpg", plot=plot_wy_var, width = 7, height = 7)
-ggsave("output/2.2_paired_analysis/paired_q_s2.jpg", plot=plot_wy_var, width = 7, height = 7)
-ggsave("output/2.2_paired_analysis/paired_q_s3.jpg", plot=plot_wy_var, width = 7, height = 7)
-ggsave("output/2.2_paired_analysis/paired_q_s4.jpg", plot=plot_wy_var, width = 7, height = 7)
-ggsave("output/2.2_paired_analysis/paired_q_wy.jpg", plot=plot_wy_var, width = 7, height = 7)
-
-
-
-# ---------------------------------------------------------------------
-# Plot treated streamflow against ndvi_diff_n with control streamflow as treatment variable
-
-
-
-plot_q_q95_alt_x <- ggplot(pair_q95, aes(x = ndvi_diff_n, y = q_treated)) +
-  geom_point(aes(size = q_control, color = q_control)) +
-  facet_wrap(.~shed_treated, ncol=3) +
-  #scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = "Streamflow (mm)") +  
-  scale_color_continuous(name = "Streamflow (mm)",
-                         low= "blue", high="green") +  
-  labs(title="Q95",
-       y = "Treated Watershed:\nQ95 Streamflow (mm)",
-       x = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +
-  theme_bw(base_size = 12) +
-  theme(legend.position="bottom") +
-  NULL
-ggsave("output/2.2_paired_analysis/plot_q_q95_alt_x.jpg", plot=plot_q_q95_alt_x, width = 7, height = 7)
-
-plot_q_s1_alt_x <- ggplot(pair_seasonal_1, aes(x = ndvi_diff_n, y = q_treated)) +
-  geom_point(aes(size = q_control, color = q_control)) +
-  facet_wrap(.~shed_treated, ncol=3) +
-  #scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = "Streamflow (mm)") +  
-  scale_color_continuous(name = "Streamflow (mm)",
-                         low= "blue", high="green") +  
-  labs(title="Oct-Dec Streamflow",
-       y = "Treated Watershed:\nOct-Dec Streamflow (mm)",
-       x = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +
-  theme_bw(base_size = 12) +
-  theme(legend.position="bottom") +
-  NULL
-ggsave("output/2.2_paired_analysis/plot_q_s1_alt_x.jpg", plot=plot_q_s1_alt_x, width = 7, height = 7)
-
-plot_q_s2_alt_x <- ggplot(pair_seasonal_2, aes(x = ndvi_diff_n, y = q_treated)) +
-  geom_point(aes(size = q_control, color = q_control)) +
-  facet_wrap(.~shed_treated, ncol=3) +
-  #scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = "Streamflow (mm)") +  
-  scale_color_continuous(name = "Streamflow (mm)",
-                         low= "blue", high="green") +  
-  labs(title="Jan-Mar Streamflow",
-       y = "Treated Watershed:\nJan-Mar Streamflow (mm)",
-       x = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +
-  theme_bw(base_size = 12) +
-  theme(legend.position="bottom") +
-  NULL
-ggsave("output/2.2_paired_analysis/plot_q_s2_alt_x.jpg", plot=plot_q_s2_alt_x, width = 7, height = 7)
-
-plot_q_s3_alt_x <- ggplot(pair_seasonal_3, aes(x = ndvi_diff_n, y = q_treated)) +
-  geom_point(aes(size = q_control, color = q_control)) +
-  facet_wrap(.~shed_treated, ncol=3) +
-  #scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = "Streamflow (mm)") +  
-  scale_color_continuous(name = "Streamflow (mm)",
-                         low= "blue", high="green") +  
-  labs(title="Apr-Jun Streamflow",
-       y = "Treated Watershed:\nApr-Jun Streamflow (mm)",
-       x = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +
-  theme_bw(base_size = 12) +
-  theme(legend.position="bottom") +
-  NULL
-ggsave("output/2.2_paired_analysis/plot_q_s3_alt_x.jpg", plot=plot_q_s3_alt_x, width = 7, height = 7)
-
-plot_q_s4_alt_x <- ggplot(pair_seasonal_4, aes(x = ndvi_diff_n, y = q_treated)) +
-  geom_point(aes(size = q_control, color = q_control)) +
-  facet_wrap(.~shed_treated, ncol=3) +
-  #scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = "Streamflow (mm)") +  
-  scale_color_continuous(name = "Streamflow (mm)",
-                         low= "blue", high="green") +  
-  labs(title="Jul-Sep Streamflow",
-       y = "Treated Watershed:\nJul-Sep Streamflow (mm)",
-       x = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +
-  theme_bw(base_size = 12) +
-  theme(legend.position="bottom") +
-  NULL
-ggsave("output/2.2_paired_analysis/plot_q_s4_alt_x.jpg", plot=plot_q_s4_alt_x, width = 7, height = 7)
-
-
-plot_q_wy_alt_x <- ggplot(pair_wy, aes(x = ndvi_diff_n, y = q_treated)) +
-  geom_point(aes(size = q_control, color = q_control)) +
-  facet_wrap(.~shed_treated, ncol=3) +
-  #scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = "Streamflow (mm)") +  
-  scale_color_continuous(name = "Streamflow (mm)",
-                         low= "blue", high="green") +  
-  labs(title="Annual Streamflow",
-       y = "Treated Watershed:\nAnnual Streamflow (mm)",
-       x = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +
-  theme_bw(base_size = 12) +
-  theme(legend.position="bottom") +
-  NULL
-ggsave("output/2.2_paired_analysis/plot_q_wy_alt_x.jpg", plot=plot_q_wy_alt_x, width = 7, height = 7)
-
-
-
-
-
-# ---------------------------------------------------------------------
-# Joe's visual suggestion
-
-
-ggplot(pair_wy) +
-  geom_line(aes(x = ndvi_treated, y = q_treated), color = "black") +
-  geom_line(aes(x = ndvi_control, y = q_treated), color = "red") +
-  facet_wrap(.~shed_treated, ncol=3) +
-  #scale_x_log10() +
-  scale_y_log10() +
-  scale_size_continuous(name = "Streamflow (mm)") +  
-  scale_color_continuous(name = "Streamflow (mm)",
-                         low= "blue", high="green") +  
-  labs(title="Annual Streamflow",
-       y = "Treated Watershed:\nAnnual Streamflow (mm)",
-       x = expression('nNDVI'[t]~'-'~'nNDVI'[c])) +
-  theme_bw(base_size = 12) +
-  theme(legend.position="bottom") +
-  NULL
-
-
-
-
-
+paired_function <- function(data, x, y, var, var_lab, title, x_lab, y_lab){
+  
+  plot_paired <- ggplot(data, aes_string(x = x, y = y)) +
+    geom_point(aes_string(size = var, color = var)) +
+    scale_y_log10() +
+    scale_size_continuous(name = var_lab) +  
+    scale_color_continuous(name = var_lab,
+                           low= "blue", high="green") +  
+    labs(title=title,
+         y = y_lab,
+         x = x_lab) +
+    NULL
+  return(plot_paired)
+}
 
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
-# Misc Analyses
+# Building blocks for paired plots
 
+
+# NDVI with control streamflow on x-axis
+q95_NDVI_xcont <- paired_function(data=pair_q95,
+                                  x="q_control",
+                                  y="q_treated",
+                                  var="ndvi_diff",
+                                  var_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+                                  title="Q95",
+                                  x_lab="Control Watershed: Q95 (mm)",
+                                  y_lab="Treated Watershed:\nQ95 (mm)")
+
+s1_NDVI_xcont <- paired_function(data=pair_seasonal_1,
+                                 x="q_control",
+                                 y="q_treated",
+                                 var="ndvi_diff",
+                                 var_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+                                 title="October-December Streamflow",
+                                 x_lab="Control Watershed: Oct-Dec Streamflow (mm)",
+                                 y_lab="Treated Watershed:\nOct-Dec Streamflow (mm)")
+
+s2_NDVI_xcont <- paired_function(data=pair_seasonal_2,
+                                 x="q_control",
+                                 y="q_treated",
+                                 var="ndvi_diff",
+                                 var_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+                                 title="January-March Streamflow",
+                                 x_lab="Control Watershed: Jan-Mar Streamflow (mm)",
+                                 y_lab="Treated Watershed:\nJan-Mar Streamflow (mm)")
+
+s3_NDVI_xcont <- paired_function(data=pair_seasonal_3,
+                                 x="q_control",
+                                 y="q_treated",
+                                 var="ndvi_diff",
+                                 var_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+                                 title="April-June Streamflow",
+                                 x_lab="Control Watershed: Apr-Jun Streamflow (mm)",
+                                 y_lab="Treated Watershed:\nApr-Jun Streamflow (mm)")
+
+s4_NDVI_xcont <- paired_function(data=pair_seasonal_4,
+                                 x="q_control",
+                                 y="q_treated",
+                                 var="ndvi_diff",
+                                 var_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+                                 title="July-September Streamflow",
+                                 x_lab="Control Watershed: Jul-Sep Streamflow (mm)",
+                                 y_lab="Treated Watershed:\nJul-Sep Streamflow (mm)")
+
+wy_NDVI_xcont <- paired_function(data=pair_wy,
+                                 x="q_control",
+                                 y="q_treated",
+                                 var="ndvi_diff",
+                                 var_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+                                 title="Annual Streamflow",
+                                 x_lab="Control Watershed: Annual Streamflow (mm)",
+                                 y_lab="Treated Watershed:\nAnnual Streamflow (mm)")
+
+NDVI_xcont <- list(q95_NDVI_xcont, s1_NDVI_xcont, s2_NDVI_xcont,
+                   s3_NDVI_xcont,s4_NDVI_xcont, wy_NDVI_xcont)
+
+# ------------------
+# nNDVI with control streamflow on x-axis
+
+q95_nNDVI_xcont <- paired_function(data=pair_q95,
+                                   x="q_control",
+                                   y="q_treated",
+                                   var="ndvi_diff_n",
+                                   var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+                                   title="Q95",
+                                   x_lab="Control Watershed: Q95 (mm)",
+                                   y_lab="Treated Watershed:\nQ95 (mm)")
+
+s1_nNDVI_xcont <- paired_function(data=pair_seasonal_1,
+                                  x="q_control",
+                                  y="q_treated",
+                                  var="ndvi_diff_n",
+                                  var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+                                  title="October-December Streamflow",
+                                  x_lab="Control Watershed: Oct-Dec Streamflow (mm)",
+                                  y_lab="Treated Watershed:\nOct-Dec Streamflow (mm)")
+
+s2_nNDVI_xcont <- paired_function(data=pair_seasonal_2,
+                                  x="q_control",
+                                  y="q_treated",
+                                  var="ndvi_diff_n",
+                                  var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+                                  title="January-March Streamflow",
+                                  x_lab="Control Watershed: Jan-Mar Streamflow (mm)",
+                                  y_lab="Treated Watershed:\nJan-Mar Streamflow (mm)")
+
+s3_nNDVI_xcont <- paired_function(data=pair_seasonal_3,
+                                  x="q_control",
+                                  y="q_treated",
+                                  var="ndvi_diff_n",
+                                  var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+                                  title="April-June Streamflow",
+                                  x_lab="Control Watershed: Apr-Jun Streamflow (mm)",
+                                  y_lab="Treated Watershed:\nApr-Jun Streamflow (mm)")
+
+s4_nNDVI_xcont <- paired_function(data=pair_seasonal_4,
+                                  x="q_control",
+                                  y="q_treated",
+                                  var="ndvi_diff_n",
+                                  var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+                                  title="July-September Streamflow",
+                                  x_lab="Control Watershed: Jul-Sep Streamflow (mm)",
+                                  y_lab="Treated Watershed:\nJul-Sep Streamflow (mm)")
+
+wy_nNDVI_xcont <- paired_function(data=pair_wy,
+                                  x="q_control",
+                                  y="q_treated",
+                                  var="ndvi_diff_n",
+                                  var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+                                  title="Annual Streamflow",
+                                  x_lab="Control Watershed: Annual Streamflow (mm)",
+                                  y_lab="Treated Watershed:\nAnnual Streamflow (mm)")
+
+nNDVI_xcont <- list(q95_nNDVI_xcont, s1_nNDVI_xcont, s2_nNDVI_xcont,
+                    s3_nNDVI_xcont,s4_nNDVI_xcont, wy_nNDVI_xcont)
+
+# ------------------
+# ------------------
+# NDVI with NDVI_diff on x-axis
+q95_NDVI_xvar <- paired_function(data=pair_q95,
+                                 x="ndvi_diff",
+                                 y="q_treated",
+                                 var="q_control",
+                                 var_lab="Q95 (mm)",
+                                 title="Q95",
+                                 x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+                                 y_lab="Treated Watershed:\nQ95 (mm)")
+
+s1_NDVI_xvar <- paired_function(data=pair_seasonal_1,
+                                x="ndvi_diff",
+                                y="q_treated",
+                                var="q_control",
+                                var_lab="Oct-Dec Streamflow (mm)",
+                                title="October-December Streamflow",
+                                x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+                                y_lab="Treated Watershed:\nOct-Dec Streamflow (mm)")
+
+s2_NDVI_xvar <- paired_function(data=pair_seasonal_2,
+                                x="ndvi_diff",
+                                y="q_treated",
+                                var="q_control",
+                                var_lab="Jan-Mar Streamflow (mm)",
+                                title="January-March Streamflow",
+                                x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+                                y_lab="Treated Watershed:\nJan-Mar Streamflow (mm)")
+
+s3_NDVI_xvar <- paired_function(data=pair_seasonal_3,
+                                x="ndvi_diff",
+                                y="q_treated",
+                                var="q_control",
+                                var_lab="Apr-Jun Streamflow (mm)",
+                                title="April-June Streamflow",
+                                x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+                                y_lab="Treated Watershed:\nApr-Jun Streamflow (mm)")
+
+s4_NDVI_xvar <- paired_function(data=pair_seasonal_4,
+                                x="ndvi_diff",
+                                y="q_treated",
+                                var="q_control",
+                                var_lab="Jul-Sep Streamflow (mm)",
+                                title="July-September Streamflow",
+                                x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+                                y_lab="Treated Watershed:\nJul-Sep Streamflow (mm)")
+
+wy_NDVI_xvar <- paired_function(data=pair_wy,
+                                x="ndvi_diff",
+                                y="q_treated",
+                                var="q_control",
+                                var_lab="Annual Streamflow (mm)",
+                                title="Annual Streamflow",
+                                x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+                                y_lab="Treated Watershed:\nAnnual Streamflow (mm)")
+
+NDVI_xvar <- list(q95_NDVI_xvar, s1_NDVI_xvar, s2_NDVI_xvar,
+                  s3_NDVI_xvar,s4_NDVI_xvar, wy_NDVI_xvar)
+
+# ------------------
+# nNDVI with NDVI_diff_n on x-axis
+
+q95_nNDVI_xvar <- paired_function(data=pair_q95,
+                                  x="ndvi_diff_n",
+                                  y="q_treated",
+                                  var="q_control",
+                                  var_lab="Q95 (mm)",
+                                  title="Q95",
+                                  x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+                                  y_lab="Treated Watershed:\nQ95 (mm)")
+
+s1_nNDVI_xvar <- paired_function(data=pair_seasonal_1,
+                                 x="ndvi_diff_n",
+                                 y="q_treated",
+                                 var="q_control",
+                                 var_lab="Oct-Dec Streamflow (mm)",
+                                 title="October-December Streamflow",
+                                 x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+                                 y_lab="Treated Watershed:\nOct-Dec Streamflow (mm)")
+
+s2_nNDVI_xvar <- paired_function(data=pair_seasonal_2,
+                                 x="ndvi_diff_n",
+                                 y="q_treated",
+                                 var="q_control",
+                                 var_lab="Jan-Mar Streamflow (mm)",
+                                 title="January-March Streamflow",
+                                 x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+                                 y_lab="Treated Watershed:\nJan-Mar Streamflow (mm)")
+
+s3_nNDVI_xvar <- paired_function(data=pair_seasonal_3,
+                                 x="ndvi_diff_n",
+                                 y="q_treated",
+                                 var="q_control",
+                                 var_lab="Apr-Jun Streamflow (mm)",
+                                 title="April-June Streamflow",
+                                 x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+                                 y_lab="Treated Watershed:\nApr-Jun Streamflow (mm)")
+
+s4_nNDVI_xvar <- paired_function(data=pair_seasonal_4,
+                                 x="ndvi_diff_n",
+                                 y="q_treated",
+                                 var="q_control",
+                                 var_lab="Jul-Sep Streamflow (mm)",
+                                 title="July-September Streamflow",
+                                 x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+                                 y_lab="Treated Watershed:\nJul-Sep Streamflow (mm)")
+
+wy_nNDVI_xvar <- paired_function(data=pair_wy,
+                                 x="ndvi_diff_n",
+                                 y="q_treated",
+                                 var="q_control",
+                                 var_lab="Annual Streamflow (mm)",
+                                 title="Annual Streamflow",
+                                 x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+                                 y_lab="Treated Watershed:\nAnnual Streamflow (mm)")
+
+nNDVI_xvar <- list(q95_nNDVI_xvar, s1_nNDVI_xvar, s2_nNDVI_xvar,
+                   s3_nNDVI_xvar,s4_nNDVI_xvar, wy_nNDVI_xvar)
+
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# Function for plotting paired watershed plots (individually and together)
+
+# Function
+paired_all <- function(x, xcont, path_ind, path_all){
+  
+  # Change x scale if q_control is on x axis
+  if (xcont==TRUE){ 
+    x_tmp <- x %>% 
+      purrr::map(., function(x)
+        x +
+          scale_x_log10()
+      )
+  } else {
+    x_tmp <- x
+  }
+  
+  # Code for individual plots
+  x_ind <- x_tmp %>% 
+    purrr::map(., function(x)
+      x +
+        facet_wrap(.~shed_treated, ncol=3) +
+        coord_fixed(ratio = 1) +
+        theme_bw(base_size = 12) +
+        theme(legend.position="right",
+              legend.title = element_text(size = 10),
+              legend.text = element_text(size = 8))
+    )
+  
+  # Code for combined plot
+  x_all <- x_tmp %>% 
+    purrr::map(., function(x)
+      x +
+        facet_grid(.~shed_treated) +
+        theme_bw(base_size = 9) +
+        theme(legend.position="right",
+              legend.title = element_text(size = 10),
+              legend.text = element_text(size = 8))
+    )
+  
+  plot_legend <- get_legend(x_all[[1]])
+  
+  
+  # --------------------
+  # Create individual plots
+  
+  output_types <- c("q95", "s1", "s2", "s3", "s4", "wy")
+  
+  purrr::map2(x_ind, output_types, function(x, y)
+      ggsave(paste(path_ind,"_",y,".pdf",sep=""), plot=x, width = 6, height = 5)
+  )
+  
+  
+  # --------------------
+  # Create combined plot
+ 
+  plot_x_all <- cowplot::plot_grid(x_all[[1]] + theme(legend.position="none"),
+                                   x_all[[2]] + theme(legend.position="none"),
+                                   x_all[[3]] + theme(legend.position="none"),
+                                   x_all[[4]] + theme(legend.position="none"),
+                                   x_all[[5]] + theme(legend.position="none"),
+                                   x_all[[6]] + theme(legend.position="none"),
+                                   nrow=6)
+  
+  plot_x_all <- cowplot::plot_grid(plot_x_all + theme(legend.position="none"),
+                                   plot_legend,
+                                   ncol=2,
+                                   rel_widths = c(1,0.15))
+                                   
+  # Save the plot
+  cowplot::save_plot(path_all,
+                     plot_x_all,
+                     # ncol=1,
+                     # nrow=7,
+                     base_height=10,
+                     base_width=8)
+}
 
 
 # ---------------------------------------------------------------------
-# Compare treated streamflow to normalized difference NDVI variable across all watersheds 
-# (aka don't facet the individual watersheds)
-
-
-summary(lm(log(q_treated)~ndvi_diff_n + log(q_control), data=pair_wy))
-plot(q_treated~ndvi_diff_n, data=pair_wy, log="y")
-
-pair_wy_tmp <- dplyr::filter(pair_wy, site=="bull")
-summary(lm(log(q_treated)~ndvi_diff_n + log(q_control), data=pair_wy_tmp))
-plot(q_treated~ndvi_diff_n, data=pair_wy_tmp, log="y")
-
-pair_wy_tmp <- dplyr::filter(pair_wy, site=="prov")
-summary(lm(log(q_treated)~ndvi_diff_n + log(q_control), data=pair_wy_tmp))
-plot(q_treated~ndvi_diff_n, data=pair_wy_tmp, log="y")
-
-
-# For playing with...
-pair_wy_tmp <- dplyr::filter(pair_q95, site=="prov")
-summary(lm(log(q_treated)~ndvi_diff_n + log(q_control), data=pair_wy_tmp))
-plot(q_treated~ndvi_diff_n, data=pair_wy_tmp, log="y")
-
-
-
 # ---------------------------------------------------------------------
-# Regression Analysis: paired_q95 data
-
-# Create nested streamflow data within each watershed
-pair_nest <- pair_q95 %>% 
-  group_by(shed_treated) %>% 
-  nest() 
-
-# Generate regression models for each watershed
-pair_lm <- pair_nest %>% 
-  mutate(regr = map(data, ~ lm(log(q_treated) ~ log(q_control) + ndvi_diff_n, data = .)),
-         results_terms = map(regr, tidy),
-         results_fit = map(regr, glance))
-#unnest(pair_lm, results_fit)
-#unnest(pair_lm, results_terms)
-
-# Plot the p-value for each treatment dummy variable
-pair_lm %>% 
-  unnest(results_terms) %>% 
-  dplyr::filter(term=="ndvi_diff_n") %>% 
-  ggplot() +
-  geom_bar(stat = "identity", aes(x=shed_treated,y=estimate))
-#geom_bar(stat = "identity", aes(x=shed_treated,y=p.value)) +
-#geom_hline(yintercept = 0.05, linetype=2, color="red", size=.4) 
-
-
-
 # ---------------------------------------------------------------------
-# Regression Analysis: paired_seasonal data
-
-# Create nested streamflow data within each watershed
-pair_nest <- pair_seasonal %>% 
-  group_by(shed_treated, Season) %>% 
-  nest() 
-
-# Generate regression models for each watershed
-pair_lm <- pair_nest %>% 
-  mutate(regr = map(data, ~ lm(log(q_treated) ~ log(q_control) + ndvi_diff_n, data = .)),
-         results_terms = map(regr, tidy),
-         results_fit = map(regr, glance))
-#unnest(pair_lm, results_fit)
-#unnest(pair_lm, results_terms)
-
-# Plot the p-value for each treatment dummy variable
-pair_lm %>% 
-  unnest(results_terms) %>% 
-  dplyr::filter(term=="ndvi_diff_n") %>% 
-  ggplot() +
-  geom_bar(stat = "identity", aes(x=shed_treated,y=estimate)) +
-  #geom_bar(stat = "identity", aes(x=shed_treated,y=p.value)) +
-  #geom_hline(yintercept = 0.05, linetype=2, color="red", size=.4) +
-  facet_grid(Season~.)
+# Make the plots
 
 
-# ---------------------------------------------------------------------
-# Regression Analysis: paired_wy data
+paired_all(x=NDVI_xcont,
+           xcont=TRUE,
+           path_ind="output/2.2_paired_analysis/plot_NDVI_xcont_ind",   # Don't include extension
+           path_all="output/2.2_paired_analysis/plot_NDVI_xcont_all.pdf")
 
-# Create nested streamflow data within each watershed
-pair_nest <- pair_wy %>% 
-  group_by(shed_treated) %>% 
-  nest() 
+paired_all(x=nNDVI_xcont,
+           xcont=TRUE,
+           path_ind="output/2.2_paired_analysis/plot_nNDVI_xcont_ind",   # Don't include extension
+           path_all="output/2.2_paired_analysis/plot_nNDVI_xcont_all.pdf")
 
-# Generate regression models for each watershed
-pair_lm <- pair_nest %>% 
-  mutate(regr = map(data, ~ lm(log(q_treated) ~ log(q_control) + ndvi_diff_n, data = .)),
-         results_terms = map(regr, tidy),
-         results_fit = map(regr, glance))
-#unnest(pair_lm, results_fit)
-#unnest(pair_lm, results_terms)
+# Note: Legend for the combined plot is wrong for the following two plots (need a legend for each row).
 
-# Plot the effect for each treatment dummy variable
-pair_lm %>% 
-  unnest(results_terms) %>% 
-  dplyr::filter(term=="ndvi_diff_n") %>% 
-  ggplot() +
-  geom_bar(stat = "identity", aes(x=shed_treated,y=estimate)) +
-  #geom_bar(stat = "identity", aes(x=shed_treated,y=p.value)) +
-  #geom_hline(yintercept = 0.05, linetype=2, color="red", size=.4) + 
-  labs(title="Effect Size for Annual Streamflow Change", y="Estimate", x="Watershed")
+paired_all(x=NDVI_xvar,
+           xcont=FALSE,
+           path_ind="output/2.2_paired_analysis/plot_NDVI_xvar_ind",   # Don't include extension
+           path_all="output/2.2_paired_analysis/plot_NDVI_xvar_all.pdf")
+
+paired_all(x=nNDVI_xvar,
+           xcont=FALSE,
+           path_ind="output/2.2_paired_analysis/plot_nNDVI_xvar_ind",   # Don't include extension
+           path_all="output/2.2_paired_analysis/plot_nNDVI_xvar_all.pdf")
+
+
+
 
 
