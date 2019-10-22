@@ -1,4 +1,4 @@
-# KREW mixed-model analysis
+# KREW mixed-model analysis: Betas
 
 # With rstanarm, and tidybayes
 
@@ -217,6 +217,15 @@ x <- out_q_ratio_draws %>%
   NULL
 ggsave("output/2.5_mixed_model_analysis/plot_q_ratio_draws.jpg",plot=x, width = 5, height = 4)
 
+
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# Save draws data
+
+write_rds(out_q_diff_draws, "output/2.5_mixed_model_analysis/out_q_diff_draws.rds")
+write_rds(out_q_ndiff_draws, "output/2.5_mixed_model_analysis/out_q_ndiff_draws.rds")
+write_rds(out_q_ratio_draws, "output/2.5_mixed_model_analysis/out_q_ratio_draws.rds")
 
 
 
