@@ -22,17 +22,17 @@ pair_seasonal_4 <- dplyr::filter(pair_seasonal, Season==4)
 
 
 # Import mixed model results
-out_q_ndiff_all <- read_rds("output/2.3_mixed_model/out_q_ndiff_all.rds")
-out_q_ndiff_bull <- read_rds("output/2.3_mixed_model/out_q_ndiff_bull.rds")
-out_q_ndiff_prov <- read_rds("output/2.3_mixed_model/out_q_ndiff_prov.rds")
+out_q_ndiff_all <- read_rds("output/2.4_mixed_model/out_q_ndiff_all.rds")
+out_q_ndiff_bull <- read_rds("output/2.4_mixed_model/out_q_ndiff_bull.rds")
+out_q_ndiff_prov <- read_rds("output/2.4_mixed_model/out_q_ndiff_prov.rds")
 
-out_q_diff_all <- read_rds("output/2.3_mixed_model/out_q_diff_all.rds")
-out_q_diff_bull <- read_rds("output/2.3_mixed_model/out_q_diff_bull.rds")
-out_q_diff_prov <- read_rds("output/2.3_mixed_model/out_q_diff_prov.rds")
+out_q_diff_all <- read_rds("output/2.4_mixed_model/out_q_diff_all.rds")
+out_q_diff_bull <- read_rds("output/2.4_mixed_model/out_q_diff_bull.rds")
+out_q_diff_prov <- read_rds("output/2.4_mixed_model/out_q_diff_prov.rds")
 
-out_q_ratio_all <- read_rds("output/2.3_mixed_model/out_q_ratio_all.rds")
-out_q_ratio_bull <- read_rds("output/2.3_mixed_model/out_q_ratio_bull.rds")
-out_q_ratio_prov <- read_rds("output/2.3_mixed_model/out_q_ratio_prov.rds")
+out_q_ratio_all <- read_rds("output/2.4_mixed_model/out_q_ratio_all.rds")
+out_q_ratio_bull <- read_rds("output/2.4_mixed_model/out_q_ratio_bull.rds")
+out_q_ratio_prov <- read_rds("output/2.4_mixed_model/out_q_ratio_prov.rds")
 
 
 # ---------------------------------------------------------------------
@@ -50,7 +50,7 @@ generate_draws1 <- function(out_q){
   out_q_draws <- bind_rows(out_q_draws, .id="response_variable")
   
   out_q_draws$response_variable <- factor(out_q_draws$response_variable,
-                                          levels = c(6,5,4,3,2,1))
+                                          levels = c(1,2,3,4,5,6))
   out_q_draws$.chain <- factor(out_q_draws$.chain)
   out_q_draws$.iteration <- factor(out_q_draws$.iteration)
   out_q_draws$.draw <- factor(out_q_draws$.draw)
@@ -67,7 +67,7 @@ generate_draws2 <- function(out_q){
   out_q_draws <- bind_rows(out_q_draws, .id="response_variable")
   
   out_q_draws$response_variable <- factor(out_q_draws$response_variable,
-                                          levels = c(6,5,4,3,2,1))
+                                          levels = c(1,2,3,4,5,6))
   out_q_draws$.chain <- factor(out_q_draws$.chain)
   out_q_draws$.iteration <- factor(out_q_draws$.iteration)
   out_q_draws$.draw <- factor(out_q_draws$.draw)
@@ -83,7 +83,7 @@ generate_draws3 <- function(out_q){
   out_q_draws <- bind_rows(out_q_draws, .id="response_variable")
   
   out_q_draws$response_variable <- factor(out_q_draws$response_variable,
-                                          levels = c(6,5,4,3,2,1))
+                                          levels = c(1,2,3,4,5,6))
   out_q_draws$.chain <- factor(out_q_draws$.chain)
   out_q_draws$.iteration <- factor(out_q_draws$.iteration)
   out_q_draws$.draw <- factor(out_q_draws$.draw)
@@ -166,13 +166,14 @@ x <- out_q_ndiff_draws %>%
   labs(title = "Difference in Normalized NDVI",
        x = expression('nNDVI'[diff]~'Coefficient ('*beta*')'),
        y = "Watershed Group") + 
-  facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id)) + 
+  facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id), scales="free_x") + 
   theme_tidybayes() +
+  theme(axis.text.y = element_text(angle = 90, hjust=0.5, vjust=1)) +
   panel_border() + 
   background_grid() +
   xlim(-2.5,2.5) +
   NULL
-ggsave("output/2.4_mixed_model_analysis/plot_q_ndiff_draws.jpg",plot=x, width = 5, height = 3)
+ggsave("output/2.5_mixed_model_analysis/plot_q_ndiff_draws.jpg",plot=x, width = 5, height = 4)
 
 
 
@@ -186,13 +187,14 @@ x <- out_q_diff_draws %>%
   labs(title = "Difference in NDVI",
        x = expression('NDVI'[diff]~'Coefficient ('*beta*')'),
        y = "Watershed Group") +  
-  facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id)) + 
+  facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id), scales="free_x") + 
   theme_tidybayes() +
+  theme(axis.text.y = element_text(angle = 90, hjust=0.5, vjust=1)) +
   panel_border() + 
   background_grid() +
   #xlim(-2,2) +
   NULL
-ggsave("output/2.4_mixed_model_analysis/plot_q_diff_draws.jpg",plot=x, width = 5, height = 3)
+ggsave("output/2.5_mixed_model_analysis/plot_q_diff_draws.jpg",plot=x, width = 5, height = 4)
 
 
 
@@ -206,13 +208,14 @@ x <- out_q_ratio_draws %>%
   labs(title = "Ratio of NDVI",
        x = expression('NDVI'[ratio]~'Coefficient ('*beta*')'),
        y = "Watershed Group") + 
-  facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id)) + 
+  facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id), scales="free_x") + 
   theme_tidybayes() +
+  theme(axis.text.y = element_text(angle = 90, hjust=0.5, vjust=1)) +
   panel_border() + 
   background_grid() +
   #xlim(-2,2) +
   NULL
-ggsave("output/2.4_mixed_model_analysis/plot_q_ratio_draws.jpg",plot=x, width = 5, height = 3)
+ggsave("output/2.5_mixed_model_analysis/plot_q_ratio_draws.jpg",plot=x, width = 5, height = 4)
 
 
 

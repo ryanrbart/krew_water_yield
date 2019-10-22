@@ -570,23 +570,20 @@ out_q_ratio_prov <- list(out_q95_ratio_prov, out_s1_ratio_prov,
 # Save modeling output
 
 
-# Need to save new outputs
-# Add import of new outputs to 2.4
+write_rds(out_q_ndiff_all, "output/2.4_mixed_model/out_q_ndiff_all.rds")
+write_rds(out_q_ndiff_bull, "output/2.4_mixed_model/out_q_ndiff_bull.rds")
+write_rds(out_q_ndiff_prov, "output/2.4_mixed_model/out_q_ndiff_prov.rds")
 
-write_rds(out_q_ndiff_all, "output/2.3_mixed_model/out_q_ndiff_all.rds")
-write_rds(out_q_ndiff_bull, "output/2.3_mixed_model/out_q_ndiff_bull.rds")
-write_rds(out_q_ndiff_prov, "output/2.3_mixed_model/out_q_ndiff_prov.rds")
+write_rds(out_q_diff_all, "output/2.4_mixed_model/out_q_diff_all.rds")
+write_rds(out_q_diff_bull, "output/2.4_mixed_model/out_q_diff_bull.rds")
+write_rds(out_q_diff_prov, "output/2.4_mixed_model/out_q_diff_prov.rds")
 
-write_rds(out_q_diff_all, "output/2.3_mixed_model/out_q_diff_all.rds")
-write_rds(out_q_diff_bull, "output/2.3_mixed_model/out_q_diff_bull.rds")
-write_rds(out_q_diff_prov, "output/2.3_mixed_model/out_q_diff_prov.rds")
+# write_rds(out_q_nratio_all, "output/2.4_mixed_model/out_q_nratio_all.rds")
+# write_rds(out_q_nratio_bull, "output/2.4_mixed_model/out_q_nratio_bull.rds")
+# write_rds(out_q_nratio_prov, "output/2.4_mixed_model/out_q_nratio_prov.rds")
 
-# write_rds(out_q_nratio_all, "output/2.3_mixed_model/out_q_nratio_all.rds")
-# write_rds(out_q_nratio_bull, "output/2.3_mixed_model/out_q_nratio_bull.rds")
-# write_rds(out_q_nratio_prov, "output/2.3_mixed_model/out_q_nratio_prov.rds")
-
-write_rds(out_q_ratio_all, "output/2.3_mixed_model/out_q_ratio_all.rds")
-write_rds(out_q_ratio_bull, "output/2.3_mixed_model/out_q_ratio_bull.rds")
-write_rds(out_q_ratio_prov, "output/2.3_mixed_model/out_q_ratio_prov.rds")
+write_rds(out_q_ratio_all, "output/2.4_mixed_model/out_q_ratio_all.rds")
+write_rds(out_q_ratio_bull, "output/2.4_mixed_model/out_q_ratio_bull.rds")
+write_rds(out_q_ratio_prov, "output/2.4_mixed_model/out_q_ratio_prov.rds")
 
   
