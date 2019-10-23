@@ -4,6 +4,8 @@
 source("R/0_utilities.R")
 
 # ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 # Import data
 
 # Need to run 2.1 for precipitation data
@@ -20,6 +22,61 @@ pair_seasonal_4 <- dplyr::filter(pair_seasonal, Season==4)
 QP <- read_rds(QP_WY_RDS)
 QPT <- read_rds(QPT_WY_RDS)
 
+# Table describing which watersheds are designated as control/treated pairs
+treat_control <-read_csv("data/treated_control.csv")
+
+
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# Time-series plot
+
+
+
+QP %>% 
+  
+
+happy <- QP %>% 
+  left_join(dplyr::select(treat_control, c(treatment, ndvi_thin, ndvi_burn)),
+            by = c("watershed"="treatment")) %>% 
+  dplyr::mutate(ndvi_thin = as.integer(ndvi_thin)) %>% 
+  dplyr::mutate(ndvi_burn = as.integer(ndvi_burn)) %>% 
+  dplyr::mutate(ndvi_thin = if_else(WY==ndvi_thin, ndvi_thin, NA_integer_)) %>% 
+  dplyr::mutate(ndvi_burn = if_else(WY==ndvi_burn, ndvi_burn, NA_integer_))
+
+
+# Annual Streamflow
+x <- ggplot(data=happy) +
+  geom_line(aes(x=WY, y=q, linetype=watershed, color=control)) +
+  #geom_vline(aes(xintercept=2012), color="blue") +
+  geom_point(aes(x=WY, y=q, shape=watershed, color=control)) +
+  geom_point(aes(x=ndvi_burn, y=q, size = "Prescribed\nFire"), shape=2, color="black", stroke=0.8) +
+  geom_point(aes(x=ndvi_thin, y=q, size = "Thinning"), shape=1, color="black", stroke=0.8) +
+  geom_point(aes(x=ndvi_burn, y=q, size = "Prescribed\nFire"), shape=2, color="black", stroke=0.8) +
+  labs(title="Annual Streamflow Time-Series",
+       y = "Annual Streamflow (mm)",
+       x = "Year") +
+  scale_color_brewer(palette = "Set1", name="Management", labels = c("Treated", "Control")) + 
+  scale_linetype(name="Watershed") + 
+  scale_shape(name="Watershed") + 
+  # http://www.quantide.com/ggplot-multiple-legends-for-the-same-aesthetic/
+  scale_size_manual(
+    "Fuel Treatment", values=c(3,3),
+    guide=guide_legend(override.aes = list(shape=c(2,1)))) +
+  facet_grid(location~.) +
+  theme_bw(base_size = 12) +
+  NULL
+ggsave("output/2.7_timeseries_double_mass/plot_timeseries_q.pdf", plot=x, width = 8, height = 5)
+
+
+
+
+
+
+
+
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # Double Mass of Control Streamflow to Treated Streamflow
 
@@ -46,7 +103,7 @@ x <- ggplot(pair_wy_cum) +
   theme_bw(base_size = 12) +
   theme(legend.position="bottom") +
   NULL
-ggsave("output/2.6_double_mass/plot_double_mass.jpg", plot=x, width = 7, height = 7)
+ggsave("output/2.7_timeseries_double_mass/plot_double_mass.jpg", plot=x, width = 7, height = 7)
 
 
 
