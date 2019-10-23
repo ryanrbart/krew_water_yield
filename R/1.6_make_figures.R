@@ -24,10 +24,6 @@ treat_control <-read_csv("data/treated_control.csv")
 # ---------------------------------------------------------------------
 # Figure: Time-series NDVI
 
-krew_annual %>% 
-  left_join(dplyr::select(treat_control, c(treatment, ndvi_thin)),
-            by = c("shed"="treatment", "year"="ndvi_thin"))
-
 happy <- krew_annual %>% 
   left_join(dplyr::select(treat_control, c(treatment, ndvi_thin, ndvi_burn)),
             by = c("shed"="treatment")) %>% 

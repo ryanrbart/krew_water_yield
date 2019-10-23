@@ -163,7 +163,7 @@ x <- out_q_ndiff_draws %>%
   tidybayes::geom_halfeyeh(.width = c(0.9, 0.95)) +
   geom_vline(xintercept = 0) +
   scale_y_discrete(labels = c(watershed_id)) +
-  labs(title = "Difference in Normalized NDVI",
+  labs(title = "Change in streamflow (using difference in nNDVI)",
        x = expression('nNDVI'[diff]~'Coefficient ('*beta*')'),
        y = "Watershed Group") + 
   facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id), scales="free_x") + 
@@ -184,7 +184,7 @@ x <- out_q_diff_draws %>%
   tidybayes::geom_halfeyeh(.width = c(0.9, 0.95)) +
   geom_vline(xintercept = 0) +
   scale_y_discrete(labels = c(watershed_id)) +
-  labs(title = "Difference in NDVI",
+  labs(title = "Change in streamflow (using difference in NDVI)",
        x = expression('NDVI'[diff]~'Coefficient ('*beta*')'),
        y = "Watershed Group") +  
   facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id), scales="free_x") + 
@@ -205,7 +205,7 @@ x <- out_q_ratio_draws %>%
   tidybayes::geom_halfeyeh(.width = c(0.9, 0.95)) +
   geom_vline(xintercept = 0) +
   scale_y_discrete(labels = c(watershed_id)) +
-  labs(title = "Ratio of NDVI",
+  labs(title = "Change in streamflow (using ratio of NDVI)",
        x = expression('NDVI'[ratio]~'Coefficient ('*beta*')'),
        y = "Watershed Group") + 
   facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id), scales="free_x") + 
