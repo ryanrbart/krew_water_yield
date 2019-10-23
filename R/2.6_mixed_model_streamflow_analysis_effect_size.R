@@ -1,7 +1,5 @@
 # KREW mixed-model analysis: Effect size
 
-# With rstanarm, and tidybayes
-
 
 source("R/0_utilities.R")
 
@@ -44,226 +42,145 @@ out_q_ratio_draws <- read_rds("output/2.5_mixed_model_analysis/out_q_ratio_draws
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
-# Effect size code
-
-# Need to quantify the change in streamflow for a given reduction/difference in NDVI
-
-
-
-
+# Effect size notes: Since the dependent variable in the mixed model is logged,
+# the effect on the NDVI variable is raised to e. This means that for a constant
+# increase in the beta of the NDVI variable, there will be a constant percent
+# increase in the dependent variable (e.g. every 0.05 decrease in NDVI_diff
+# produces a 10% increase in treated streamflow).
 
 
+# Extract the median and intervals for each parameter.
 
-
-
-
-# ---------------------------------------------------------------------
-# ---------------------------------------------------------------------
-# ---------------------------------------------------------------------
-# Old code from before using NDVIdiff variable
-
-
-
-# ---------------------------------------------------------------------
-# What is the effect size?
-
-# NDVI diff example
-q_estimates <- purrr::map(out_q_ndvi_diff, broom::tidy)
-
-# Cycle through the 6 outputs
-for (aa in seq(1,6)){
-  # This script computes the percent change (or absolute change) in Qt for a given point change in the normalized NDVI of the treated watersheds
-  # If using the diff metric, this code should (approximately?) scale linearly with the given point change in normalized NDVI
-  # If using the normalized metric, the percent results should be the same for different NDVI values as long as the difference is the same. The absolute value may change.
-  # Similarly, if using the normalized metric, the percent results should be the same for different levels of wetness. The absolute value may change.
+extact_es_values <- function(out, ndvi_chg){
   
-  ndvi_t <- -0.2     # Treated watershed NDVI
-  ndvi_c <- 0.0     # Control watershed NDVI
-  q_control <- 100
+  q_diff_median <- purrr::map(out, function(x) x %>%
+                                     tidybayes::spread_draws(`(Intercept)`, `log(q_control)`, ndvi_diff) %>%
+                                     tidybayes::median_qi()
+  )
   
-  q_funct3_t <- exp(q_estimates[[aa]]$estimate[1] + q_estimates[[aa]]$estimate[2] * log(q_control) + q_estimates[[aa]]$estimate[3] * ndvi_t)
-  q_funct3_c <- exp(q_estimates[[aa]]$estimate[1] + q_estimates[[aa]]$estimate[2] * log(q_control) + q_estimates[[aa]]$estimate[3] * ndvi_c)  
+  q_diff_median <- q_diff_median %>% 
+    bind_rows(.id="response_variable") %>% 
+    dplyr::mutate(treatment_es = exp(ndvi_diff * ndvi_chg)*100-100,
+                  treatment_es_lower = exp(ndvi_diff.lower * ndvi_chg)*100-100,
+                  treatment_es_upper = exp(ndvi_diff.upper * ndvi_chg)*100-100) %>% 
+    dplyr::select(response_variable, treatment_es_upper, treatment_es, treatment_es_lower)
   
-  q_percent <- (q_funct3_t / q_funct3_c)*100 - 100  # Percent change
-  q_diff <- (q_funct3_t - q_funct3_c)               # Absolute change
-  
-  print(paste("q_funct3_t: ", round(q_funct3_t,3)))
-  print(paste("q_funct3_c: ", round(q_funct3_c,3)))
-  print(paste("q_percent:  ", round(q_percent,3)))
-  print(paste("q_diff:     ", round(q_diff,3)))
-  print("---------------")
+  return(q_diff_median)
 }
 
-
-# ---
-# NDVI diff interaction example
-q_estimates <- purrr::map(out_q_ndvi_diff_int, broom::tidy)
-
-# Cycle through the 6 outputs
-for (aa in seq(1,6)){
-  # This script computes the percent change (or absolute change) in Qt for a given point change in the normalized NDVI of the treated watersheds
-  # If using the diff metric, this code (and the following) should scale linearly with the given point change in normalized NDVI
-  # If using the normalized metric, the percent results should be the same for different NDVI values as long as the difference is the same. The absolute value may change.
-  # Similarly, if using the normalized metric, the percent results should be the same for levels of wetness. The absolute value may change.
-  
-  ndvi_t <- 0.1     # Treated watershed NDVI
-  ndvi_c <- 1     # Control watershed NDVI
-  q_control <- 100
-  
-  q_funct4_t <- exp(q_estimates[[aa]]$estimate[1] + q_estimates[[aa]]$estimate[2] * log(q_control) + q_estimates[[aa]]$estimate[3] * ndvi_t + q_estimates[[aa]]$estimate[4] * log(q_control) * ndvi_t)
-  q_funct4_c <- exp(q_estimates[[aa]]$estimate[1] + q_estimates[[aa]]$estimate[2] * log(q_control) + q_estimates[[aa]]$estimate[3] * ndvi_c + q_estimates[[aa]]$estimate[4] * log(q_control) * ndvi_c)  
-  
-  q_percent <- (q_funct4_t / q_funct4_c)*100 - 100
-  q_diff <- (q_funct4_t - q_funct4_c)
-  
-  print(paste("q_funct4_t: ", round(q_funct4_t,3)))
-  print(paste("q_funct4_c: ", round(q_funct4_c,3)))
-  print(paste("q_percent:  ", round(q_percent,3)))
-  print(paste("q_diff:     ", round(q_diff,3)))
-  print("---------------")
-}
+# Output is percent change from null model (0 = no change, negative value = negative percent change, positive value = positive percent change)
+es_values_bull <- extact_es_values(out=out_q_diff_bull, ndvi_chg = -0.05)
+es_values_prov <- extact_es_values(out=out_q_diff_prov, ndvi_chg = -0.05)
+print(es_values_bull)
+print(es_values_prov)
 
 
-# ---------------------------------------------------------------------
-# Change draws to effect size
-
-# -----
-# NDVI diff
-
-# For a fixed normalized point reduction in NDVI
-out_q_ndvi_diff_draws <- out_q_ndvi_diff_draws %>% 
-  dplyr::group_by(response_variable) %>% 
-  dplyr::mutate(treatment_effect_size = (exp(ndvi_diff_n * (-0.1)) /  exp(ndvi_diff_n * 0))*100 - 100)
-
-
-# -----
-# NDVI diff interaction
-
-# For a fixed normalized point reduction in NDVI
-out_q_ndvi_diff_int_draws <- out_q_ndvi_diff_int_draws %>% 
-  dplyr::group_by(response_variable) %>% 
-  dplyr::mutate(treatment_effect_size = (exp(ndvi_diff_n * (-0.1)) /  exp(ndvi_diff_n * 0))*100 - 100)
-
-
-
-# ---------------------------------------------------------------------
-# Plot showing effect size across of range of NDVI differences (diff)
-
-q_estimates <- purrr::map(out_q_ndvi_diff, broom::tidy)
-names(q_estimates) <- c("Q95", "Oct-Dec", "Jan-Mar", "Apr-Jun", "Jul-Sep", "Annual")
-
-ndvi_c <- 1.0               # Starting control watershed Normalized NDVI
-frac <- seq(0.01,1,0.01)    # Fraction of control watershed NDVI in treated watershed
-
-ndvi_ratio_es_range <- purrr::map_dfr(frac, function(x){
-  purrr::map_dfr(q_estimates, function(y) (exp(y$estimate[3] * (ndvi_c*x)) / 
-                                             exp(y$estimate[3] * ndvi_c))*100 - 100)
-})
-
-ndvi_ratio_es_range <- ndvi_ratio_es_range %>% 
-  dplyr::bind_cols(., ndvi_frac = frac) %>% 
-  tidyr::gather(key="response_variable", value="q_change", -ndvi_frac) %>% 
-  dplyr::mutate(ndvi_reduction = (1 - ndvi_frac)*100)
-
-
-x <- ggplot(data=ndvi_ratio_es_range) +
-  geom_line(aes(x=ndvi_reduction, y=q_change, linetype=response_variable, group=response_variable)) +
-  geom_hline(aes(yintercept=0), color="red") +
-  labs(x = "Reduction in normalized NDVI of treated watershed\nrelative to normalized NDVI of control watershed (%)" , y = "Change in streamflow (%)") +
-  theme_bw(base_size = 9) +
-  NULL
-ggsave("output/2.4_mixed_model_analysis/plot_deltaQ_vs_ndvi_diff.jpg",plot=x, width = 4, height = 3)
-
-
-
-# ---------------------------------------------------------------------
-
-
-
+# For future reference: alternative approach to parameter values
+purrr::map(out_q_diff_bull, broom::tidy)
+purrr::map(out_q_diff_prov, broom::tidy)
 
 
 
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
-# What is the effect size?
-
-# Example for NDVI ratio with 0.05 point reduction in NDVI
-q_estimates <- purrr::map(out_q, broom::tidy)
-bb <- 1000
-
-# Cycle through the 6 outputs
-for (aa in seq(1,6)){
-  # q_percent <- (exp(q_estimates[[aa]]$estimate[1] + q_estimates[[aa]]$estimate[2] * log(bb) + q_estimates[[aa]]$estimate[3] * 0.65 + q_estimates[[aa]]$estimate[4] * log(bb) * 0.65) / 
-  #                 exp(q_estimates[[aa]]$estimate[1] + q_estimates[[aa]]$estimate[2] * log(bb) + q_estimates[[aa]]$estimate[3] * 0.7 + q_estimates[[aa]]$estimate[4] * log(bb) * 0.7))*100 - 100
-  
-  q_diff <- exp(q_estimates[[aa]]$estimate[1] + q_estimates[[aa]]$estimate[2] * log(bb) + q_estimates[[aa]]$estimate[3] * 0.5 + q_estimates[[aa]]$estimate[4] * log(bb) * 0.5) - 
-    exp(q_estimates[[aa]]$estimate[1] + q_estimates[[aa]]$estimate[2] * log(bb) + q_estimates[[aa]]$estimate[3] * 0.7 + q_estimates[[aa]]$estimate[4] * log(bb) * 0.7)
-  
-  #print(q_percent)
-  print(q_diff)
-  print("---------------")
-}
-
-# ---------------------------------------------------------------------
-# Change draws to effect size
+# Change draws to effect size and plot
 
 
-# For a fixed point reduction in NDVI
-out_q_draws <- out_q_draws %>% 
-  dplyr::group_by(response_variable) %>% 
-  dplyr::mutate(treatment_effect_size = (exp(ndvi_diff_n * (-0.05)) /  exp(ndvi_diff_n * 0))*100 - 100)
+# Assign a fixed point change in NDVI (negative value means that treated watershed is decreasing relative to control)
+ndvi_chg <- -0.05
+
+out_q_diff_draws <- out_q_diff_draws %>% 
+  dplyr::group_by(model, response_variable) %>% 
+  # In below code, ndvi_diff is beta from model. Output is percent change from null model (0 = no change, negative value = negative percent change, positive value = positive percent change)
+  dplyr::mutate(treatment_effect_size = exp(ndvi_diff * ndvi_chg)*100-100)
 
 
+# ----
+# Make draws plot
 
+response_variable_id <- c(
+  `1` = "Q95", `2` = "Oct-Dec", `3` = "Jan-Mar",
+  `4` = "Apr-Jun", `5` = "Jul-Sep", `6` = "Annual"
+)
 
-# ---------------------------------------------------------------------
-# Plot mixed modeling output with effect sizes
-
+watershed_id <- c(all_data = "All\nWatersheds",
+                  bull_data = "Bull",
+                  prov_data = "Providence")
 
 # Plot uncertainty intervals by parameter (ndvi_diff)
-plot_diff_es <- out_q_draws %>%      
-  ggplot(data=., aes(y = response_variable, x = treatment_effect_size)) +
-  tidybayes::geom_halfeyeh(color="black", fill="gray55") +
+x <- out_q_diff_draws %>% 
+  dplyr::filter(model != "all_data") %>% 
+  ggplot(data=., aes(y = model, x = treatment_effect_size)) +
+  tidybayes::geom_halfeyeh(color="black", fill="gray55", .width = c(0.9, 0.95)) +
   geom_vline(xintercept = 0) +
-  # scale_x_continuous(breaks = c(-80,-60,-40,-20,0,20,40,60),labels = c("-80","-60","-40","-20","0","20","40","60")) +
-  scale_y_discrete(labels = c(response_variable_id)) +
-  labs(x = "Change in Streamflow Response Variable (%)\n given a 0.05 point reduction in NDVI" , y = "Streamflow Response Variable") +
+  scale_y_discrete(labels = c(watershed_id)) +
+  labs(title = "Change in Streamflow Response Variable",
+       x = "Change in Streamflow Response Variable (%)\n given a 0.05 point reduction in NDVI" ,
+       y = "Watershed Group") +
+  facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id), scales="free_x") + 
   theme_tidybayes() +
+  theme(axis.text.y = element_text(angle = 90, hjust=0.55, vjust=1)) +
   panel_border() + 
   background_grid() +
   #xlim(-100,100) +
   NULL
-ggsave("output/2.4_mixed_model_analysis/plot_ndvi_diff_effect_size.jpg",plot=plot_diff_es, width = 5, height = 3)
-
-
-
+ggsave("output/2.6_mixed_model_effect_size/plot_q_diff_es_draws.pdf",plot=x, width = 5, height = 4)
 
 
 # ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 # Plot showing effect size across of range of NDVI differences
 
-q_estimates <- purrr::map(out_q, broom::tidy)
-names(q_estimates) <- c("Q95", "Oct-Dec", "Jan-Mar", "Apr-Jun", "Jul-Sep", "Annual")
+extact_es_values <- function(out, ndvi_chg){
+  
+  q_diff_median <- purrr::map(out, function(x) x %>%
+                                tidybayes::spread_draws(`(Intercept)`, `log(q_control)`, ndvi_diff) %>%
+                                tidybayes::median_qi()
+  )
+  
+  q_diff_median <- q_diff_median %>% 
+    bind_rows(.id="response_variable") %>% 
+    expand_grid(., ndvi_chg) %>% 
+    dplyr::mutate(treatment_es = exp(ndvi_diff * ndvi_chg)*100-100,
+                  treatment_es_lower = exp(ndvi_diff.lower * ndvi_chg)*100-100,
+                  treatment_es_upper = exp(ndvi_diff.upper * ndvi_chg)*100-100)
+  
+  return(q_diff_median)
+}
 
-ndvi_c=0.7     # Starting control watershed NDVI
-frac=seq(0.01,1,0.01)    # Fraction of control watershed NDVI in treated watershed
+# Extract effect sizes
+es_values_bull2 <- extact_es_values(out=out_q_diff_bull, ndvi_chg <- seq(-0.16,0,0.01))    # ndvi_chg is the range along the x axis of plot
+es_values_prov2 <- extact_es_values(out=out_q_diff_prov, ndvi_chg <- seq(-0.16,0,0.01))    # ndvi_chg is the range along the x axis of plot
 
-ndvi_ratio_es_range <- purrr::map_dfr(frac, function(x){
-  purrr::map_dfr(q_estimates, function(y) (exp(y$estimate[3] * (ndvi_c*x)) / 
-                                             exp(y$estimate[3] * ndvi_c))*100 - 100)
-})
-
-ndvi_ratio_es_range <- ndvi_ratio_es_range %>% 
-  dplyr::bind_cols(., reduction_frac = frac) %>% 
-  tidyr::gather(key="response_variable", value="q_change", -reduction_frac)
+# Combine ES values
+es_values <- es_values_bull2 %>% 
+  dplyr::bind_rows(.,es_values_prov2, .id="site") %>% 
+  dplyr::mutate(site = if_else(site==1, "Bull", "Prov"))
 
 
-x <- ggplot(data=ndvi_ratio_es_range) +
-  geom_line(aes(x=reduction_frac, y=q_change, linetype=response_variable, group=response_variable)) +
+# ----
+# Make plot
+
+response_variable_id <- c(
+  `1` = "Q95", `2` = "Oct-Dec", `3` = "Jan-Mar",
+  `4` = "Apr-Jun", `5` = "Jul-Sep", `6` = "Annual"
+)
+
+x <- ggplot(data=es_values) +
+  geom_line(aes(x=ndvi_chg, y=treatment_es, linetype=site, group=site)) +
   geom_hline(aes(yintercept=0), color="red") +
-  labs(x = "Fraction of NDVI in treated watershed\nrelative to control watershed" , y = "Change in streamflow (%)") +
+  scale_linetype_discrete(name="Watershed\nGroup") +
+  labs(title="",
+       x = "Change in NDVI in treated watershed relative to control watershed",
+       y = "Change in streamflow (%)") +
+  facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id), scales="free_x", ncol = 3) + 
+  theme_bw(base_size = 11) +
   NULL
-ggsave("output/2.4_mixed_model_analysis/plot_deltaQ_vs_ndvi_diff.jpg",plot=x, width = 4, height = 3)
+ggsave("output/2.6_mixed_model_effect_size/plot_deltaQ_vs_ndvi_diff.pdf",plot=x, width = 7, height = 5)
+
+
+
 
 
