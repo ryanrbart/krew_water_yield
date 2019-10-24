@@ -27,6 +27,7 @@ paired_function <- function(data, x, y, var, var_lab, title, x_lab, y_lab){
   
   plot_paired <- ggplot(data, aes_string(x = x, y = y)) +
     geom_point(aes_string(size = var, color = var)) +
+    geom_smooth(method='lm',se=FALSE, formula=y~x) +
     scale_y_log10() +
     scale_size_continuous(name = var_lab) +  
     scale_color_continuous(name = var_lab,

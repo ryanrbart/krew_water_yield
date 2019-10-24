@@ -8,8 +8,6 @@ source("R/0_utilities.R")
 # ---------------------------------------------------------------------
 # Import data
 
-# Need to run 2.1 for precipitation data
-
 pair_q95 <- read_rds(PAIR_Q95_RDS)
 pair_seasonal <- read_rds(PAIR_SEASONAL_RDS)
 pair_wy <- read_rds(PAIR_WY_RDS)
@@ -30,11 +28,6 @@ treat_control <-read_csv("data/treated_control.csv")
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # Time-series plot
-
-
-
-QP %>% 
-  
 
 happy <- QP %>% 
   left_join(dplyr::select(treat_control, c(treatment, ndvi_thin, ndvi_burn)),
