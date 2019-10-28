@@ -22,14 +22,41 @@ pair_seasonal_4 <- dplyr::filter(pair_seasonal, Season==4)
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
+# Combine data
+
+response_variable_id <- c(
+  `1` = "Q95", `2` = "Oct-Dec", `3` = "Jan-Mar",
+  `4` = "Apr-Jun", `5` = "Jul-Sep", `6` = "Annual"
+)
+
+pair_q95 <- pair_q95 %>% 
+  dplyr::mutate(response_variable = 1)
+pair_seasonal_1 <- pair_seasonal_1 %>% 
+  dplyr::mutate(response_variable = 2) %>% 
+  dplyr::select(-Season)
+pair_seasonal_2 <- pair_seasonal_2 %>% 
+  dplyr::mutate(response_variable = 3) %>% 
+  dplyr::select(-Season)
+pair_seasonal_3 <- pair_seasonal_3 %>% 
+  dplyr::mutate(response_variable = 4) %>% 
+  dplyr::select(-Season)
+pair_seasonal_4 <- pair_seasonal_4 %>% 
+  dplyr::mutate(response_variable = 5) %>% 
+  dplyr::select(-Season)
+pair_wy <- pair_wy %>% 
+  dplyr::mutate(response_variable = 6)
+
+pair_all <- as_tibble(dplyr::bind_rows(pair_q95, pair_seasonal_1, pair_seasonal_2, pair_seasonal_3, pair_seasonal_4, pair_wy))
+
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 # Regression Analysis
 
-# ----
-# paired_q95 data
 
 # Create nested streamflow data within each watershed
-pair_nest <- pair_q95 %>% 
-  group_by(shed_treated) %>% 
+pair_nest <- pair_all %>% 
+  group_by(shed_treated, response_variable) %>% 
   nest() 
 
 # Generate regression models for each watershed
@@ -40,69 +67,25 @@ pair_lm <- pair_nest %>%
 #unnest(pair_lm, results_fit)
 #unnest(pair_lm, results_terms)
 
-# Plot the p-value for each treatment dummy variable
-pair_lm %>% 
-  unnest(results_terms) %>% 
-  dplyr::filter(term=="ndvi_diff") %>% 
-  ggplot() +
-  geom_bar(stat = "identity", aes(x=shed_treated,y=estimate))
-#geom_bar(stat = "identity", aes(x=shed_treated,y=p.value)) +
-#geom_hline(yintercept = 0.05, linetype=2, color="red", size=.4) 
-
-
-
-# ----
-# paired_seasonal data
-
-# Create nested streamflow data within each watershed
-pair_nest <- pair_seasonal %>% 
-  group_by(shed_treated, Season) %>% 
-  nest() 
-
-# Generate regression models for each watershed
-pair_lm <- pair_nest %>% 
-  mutate(regr = map(data, ~ lm(log(q_treated) ~ log(q_control) + ndvi_diff, data = .)),
-         results_terms = map(regr, tidy),
-         results_fit = map(regr, glance))
-#unnest(pair_lm, results_fit)
-#unnest(pair_lm, results_terms)
 
 # Plot the p-value for each treatment dummy variable
-pair_lm %>% 
+x <- pair_lm %>% 
   unnest(results_terms) %>% 
   dplyr::filter(term=="ndvi_diff") %>% 
-  ggplot() +
+  ggplot(data=.) +
   geom_bar(stat = "identity", aes(x=shed_treated,y=estimate)) +
   #geom_bar(stat = "identity", aes(x=shed_treated,y=p.value)) +
   #geom_hline(yintercept = 0.05, linetype=2, color="red", size=.4) +
-  facet_grid(Season~.)
+  labs(title="Beta Coefficient for NDVI_diff variable in individual multiple regression model", y="Estimate", x="Watershed") +
+  #facet_grid(response_variable~.) +
+  facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id), scales="free_x") + 
+  theme_bw(base_size = 9) +
+  NULL
+ggsave("output/2.3_regression/plot_beta_estimate_by_watershed.pdf",plot=x, width = 7, height = 5)
 
 
-# ----
-# paired_wy data
 
-# Create nested streamflow data within each watershed
-pair_nest <- pair_wy %>% 
-  group_by(shed_treated) %>% 
-  nest() 
 
-# Generate regression models for each watershed
-pair_lm <- pair_nest %>% 
-  mutate(regr = map(data, ~ lm(log(q_treated) ~ log(q_control) + ndvi_diff, data = .)),
-         results_terms = map(regr, tidy),
-         results_fit = map(regr, glance))
-#unnest(pair_lm, results_fit)
-#unnest(pair_lm, results_terms)
-
-# Plot the effect for each treatment dummy variable
-pair_lm %>% 
-  unnest(results_terms) %>% 
-  dplyr::filter(term=="ndvi_diff") %>% 
-  ggplot() +
-  geom_bar(stat = "identity", aes(x=shed_treated,y=estimate)) +
-  #geom_bar(stat = "identity", aes(x=shed_treated,y=p.value)) +
-  #geom_hline(yintercept = 0.05, linetype=2, color="red", size=.4) + 
-  labs(title="Effect Size for Annual Streamflow Change", y="Estimate", x="Watershed")
 
 
 
@@ -110,7 +93,7 @@ pair_lm %>%
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
-# Multiple Regression Analysis
+# Alternative Regression Analysis
 
 # Compare treated streamflow to difference NDVI variable across all watersheds 
 # (aka don't facet the individual watersheds)

@@ -23,6 +23,7 @@ library(tidybayes)
 library(ggstance)
 library(rstantools)
 library(cowplot)
+library(lme4)
 
 
 # ---------------------------------------------------------------------
