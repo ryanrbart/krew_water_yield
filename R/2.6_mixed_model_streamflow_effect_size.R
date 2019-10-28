@@ -34,9 +34,9 @@ out_q_ratio_prov <- read_rds("output/2.4_mixed_model/out_q_ratio_prov.rds")
 
 
 # Import mixed model draws
-out_q_diff_draws <- read_rds("output/2.5_mixed_model_analysis/out_q_diff_draws.rds")
-out_q_ndiff_draws <- read_rds("output/2.5_mixed_model_analysis/out_q_ndiff_draws.rds")
-out_q_ratio_draws <- read_rds("output/2.5_mixed_model_analysis/out_q_ratio_draws.rds")
+out_q_diff_draws <- read_rds("output/2.5_mixed_model_betas/out_q_diff_draws.rds")
+out_q_ndiff_draws <- read_rds("output/2.5_mixed_model_betas/out_q_ndiff_draws.rds")
+out_q_ratio_draws <- read_rds("output/2.5_mixed_model_betas/out_q_ratio_draws.rds")
 
 
 # ---------------------------------------------------------------------
@@ -151,8 +151,8 @@ extact_es_values <- function(out, ndvi_chg){
 }
 
 # Extract effect sizes
-es_values_bull2 <- extact_es_values(out=out_q_diff_bull, ndvi_chg <- seq(-0.16,0,0.01))    # ndvi_chg is the range along the x axis of plot
-es_values_prov2 <- extact_es_values(out=out_q_diff_prov, ndvi_chg <- seq(-0.16,0,0.01))    # ndvi_chg is the range along the x axis of plot
+es_values_bull2 <- extact_es_values(out=out_q_diff_bull, ndvi_chg <- seq(-0.15,0,0.01))    # ndvi_chg is the range along the x axis of plot
+es_values_prov2 <- extact_es_values(out=out_q_diff_prov, ndvi_chg <- seq(-0.15,0,0.01))    # ndvi_chg is the range along the x axis of plot
 
 # Combine ES values
 es_values <- es_values_bull2 %>% 
@@ -168,17 +168,24 @@ response_variable_id <- c(
   `4` = "Apr-Jun", `5` = "Jul-Sep", `6` = "Annual"
 )
 
-x <- ggplot(data=es_values) +
-  geom_line(aes(x=ndvi_chg, y=treatment_es, linetype=site, group=site)) +
-  geom_hline(aes(yintercept=0), color="red") +
+
+x <- es_values %>% 
+  dplyr::filter(response_variable == 6) %>% 
+  ggplot(data=.) +
+  geom_ribbon(aes(x=ndvi_chg, ymin=treatment_es_lower, ymax=treatment_es_upper),
+              alpha=.5, fill="blue") +
+  geom_line(aes(x=ndvi_chg, y=treatment_es)) +
+  geom_line(aes(x=ndvi_chg, y=treatment_es_lower), linetype=2, color="black") +
+  geom_line(aes(x=ndvi_chg, y=treatment_es_upper), linetype=2, color="black") +
+  #geom_hline(aes(yintercept=0), color="red") +
   scale_linetype_discrete(name="Watershed\nGroup") +
   labs(title="",
        x = "Change in NDVI in treated watershed relative to control watershed",
        y = "Change in streamflow (%)") +
-  facet_wrap(.~response_variable, labeller = labeller(.cols=response_variable_id), scales="free_x", ncol = 3) + 
-  theme_bw(base_size = 11) +
+  facet_wrap(.~site) + 
+  theme_bw(base_size = 13) +
   NULL
-ggsave("output/2.6_mixed_model_effect_size/plot_deltaQ_vs_ndvi_diff.pdf",plot=x, width = 7, height = 5)
+ggsave("output/2.6_mixed_model_effect_size/plot_deltaQ_vs_ndvi_diff.pdf",plot=x, width = 7, height = 4)
 
 
 

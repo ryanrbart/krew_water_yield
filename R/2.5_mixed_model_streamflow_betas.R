@@ -173,7 +173,7 @@ x <- out_q_ndiff_draws %>%
   background_grid() +
   xlim(-2.5,2.5) +
   NULL
-ggsave("output/2.5_mixed_model_analysis/plot_q_ndiff_draws.jpg",plot=x, width = 5, height = 4)
+ggsave("output/2.5_mixed_model_betas/plot_q_ndiff_draws.jpg",plot=x, width = 5, height = 4)
 
 
 
@@ -194,7 +194,7 @@ x <- out_q_diff_draws %>%
   background_grid() +
   #xlim(-2,2) +
   NULL
-ggsave("output/2.5_mixed_model_analysis/plot_q_diff_draws.jpg",plot=x, width = 5, height = 4)
+ggsave("output/2.5_mixed_model_betas/plot_q_diff_draws.jpg",plot=x, width = 5, height = 4)
 
 
 
@@ -215,7 +215,7 @@ x <- out_q_ratio_draws %>%
   background_grid() +
   #xlim(-2,2) +
   NULL
-ggsave("output/2.5_mixed_model_analysis/plot_q_ratio_draws.jpg",plot=x, width = 5, height = 4)
+ggsave("output/2.5_mixed_model_betas/plot_q_ratio_draws.jpg",plot=x, width = 5, height = 4)
 
 
 # ---------------------------------------------------------------------
@@ -223,9 +223,9 @@ ggsave("output/2.5_mixed_model_analysis/plot_q_ratio_draws.jpg",plot=x, width = 
 # ---------------------------------------------------------------------
 # Save draws data
 
-write_rds(out_q_diff_draws, "output/2.5_mixed_model_analysis/out_q_diff_draws.rds")
-write_rds(out_q_ndiff_draws, "output/2.5_mixed_model_analysis/out_q_ndiff_draws.rds")
-write_rds(out_q_ratio_draws, "output/2.5_mixed_model_analysis/out_q_ratio_draws.rds")
+write_rds(out_q_diff_draws, "output/2.5_mixed_model_betas/out_q_diff_draws.rds")
+write_rds(out_q_ndiff_draws, "output/2.5_mixed_model_betas/out_q_ndiff_draws.rds")
+write_rds(out_q_ratio_draws, "output/2.5_mixed_model_betas/out_q_ratio_draws.rds")
 
 
 

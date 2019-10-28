@@ -1,4 +1,4 @@
-# KREW double mass curve analysis
+# KREW time series and double mass curve analysis
 
 
 source("R/0_utilities.R")
