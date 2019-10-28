@@ -114,68 +114,24 @@ function_paired_ratio <- function(DATA, ITER, WARMUP, CHAINS,
   return(out)
 }
 
+# -----
+# Regression model
 
-# ----
-# Interaction
-
-function_paired_diff_n_int <- function(DATA, ITER, WARMUP, CHAINS,
-                                       CORES, THIN, SEED, ADAPT_DELTA){
-  out <- stan_glmer(log(q_treated) ~ log(q_control) + ndvi_diff_n + log(q_control)*ndvi_diff_n +
-                      (1 | shed_treated),
-                    data = DATA,
-                    family = gaussian, 
-                    prior = normal(),
-                    prior_intercept = normal(),
-                    chains = CHAINS, cores = CORES, seed = SEED,
-                    iter = ITER, warmup = WARMUP, thin = THIN,
-                    adapt_delta = ADAPT_DELTA)
-  return(out)
-}
-
-
-function_paired_diff_int <- function(DATA, ITER, WARMUP, CHAINS,
-                                     CORES, THIN, SEED, ADAPT_DELTA){
-  out <- stan_glmer(log(q_treated) ~ log(q_control) + ndvi_diff + log(q_control)*ndvi_diff +
-                      (1 | shed_treated),
-                    data = DATA,
-                    family = gaussian, 
-                    prior = normal(),
-                    prior_intercept = normal(),
-                    chains = CHAINS, cores = CORES, seed = SEED,
-                    iter = ITER, warmup = WARMUP, thin = THIN,
-                    adapt_delta = ADAPT_DELTA)
-  return(out)
-}
-
-
-function_paired_ratio_n_int <- function(DATA, ITER, WARMUP, CHAINS,
-                                        CORES, THIN, SEED, ADAPT_DELTA){
-  out <- stan_glmer(log(q_treated) ~ log(q_control) + ndvi_ratio_n + log(q_control)*ndvi_ratio_n +
-                      (1 | shed_treated),
-                    data = DATA,
-                    family = gaussian, 
-                    prior = normal(),
-                    prior_intercept = normal(),
-                    chains = CHAINS, cores = CORES, seed = SEED,
-                    iter = ITER, warmup = WARMUP, thin = THIN,
-                    adapt_delta = ADAPT_DELTA)
-  return(out)
-}
-
-
-function_paired_ratio_int <- function(DATA, ITER, WARMUP, CHAINS,
+function_paired_regr_diff <- function(DATA, ITER, WARMUP, CHAINS,
                                       CORES, THIN, SEED, ADAPT_DELTA){
-  out <- stan_glmer(log(q_treated) ~ log(q_control) + ndvi_ratio + log(q_control)*ndvi_ratio +
-                      (1 | shed_treated),
-                    data = DATA,
-                    family = gaussian, 
-                    prior = normal(),
-                    prior_intercept = normal(),
-                    chains = CHAINS, cores = CORES, seed = SEED,
-                    iter = ITER, warmup = WARMUP, thin = THIN,
-                    adapt_delta = ADAPT_DELTA)
+  out <- stan_glm(log(q_treated) ~ log(q_control) + ndvi_diff,
+                  data = DATA,
+                  family = gaussian, 
+                  prior = normal(),
+                  prior_intercept = normal(),
+                  chains = CHAINS, cores = CORES, seed = SEED,
+                  iter = ITER, warmup = WARMUP, thin = THIN,
+                  adapt_delta = ADAPT_DELTA)
   return(out)
 }
+
+
+
 
 
 # ---------------------------------------------------------------------
@@ -502,6 +458,38 @@ out_wy_ratio_prov <- pair_wy %>%
                         CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
 
 
+# -------------------------------
+# Run regression models
+
+out_wy_regr_diff_b201 <- pair_wy %>% 
+  dplyr::filter(shed_treated %in% c("B201")) %>% 
+  function_paired_regr_diff(DATA=., ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                            CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_wy_regr_diff_b203 <- pair_wy %>% 
+  dplyr::filter(shed_treated %in% c("B203")) %>% 
+  function_paired_regr_diff(DATA=., ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                            CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_wy_regr_diff_b204 <- pair_wy %>% 
+  dplyr::filter(shed_treated %in% c("B204")) %>% 
+  function_paired_regr_diff(DATA=., ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                            CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_wy_regr_diff_p301 <- pair_wy %>% 
+  dplyr::filter(shed_treated %in% c("P301")) %>% 
+  function_paired_regr_diff(DATA=., ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                       CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_wy_regr_diff_d102 <- pair_wy %>% 
+  dplyr::filter(shed_treated %in% c("D102")) %>% 
+  function_paired_regr_diff(DATA=., ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                            CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
+
+out_wy_regr_diff_p303 <- pair_wy %>% 
+  dplyr::filter(shed_treated %in% c("P303")) %>% 
+  function_paired_regr_diff(DATA=., ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
+                            CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
 
 
 # ---------------------------------------------------------------------
@@ -564,6 +552,12 @@ out_q_ratio_prov <- list(out_q95_ratio_prov, out_s1_ratio_prov,
                           out_s4_ratio_prov, out_wy_ratio_prov)
 
 
+# ----
+out_q_regr_diff_all <- list(out_wy_regr_diff_b201, out_wy_regr_diff_b203,
+                            out_wy_regr_diff_b204, out_wy_regr_diff_p301,
+                            out_wy_regr_diff_d102, out_wy_regr_diff_p303)
+
+
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
@@ -586,4 +580,6 @@ write_rds(out_q_ratio_all, "output/2.4_mixed_model/out_q_ratio_all.rds")
 write_rds(out_q_ratio_bull, "output/2.4_mixed_model/out_q_ratio_bull.rds")
 write_rds(out_q_ratio_prov, "output/2.4_mixed_model/out_q_ratio_prov.rds")
 
-  
+write_rds(out_q_regr_diff_all, "output/2.4_mixed_model/out_q_regr_diff_all.rds")
+
+

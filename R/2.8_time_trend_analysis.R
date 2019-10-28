@@ -60,7 +60,7 @@ x <- ggplot(QP, aes(x = precip, y = q)) +
        x = "Annual Precipitation (mm)") +
   theme_set(theme_bw(base_size = 17)) +
   NULL
-ggsave("output/2.7_time_trend/time_trend_wy.jpg", plot=x, width = 7, height = 7)
+ggsave("output/2.8_time_trend/time_trend_wy.jpg", plot=x, width = 7, height = 7)
 
 
 
