@@ -98,29 +98,35 @@ watershed_id <- c(Bull = "Bull",
 # Mixed model results: Interaction variable (beta) NDVI
 x <- out_ndvi_int_combine_draws %>%      
   ggplot(data=., aes(y = pair_type, x = `ndvi_control:treatment_dummy1`)) +
-  tidybayes::geom_halfeyeh(.width = c(0.9, 0.95)) +
+  ggridges::geom_density_ridges(scale = 0.9, fill="#b2df8a", color=NA, alpha=0.7) +
+  stat_pointintervalh(.width = c(0.9, 0.95)) +
+  #tidybayes::geom_halfeyeh(.width = c(0.9, 0.95)) +
   geom_vline(xintercept = 0) +
   scale_y_discrete(labels = c(watershed_id)) +
-  labs(title = "Change in Paired NDVI Slope", x = expression('Coefficient ('*beta*')'), y = "Watershed Group") +  
-  theme_tidybayes() +
+  labs(title = "Paired NDVI Model",
+       x = expression('Treatment*NDVI'[control]~'Coefficient ('*beta[0]*')'),
+       y = "Watershed Group") +  
+  theme_bw(base_size = 13) +
+  theme(axis.text.y = element_text(angle = 90, hjust=0.5, vjust=1)) +
   panel_border() + 
   background_grid() +
+  #xlim(-12,10) +
   NULL
-ggsave("output/1.8/plot_ndvi_int_combine.jpg",plot=x, width = 5, height = 3)
+ggsave("output/1.8/plot_ndvi_int_combine.pdf",plot=x, width = 3.5, height = 3.7)
 
 
 # Mixed model results: Interaction variable (beta) nNDVI
-x <- out_ndvi_n_int_combine_draws %>%      
-  ggplot(data=., aes(y = pair_type, x = `ndvi_control_n:treatment_dummy1`)) +
-  tidybayes::geom_halfeyeh(.width = c(0.9, 0.95)) +
-  geom_vline(xintercept = 0) +
-  scale_y_discrete(labels = c(watershed_id)) +
-  labs(title = "Change in Paired nNDVI Slope", x = expression('Coefficient ('*beta*')'), y = "Watershed Group") + 
-  theme_tidybayes() +
-  panel_border() + 
-  background_grid() +
-  NULL
-ggsave("output/1.8/plot_ndvi_n_int_combine.jpg",plot=x, width = 5, height = 3)
+# x <- out_ndvi_n_int_combine_draws %>%      
+#   ggplot(data=., aes(y = pair_type, x = `ndvi_control_n:treatment_dummy1`)) +
+#   tidybayes::geom_halfeyeh(.width = c(0.9, 0.95)) +
+#   geom_vline(xintercept = 0) +
+#   scale_y_discrete(labels = c(watershed_id)) +
+#   labs(title = "Change in Paired nNDVI Slope", x = expression('Coefficient ('*beta*')'), y = "Watershed Group") + 
+#   theme_tidybayes() +
+#   panel_border() + 
+#   background_grid() +
+#   NULL
+# ggsave("output/1.8/plot_ndvi_n_int_combine.jpg",plot=x, width = 5, height = 3)
 
 
 
@@ -128,7 +134,7 @@ ggsave("output/1.8/plot_ndvi_n_int_combine.jpg",plot=x, width = 5, height = 3)
 # ---------------------------------------------------------------------
 # Save output
 write_rds(out_ndvi_int_combine_draws, "output/1.8/out_ndvi_int_combine_draws.rds")
-write_rds(out_ndvi_n_int_combine_draws, "output/1.8/out_ndvi_n_int_combine_draws.rds")
+# write_rds(out_ndvi_n_int_combine_draws, "output/1.8/out_ndvi_n_int_combine_draws.rds")
 
 
 

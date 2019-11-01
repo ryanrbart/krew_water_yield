@@ -22,19 +22,14 @@ pair_seasonal_4 <- dplyr::filter(pair_seasonal, Season==4)
 
 
 # Import mixed model results
-# out_q_ndiff_all <- read_rds("output/2.4_mixed_model/out_q_ndiff_all.rds")
-# out_q_ndiff_bull <- read_rds("output/2.4_mixed_model/out_q_ndiff_bull.rds")
-# out_q_ndiff_prov <- read_rds("output/2.4_mixed_model/out_q_ndiff_prov.rds")
-
 out_q_diff_all <- read_rds("output/2.4_mixed_model/out_q_diff_all.rds")
 out_q_diff_bull <- read_rds("output/2.4_mixed_model/out_q_diff_bull.rds")
 out_q_diff_prov <- read_rds("output/2.4_mixed_model/out_q_diff_prov.rds")
 
-# out_q_ratio_all <- read_rds("output/2.4_mixed_model/out_q_ratio_all.rds")
-# out_q_ratio_bull <- read_rds("output/2.4_mixed_model/out_q_ratio_bull.rds")
-# out_q_ratio_prov <- read_rds("output/2.4_mixed_model/out_q_ratio_prov.rds")
-
 out_q_regr_diff_all <- read_rds("output/2.4_mixed_model/out_q_regr_diff_all.rds")
+
+out_QP2_bull <- read_rds("output/2.4_mixed_model/out_QP2_bull.rds")
+out_QP2_prov <- read_rds("output/2.4_mixed_model/out_QP2_prov.rds")
 
 
 # ---------------------------------------------------------------------
@@ -43,25 +38,8 @@ out_q_regr_diff_all <- read_rds("output/2.4_mixed_model/out_q_regr_diff_all.rds"
 # Mixed model draw function
 
 
-# Function: paired_ndiff - Non-interaction
-# generate_draws1 <- function(out_q){
-#   # Generate the draws for each parameter
-#   out_q_draws <- purrr::map(out_q, function(x) x %>%
-#                               tidybayes::spread_draws(`(Intercept)`, `log(q_control)`, ndvi_diff_n)
-#   )
-#   out_q_draws <- bind_rows(out_q_draws, .id="response_variable")
-#   
-#   out_q_draws$response_variable <- factor(out_q_draws$response_variable,
-#                                           levels = c(1,2,3,4,5,6))
-#   out_q_draws$.chain <- factor(out_q_draws$.chain)
-#   out_q_draws$.iteration <- factor(out_q_draws$.iteration)
-#   out_q_draws$.draw <- factor(out_q_draws$.draw)
-#   return(out_q_draws)
-# }
-
-
-# Function: paired_diff - Non-interaction
-generate_draws2 <- function(out_q){
+# Function: Paired streamflow model
+generate_draws1 <- function(out_q){
   # Generate the draws for each parameter
   out_q_draws <- purrr::map(out_q, function(x) x %>%
                               tidybayes::spread_draws(`(Intercept)`, `log(q_control)`, ndvi_diff)
@@ -76,25 +54,10 @@ generate_draws2 <- function(out_q){
   return(out_q_draws)
 }
 
-# Function: paired_ratio - Non-interaction
-# generate_draws3 <- function(out_q){
-#   # Generate the draws for each parameter
-#   out_q_draws <- purrr::map(out_q, function(x) x %>%
-#                               tidybayes::spread_draws(`(Intercept)`, `log(q_control)`, ndvi_ratio)
-#   )
-#   out_q_draws <- bind_rows(out_q_draws, .id="response_variable")
-#   
-#   out_q_draws$response_variable <- factor(out_q_draws$response_variable,
-#                                           levels = c(1,2,3,4,5,6))
-#   out_q_draws$.chain <- factor(out_q_draws$.chain)
-#   out_q_draws$.iteration <- factor(out_q_draws$.iteration)
-#   out_q_draws$.draw <- factor(out_q_draws$.draw)
-#   return(out_q_draws)
-# }
 
-
-# Function: paired_regr_diff - Non-interaction
-generate_draws4 <- function(out_q){
+# Function: Regression model
+# For getting draws for individual watersheds
+generate_draws2 <- function(out_q){
   # Generate the draws for each parameter
   out_q_draws <- purrr::map(out_q, function(x) x %>%
                               tidybayes::spread_draws(`(Intercept)`, `log(q_control)`, ndvi_diff)
@@ -109,32 +72,31 @@ generate_draws4 <- function(out_q){
   return(out_q_draws)
 }
 
+
+# Function: Precipitation model
+generate_draws3 <- function(out_q){
+  # Generate the draws for each parameter
+  out_q_draws <- out_q %>%
+    tidybayes::spread_draws(`(Intercept)`, `log(precip)`, `log(p_lag)`, ndvi_annual)
+  
+  out_q_draws$.chain <- factor(out_q_draws$.chain)
+  out_q_draws$.iteration <- factor(out_q_draws$.iteration)
+  out_q_draws$.draw <- factor(out_q_draws$.draw)
+  return(out_q_draws)
+}
+
+
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # Run mixed model draw functions and process data
 
 # -------------------------------
-# paired_ndiff - Non-interaction
+# Paired streamflow model
 
-# out_q_ndiff_all_draws <- generate_draws1(out_q_ndiff_all)
-# out_q_ndiff_bull_draws <- generate_draws1(out_q_ndiff_bull)
-# out_q_ndiff_prov_draws <- generate_draws1(out_q_ndiff_prov)
-# 
-# out_q_ndiff_draws <- bind_rows(all_data = out_q_ndiff_all_draws,
-#                                bull_data = out_q_ndiff_bull_draws,
-#                                prov_data = out_q_ndiff_prov_draws,
-#                                .id="model")
-# out_q_ndiff_draws$model <- factor(out_q_ndiff_draws$model,
-#                                   levels =c("prov_data", "bull_data", "all_data"))
-
-
-# -------------------------------
-# paired_diff - Non-interaction
-
-out_q_diff_all_draws <- generate_draws2(out_q_diff_all)
-out_q_diff_bull_draws <- generate_draws2(out_q_diff_bull)
-out_q_diff_prov_draws <- generate_draws2(out_q_diff_prov)
+out_q_diff_all_draws <- generate_draws1(out_q_diff_all)
+out_q_diff_bull_draws <- generate_draws1(out_q_diff_bull)
+out_q_diff_prov_draws <- generate_draws1(out_q_diff_prov)
 
 out_q_diff_draws <- bind_rows(all_data = out_q_diff_all_draws,
                               bull_data = out_q_diff_bull_draws,
@@ -143,31 +105,12 @@ out_q_diff_draws <- bind_rows(all_data = out_q_diff_all_draws,
 out_q_diff_draws$model <- factor(out_q_diff_draws$model,
                                  levels =c("prov_data", "bull_data", "all_data"))
 
-
 # -------------------------------
-# paired_ratio - Non-interaction
+# Regression model
 
-# out_q_ratio_all_draws <- generate_draws3(out_q_ratio_all)
-# out_q_ratio_bull_draws <- generate_draws3(out_q_ratio_bull)
-# out_q_ratio_prov_draws <- generate_draws3(out_q_ratio_prov)
-# 
-# out_q_ratio_draws <- bind_rows(all_data = out_q_ratio_all_draws,
-#                               bull_data = out_q_ratio_bull_draws,
-#                               prov_data = out_q_ratio_prov_draws,
-#                               .id="model")
-# out_q_ratio_draws$model <- factor(out_q_ratio_draws$model,
-#                                  levels =c("prov_data", "bull_data", "all_data"))
-
-
-
-# -------------------------------
-# paired_rege_diff - Non-interaction
-
-out_q_regr_diff_all_draws <- generate_draws4(out_q_regr_diff_all)
+out_q_regr_diff_all_draws <- generate_draws2(out_q_regr_diff_all)
 
 # Merge out_q_diff_draws with out_q_regr_diff_all_draws
-
-
 out_q_regr_draws <- out_q_diff_draws %>% 
   dplyr::filter(response_variable == 6) %>% 
   dplyr::select(-response_variable) %>% 
@@ -188,12 +131,24 @@ out_q_regr_draws <- out_q_regr_draws %>%
                                  model == "1" ~ "Bull"))
 
 
+# -------------------------------
+# Precipitation model
+
+out_QP2_bull_draws <- generate_draws3(out_q=out_QP2_bull)
+out_QP2_prov_draws <- generate_draws3(out_q=out_QP2_prov)
+
+out_QP2_draws <- bind_rows(bull_data = out_QP2_bull_draws,
+                           prov_data = out_QP2_prov_draws,
+                           .id="model")
+out_QP2_draws$model <- factor(out_QP2_draws$model,
+                              levels =c("prov_data", "bull_data"))
+
+
+
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # Figures: Mixed modeling output (Betas)
-
-# ----
 # Plot the mixed modeling and regression results
 
 model_id <- c(
@@ -245,11 +200,13 @@ ggsave("output/2.5_mixed_model_betas/plot_q_regr_diff_draws_prov.jpg",plot=x, wi
 
 
 # Cowplot together
-
 # Forthcoming
 
 
-# ------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# Figures: Mixed modeling output (Betas)
 # Plot only the mixed modeling results
 
 response_variable_id <- c(
@@ -263,25 +220,80 @@ watershed_id <- c(all_data = "All\nWatersheds",
 
 
 # Plot uncertainty intervals by parameter (paired_diff - Non-interaction)
-x <- out_q_diff_draws %>%
+plot_q_diff_draws <- out_q_diff_draws %>%
   dplyr::filter(model != "all_data", response_variable == 6) %>%
   ggplot(data=., aes(y = model, x = ndvi_diff)) +
-  tidybayes::geom_halfeyeh(.width = c(0.9, 0.95)) +
+  ggridges::geom_density_ridges(scale = 0.9, fill="#b2df8a", color=NA, alpha=0.7) +
+  stat_pointintervalh(.width = c(0.9, 0.95)) +
+  #tidybayes::geom_halfeyeh(.width = c(0.9, 0.95), fill="#b2df8a") +
   geom_vline(xintercept = 0) +
   scale_y_discrete(labels = c(watershed_id)) +
-  labs(title = "Change in streamflow",
-       x = expression('NDVI'[diff]~'Coefficient ('*beta*')'),
+  labs(title = "Paired Streamflow Model",
+       x = expression('NDVI'[diff]~'Coefficient ('*beta[0]*')'),
        y = "Watershed Group") +
-  theme_tidybayes() +
+  theme_bw(base_size = 7.5) +
   theme(axis.text.y = element_text(angle = 90, hjust=0.5, vjust=1)) +
   panel_border() +
   background_grid() +
-  #xlim(-2,2) +
+  xlim(-12,10) +
   NULL
 ggsave("output/2.5_mixed_model_betas/plot_q_diff_draws.jpg",plot=x, width = 4, height = 2.5)
+write_rds(x, "output/2.5_mixed_model_betas/plot_q_diff_draws.rds")
 
 
 
+# Plot uncertainty intervals by parameter
+plot_QP2_draws <- out_QP2_draws %>%
+  dplyr::filter(model != "all_data") %>%
+  ggplot(data=., aes(y = model, x = ndvi_annual)) +
+  ggridges::geom_density_ridges(scale = 0.9, fill="#b2df8a", color=NA, alpha=0.7) +
+  stat_pointintervalh(.width = c(0.9, 0.95)) +
+  #tidybayes::geom_halfeyeh(.width = c(0.9, 0.95), fill="#b2df8a") +
+  geom_vline(xintercept = 0) +
+  scale_y_discrete(labels = c(watershed_id)) +
+  labs(title = "Precipitation Model",
+       x = expression('NDVI'[annual]~'Coefficient ('*beta[0]*')'),
+       y = "Watershed Group") +
+  theme_bw(base_size = 7.5) +
+  theme(axis.text.y = element_text(angle = 90, hjust=0.5, vjust=1)) +
+  panel_border() +
+  background_grid() +
+  xlim(-12,10) +
+  NULL
+ggsave("output/2.5_mixed_model_betas/plot_q_precip_draws.jpg",plot=plot_QP2_draws, width = 4, height = 2.5)
+write_rds(x, "output/2.5_mixed_model_betas/plot_q_precip_draws.rds")
+
+
+# ---------------------------------------------------------------------
+# Cowplot: Combine plot with paired streamflow plot
+
+# Make cowplot
+plot_q_beta <- cowplot::plot_grid(plot_q_diff_draws,
+                                  plot_QP2_draws,
+                                  ncol=1)
+
+
+save_plot("output/2.5_mixed_model_betas/plot_q_beta.pdf",
+          plot=plot_q_beta,
+          ncol = 1,
+          base_height = 3.71,
+          base_asp = 0.5)
+
+
+
+
+
+
+
+
+
+
+
+
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# Plot 6 significance of NDVI for predicting 6 streamflow variables 
 
 # # Plot uncertainty intervals by parameter (paired_ndiff - Non-interaction)
 # x <- out_q_ndiff_draws %>%
@@ -351,8 +363,7 @@ ggsave("output/2.5_mixed_model_betas/plot_q_diff_draws.jpg",plot=x, width = 4, h
 # Save draws data
 
 write_rds(out_q_diff_draws, "output/2.5_mixed_model_betas/out_q_diff_draws.rds")
-write_rds(out_q_ndiff_draws, "output/2.5_mixed_model_betas/out_q_ndiff_draws.rds")
-write_rds(out_q_ratio_draws, "output/2.5_mixed_model_betas/out_q_ratio_draws.rds")
-
+# write_rds(out_q_ndiff_draws, "output/2.5_mixed_model_betas/out_q_ndiff_draws.rds")
+# write_rds(out_q_ratio_draws, "output/2.5_mixed_model_betas/out_q_ratio_draws.rds")
 
 

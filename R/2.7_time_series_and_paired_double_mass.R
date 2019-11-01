@@ -68,6 +68,8 @@ ggsave("output/2.7_timeseries_double_mass/plot_timeseries_q.pdf", plot=x, width 
 
 
 
+
+
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
@@ -134,8 +136,9 @@ x <- ggplot(aes(y = q_treated,x =q_control, colour=factor(shed_treated),fill=fac
 
 
 
-
-# ----
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 # Regression Analysis
 
 # Create nested streamflow data within each watershed
@@ -161,18 +164,4 @@ geom_bar(stat = "identity", aes(x=shed_treated,y=p.value)) +
 #geom_hline(yintercept = 0.05, linetype=2, color="red", size=.4) +
   NULL
 
-
-
-# ---------------------------------------------------------------------
-# Double Mass of Treated Precipitation to Treated Streamflow
-
-
-
-
-# Use new QPT data
-
-
-
-
-plot(cumsum(p_daily$Lower_Prov), cumsum(q_daily$P301))
 

@@ -20,23 +20,14 @@ pair_seasonal_4 <- dplyr::filter(pair_seasonal, Season==4)
 
 
 # Import mixed model results
-out_q_ndiff_all <- read_rds("output/2.4_mixed_model/out_q_ndiff_all.rds")
-out_q_ndiff_bull <- read_rds("output/2.4_mixed_model/out_q_ndiff_bull.rds")
-out_q_ndiff_prov <- read_rds("output/2.4_mixed_model/out_q_ndiff_prov.rds")
 
 out_q_diff_all <- read_rds("output/2.4_mixed_model/out_q_diff_all.rds")
 out_q_diff_bull <- read_rds("output/2.4_mixed_model/out_q_diff_bull.rds")
 out_q_diff_prov <- read_rds("output/2.4_mixed_model/out_q_diff_prov.rds")
 
-out_q_ratio_all <- read_rds("output/2.4_mixed_model/out_q_ratio_all.rds")
-out_q_ratio_bull <- read_rds("output/2.4_mixed_model/out_q_ratio_bull.rds")
-out_q_ratio_prov <- read_rds("output/2.4_mixed_model/out_q_ratio_prov.rds")
-
 
 # Import mixed model draws
 out_q_diff_draws <- read_rds("output/2.5_mixed_model_betas/out_q_diff_draws.rds")
-out_q_ndiff_draws <- read_rds("output/2.5_mixed_model_betas/out_q_ndiff_draws.rds")
-out_q_ratio_draws <- read_rds("output/2.5_mixed_model_betas/out_q_ratio_draws.rds")
 
 
 # ---------------------------------------------------------------------
@@ -173,19 +164,18 @@ x <- es_values %>%
   dplyr::filter(response_variable == 6) %>% 
   ggplot(data=.) +
   geom_ribbon(aes(x=ndvi_chg, ymin=treatment_es_lower, ymax=treatment_es_upper),
-              alpha=.5, fill="blue") +
+              alpha=0.7, fill="#b2df8a") +
   geom_line(aes(x=ndvi_chg, y=treatment_es)) +
   geom_line(aes(x=ndvi_chg, y=treatment_es_lower), linetype=2, color="black") +
   geom_line(aes(x=ndvi_chg, y=treatment_es_upper), linetype=2, color="black") +
   #geom_hline(aes(yintercept=0), color="red") +
   scale_linetype_discrete(name="Watershed\nGroup") +
-  labs(title="",
-       x = "Change in NDVI in treated watershed relative to control watershed",
+  labs(x = "Change in NDVI",
        y = "Change in streamflow (%)") +
   facet_wrap(.~site) + 
   theme_bw(base_size = 13) +
   NULL
-ggsave("output/2.6_mixed_model_effect_size/plot_deltaQ_vs_ndvi_diff.pdf",plot=x, width = 7, height = 4)
+ggsave("output/2.6_mixed_model_effect_size/plot_deltaQ_vs_ndvi_diff.pdf",plot=x, width = 5.5, height = 3)
 
 
 
