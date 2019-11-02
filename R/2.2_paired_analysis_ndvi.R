@@ -31,7 +31,8 @@ paired_function <- function(data, x, y, var, var_lab, title, x_lab, y_lab){
     scale_y_log10() +
     scale_size_continuous(name = var_lab) +  
     scale_color_continuous(name = var_lab,
-                           low= "blue", high="green") +  
+                           low= "#1f78b4", high="#b2df8a") +
+    guides(colour = guide_colourbar(reverse=T)) +
     labs(title=title,
          y = y_lab,
          x = x_lab) +
@@ -95,10 +96,12 @@ wy_NDVI_xcont <- paired_function(data=pair_wy,
                                  x="q_control",
                                  y="q_treated",
                                  var="ndvi_diff",
-                                 var_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
-                                 title="Annual Streamflow",
-                                 x_lab="Control Watershed: Annual Streamflow (mm)",
-                                 y_lab="Treated Watershed:\nAnnual Streamflow (mm)")
+                                 var_lab=expression('NDVI'[diff]),
+                                 title=NULL,
+                                 # x_lab="Control Watershed: Annual Streamflow (mm)",
+                                 # y_lab="Treated Watershed:\nAnnual Streamflow (mm)")
+                                 x_lab=expression('Annual Streamflow'[control]~'(mm)'),
+                                 y_lab=expression('Annual Streamflow'[treated]~'(mm)'))
 
 NDVI_xcont <- list(q95_NDVI_xcont, s1_NDVI_xcont, s2_NDVI_xcont,
                    s3_NDVI_xcont,s4_NDVI_xcont, wy_NDVI_xcont)
@@ -106,182 +109,182 @@ NDVI_xcont <- list(q95_NDVI_xcont, s1_NDVI_xcont, s2_NDVI_xcont,
 # ------------------
 # nNDVI with control streamflow on x-axis
 
-q95_nNDVI_xcont <- paired_function(data=pair_q95,
-                                   x="q_control",
-                                   y="q_treated",
-                                   var="ndvi_diff_n",
-                                   var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                                   title="Q95",
-                                   x_lab="Control Watershed: Q95 (mm)",
-                                   y_lab="Treated Watershed:\nQ95 (mm)")
-
-s1_nNDVI_xcont <- paired_function(data=pair_seasonal_1,
-                                  x="q_control",
-                                  y="q_treated",
-                                  var="ndvi_diff_n",
-                                  var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                                  title="October-December Streamflow",
-                                  x_lab="Control Watershed: Oct-Dec Streamflow (mm)",
-                                  y_lab="Treated Watershed:\nOct-Dec Streamflow (mm)")
-
-s2_nNDVI_xcont <- paired_function(data=pair_seasonal_2,
-                                  x="q_control",
-                                  y="q_treated",
-                                  var="ndvi_diff_n",
-                                  var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                                  title="January-March Streamflow",
-                                  x_lab="Control Watershed: Jan-Mar Streamflow (mm)",
-                                  y_lab="Treated Watershed:\nJan-Mar Streamflow (mm)")
-
-s3_nNDVI_xcont <- paired_function(data=pair_seasonal_3,
-                                  x="q_control",
-                                  y="q_treated",
-                                  var="ndvi_diff_n",
-                                  var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                                  title="April-June Streamflow",
-                                  x_lab="Control Watershed: Apr-Jun Streamflow (mm)",
-                                  y_lab="Treated Watershed:\nApr-Jun Streamflow (mm)")
-
-s4_nNDVI_xcont <- paired_function(data=pair_seasonal_4,
-                                  x="q_control",
-                                  y="q_treated",
-                                  var="ndvi_diff_n",
-                                  var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                                  title="July-September Streamflow",
-                                  x_lab="Control Watershed: Jul-Sep Streamflow (mm)",
-                                  y_lab="Treated Watershed:\nJul-Sep Streamflow (mm)")
-
-wy_nNDVI_xcont <- paired_function(data=pair_wy,
-                                  x="q_control",
-                                  y="q_treated",
-                                  var="ndvi_diff_n",
-                                  var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                                  title="Annual Streamflow",
-                                  x_lab="Control Watershed: Annual Streamflow (mm)",
-                                  y_lab="Treated Watershed:\nAnnual Streamflow (mm)")
-
-nNDVI_xcont <- list(q95_nNDVI_xcont, s1_nNDVI_xcont, s2_nNDVI_xcont,
-                    s3_nNDVI_xcont,s4_nNDVI_xcont, wy_nNDVI_xcont)
+# q95_nNDVI_xcont <- paired_function(data=pair_q95,
+#                                    x="q_control",
+#                                    y="q_treated",
+#                                    var="ndvi_diff_n",
+#                                    var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+#                                    title="Q95",
+#                                    x_lab="Control Watershed: Q95 (mm)",
+#                                    y_lab="Treated Watershed:\nQ95 (mm)")
+# 
+# s1_nNDVI_xcont <- paired_function(data=pair_seasonal_1,
+#                                   x="q_control",
+#                                   y="q_treated",
+#                                   var="ndvi_diff_n",
+#                                   var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+#                                   title="October-December Streamflow",
+#                                   x_lab="Control Watershed: Oct-Dec Streamflow (mm)",
+#                                   y_lab="Treated Watershed:\nOct-Dec Streamflow (mm)")
+# 
+# s2_nNDVI_xcont <- paired_function(data=pair_seasonal_2,
+#                                   x="q_control",
+#                                   y="q_treated",
+#                                   var="ndvi_diff_n",
+#                                   var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+#                                   title="January-March Streamflow",
+#                                   x_lab="Control Watershed: Jan-Mar Streamflow (mm)",
+#                                   y_lab="Treated Watershed:\nJan-Mar Streamflow (mm)")
+# 
+# s3_nNDVI_xcont <- paired_function(data=pair_seasonal_3,
+#                                   x="q_control",
+#                                   y="q_treated",
+#                                   var="ndvi_diff_n",
+#                                   var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+#                                   title="April-June Streamflow",
+#                                   x_lab="Control Watershed: Apr-Jun Streamflow (mm)",
+#                                   y_lab="Treated Watershed:\nApr-Jun Streamflow (mm)")
+# 
+# s4_nNDVI_xcont <- paired_function(data=pair_seasonal_4,
+#                                   x="q_control",
+#                                   y="q_treated",
+#                                   var="ndvi_diff_n",
+#                                   var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+#                                   title="July-September Streamflow",
+#                                   x_lab="Control Watershed: Jul-Sep Streamflow (mm)",
+#                                   y_lab="Treated Watershed:\nJul-Sep Streamflow (mm)")
+# 
+# wy_nNDVI_xcont <- paired_function(data=pair_wy,
+#                                   x="q_control",
+#                                   y="q_treated",
+#                                   var="ndvi_diff_n",
+#                                   var_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+#                                   title="Annual Streamflow",
+#                                   x_lab="Control Watershed: Annual Streamflow (mm)",
+#                                   y_lab="Treated Watershed:\nAnnual Streamflow (mm)")
+# 
+# nNDVI_xcont <- list(q95_nNDVI_xcont, s1_nNDVI_xcont, s2_nNDVI_xcont,
+#                     s3_nNDVI_xcont,s4_nNDVI_xcont, wy_nNDVI_xcont)
 
 # ------------------
 # ------------------
 # NDVI with NDVI_diff on x-axis
-q95_NDVI_xvar <- paired_function(data=pair_q95,
-                                 x="ndvi_diff",
-                                 y="q_treated",
-                                 var="q_control",
-                                 var_lab="Q95 (mm)",
-                                 title="Q95",
-                                 x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
-                                 y_lab="Treated Watershed:\nQ95 (mm)")
-
-s1_NDVI_xvar <- paired_function(data=pair_seasonal_1,
-                                x="ndvi_diff",
-                                y="q_treated",
-                                var="q_control",
-                                var_lab="Oct-Dec Streamflow (mm)",
-                                title="October-December Streamflow",
-                                x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
-                                y_lab="Treated Watershed:\nOct-Dec Streamflow (mm)")
-
-s2_NDVI_xvar <- paired_function(data=pair_seasonal_2,
-                                x="ndvi_diff",
-                                y="q_treated",
-                                var="q_control",
-                                var_lab="Jan-Mar Streamflow (mm)",
-                                title="January-March Streamflow",
-                                x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
-                                y_lab="Treated Watershed:\nJan-Mar Streamflow (mm)")
-
-s3_NDVI_xvar <- paired_function(data=pair_seasonal_3,
-                                x="ndvi_diff",
-                                y="q_treated",
-                                var="q_control",
-                                var_lab="Apr-Jun Streamflow (mm)",
-                                title="April-June Streamflow",
-                                x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
-                                y_lab="Treated Watershed:\nApr-Jun Streamflow (mm)")
-
-s4_NDVI_xvar <- paired_function(data=pair_seasonal_4,
-                                x="ndvi_diff",
-                                y="q_treated",
-                                var="q_control",
-                                var_lab="Jul-Sep Streamflow (mm)",
-                                title="July-September Streamflow",
-                                x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
-                                y_lab="Treated Watershed:\nJul-Sep Streamflow (mm)")
-
-wy_NDVI_xvar <- paired_function(data=pair_wy,
-                                x="ndvi_diff",
-                                y="q_treated",
-                                var="q_control",
-                                var_lab="Annual Streamflow (mm)",
-                                title="Annual Streamflow",
-                                x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
-                                y_lab="Treated Watershed:\nAnnual Streamflow (mm)")
-
-NDVI_xvar <- list(q95_NDVI_xvar, s1_NDVI_xvar, s2_NDVI_xvar,
-                  s3_NDVI_xvar,s4_NDVI_xvar, wy_NDVI_xvar)
+# q95_NDVI_xvar <- paired_function(data=pair_q95,
+#                                  x="ndvi_diff",
+#                                  y="q_treated",
+#                                  var="q_control",
+#                                  var_lab="Q95 (mm)",
+#                                  title="Q95",
+#                                  x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+#                                  y_lab="Treated Watershed:\nQ95 (mm)")
+# 
+# s1_NDVI_xvar <- paired_function(data=pair_seasonal_1,
+#                                 x="ndvi_diff",
+#                                 y="q_treated",
+#                                 var="q_control",
+#                                 var_lab="Oct-Dec Streamflow (mm)",
+#                                 title="October-December Streamflow",
+#                                 x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+#                                 y_lab="Treated Watershed:\nOct-Dec Streamflow (mm)")
+# 
+# s2_NDVI_xvar <- paired_function(data=pair_seasonal_2,
+#                                 x="ndvi_diff",
+#                                 y="q_treated",
+#                                 var="q_control",
+#                                 var_lab="Jan-Mar Streamflow (mm)",
+#                                 title="January-March Streamflow",
+#                                 x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+#                                 y_lab="Treated Watershed:\nJan-Mar Streamflow (mm)")
+# 
+# s3_NDVI_xvar <- paired_function(data=pair_seasonal_3,
+#                                 x="ndvi_diff",
+#                                 y="q_treated",
+#                                 var="q_control",
+#                                 var_lab="Apr-Jun Streamflow (mm)",
+#                                 title="April-June Streamflow",
+#                                 x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+#                                 y_lab="Treated Watershed:\nApr-Jun Streamflow (mm)")
+# 
+# s4_NDVI_xvar <- paired_function(data=pair_seasonal_4,
+#                                 x="ndvi_diff",
+#                                 y="q_treated",
+#                                 var="q_control",
+#                                 var_lab="Jul-Sep Streamflow (mm)",
+#                                 title="July-September Streamflow",
+#                                 x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+#                                 y_lab="Treated Watershed:\nJul-Sep Streamflow (mm)")
+# 
+# wy_NDVI_xvar <- paired_function(data=pair_wy,
+#                                 x="ndvi_diff",
+#                                 y="q_treated",
+#                                 var="q_control",
+#                                 var_lab="Annual Streamflow (mm)",
+#                                 title="Annual Streamflow",
+#                                 x_lab=expression('NDVI'[t]~'-'~'NDVI'[c]),
+#                                 y_lab="Treated Watershed:\nAnnual Streamflow (mm)")
+# 
+# NDVI_xvar <- list(q95_NDVI_xvar, s1_NDVI_xvar, s2_NDVI_xvar,
+#                   s3_NDVI_xvar,s4_NDVI_xvar, wy_NDVI_xvar)
 
 # ------------------
 # nNDVI with NDVI_diff_n on x-axis
 
-q95_nNDVI_xvar <- paired_function(data=pair_q95,
-                                  x="ndvi_diff_n",
-                                  y="q_treated",
-                                  var="q_control",
-                                  var_lab="Q95 (mm)",
-                                  title="Q95",
-                                  x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                                  y_lab="Treated Watershed:\nQ95 (mm)")
-
-s1_nNDVI_xvar <- paired_function(data=pair_seasonal_1,
-                                 x="ndvi_diff_n",
-                                 y="q_treated",
-                                 var="q_control",
-                                 var_lab="Oct-Dec Streamflow (mm)",
-                                 title="October-December Streamflow",
-                                 x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                                 y_lab="Treated Watershed:\nOct-Dec Streamflow (mm)")
-
-s2_nNDVI_xvar <- paired_function(data=pair_seasonal_2,
-                                 x="ndvi_diff_n",
-                                 y="q_treated",
-                                 var="q_control",
-                                 var_lab="Jan-Mar Streamflow (mm)",
-                                 title="January-March Streamflow",
-                                 x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                                 y_lab="Treated Watershed:\nJan-Mar Streamflow (mm)")
-
-s3_nNDVI_xvar <- paired_function(data=pair_seasonal_3,
-                                 x="ndvi_diff_n",
-                                 y="q_treated",
-                                 var="q_control",
-                                 var_lab="Apr-Jun Streamflow (mm)",
-                                 title="April-June Streamflow",
-                                 x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                                 y_lab="Treated Watershed:\nApr-Jun Streamflow (mm)")
-
-s4_nNDVI_xvar <- paired_function(data=pair_seasonal_4,
-                                 x="ndvi_diff_n",
-                                 y="q_treated",
-                                 var="q_control",
-                                 var_lab="Jul-Sep Streamflow (mm)",
-                                 title="July-September Streamflow",
-                                 x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                                 y_lab="Treated Watershed:\nJul-Sep Streamflow (mm)")
-
-wy_nNDVI_xvar <- paired_function(data=pair_wy,
-                                 x="ndvi_diff_n",
-                                 y="q_treated",
-                                 var="q_control",
-                                 var_lab="Annual Streamflow (mm)",
-                                 title="Annual Streamflow",
-                                 x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
-                                 y_lab="Treated Watershed:\nAnnual Streamflow (mm)")
-
-nNDVI_xvar <- list(q95_nNDVI_xvar, s1_nNDVI_xvar, s2_nNDVI_xvar,
-                   s3_nNDVI_xvar,s4_nNDVI_xvar, wy_nNDVI_xvar)
+# q95_nNDVI_xvar <- paired_function(data=pair_q95,
+#                                   x="ndvi_diff_n",
+#                                   y="q_treated",
+#                                   var="q_control",
+#                                   var_lab="Q95 (mm)",
+#                                   title="Q95",
+#                                   x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+#                                   y_lab="Treated Watershed:\nQ95 (mm)")
+# 
+# s1_nNDVI_xvar <- paired_function(data=pair_seasonal_1,
+#                                  x="ndvi_diff_n",
+#                                  y="q_treated",
+#                                  var="q_control",
+#                                  var_lab="Oct-Dec Streamflow (mm)",
+#                                  title="October-December Streamflow",
+#                                  x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+#                                  y_lab="Treated Watershed:\nOct-Dec Streamflow (mm)")
+# 
+# s2_nNDVI_xvar <- paired_function(data=pair_seasonal_2,
+#                                  x="ndvi_diff_n",
+#                                  y="q_treated",
+#                                  var="q_control",
+#                                  var_lab="Jan-Mar Streamflow (mm)",
+#                                  title="January-March Streamflow",
+#                                  x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+#                                  y_lab="Treated Watershed:\nJan-Mar Streamflow (mm)")
+# 
+# s3_nNDVI_xvar <- paired_function(data=pair_seasonal_3,
+#                                  x="ndvi_diff_n",
+#                                  y="q_treated",
+#                                  var="q_control",
+#                                  var_lab="Apr-Jun Streamflow (mm)",
+#                                  title="April-June Streamflow",
+#                                  x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+#                                  y_lab="Treated Watershed:\nApr-Jun Streamflow (mm)")
+# 
+# s4_nNDVI_xvar <- paired_function(data=pair_seasonal_4,
+#                                  x="ndvi_diff_n",
+#                                  y="q_treated",
+#                                  var="q_control",
+#                                  var_lab="Jul-Sep Streamflow (mm)",
+#                                  title="July-September Streamflow",
+#                                  x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+#                                  y_lab="Treated Watershed:\nJul-Sep Streamflow (mm)")
+# 
+# wy_nNDVI_xvar <- paired_function(data=pair_wy,
+#                                  x="ndvi_diff_n",
+#                                  y="q_treated",
+#                                  var="q_control",
+#                                  var_lab="Annual Streamflow (mm)",
+#                                  title="Annual Streamflow",
+#                                  x_lab=expression('nNDVI'[t]~'-'~'nNDVI'[c]),
+#                                  y_lab="Treated Watershed:\nAnnual Streamflow (mm)")
+# 
+# nNDVI_xvar <- list(q95_nNDVI_xvar, s1_nNDVI_xvar, s2_nNDVI_xvar,
+#                    s3_nNDVI_xvar,s4_nNDVI_xvar, wy_nNDVI_xvar)
 
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
@@ -375,22 +378,22 @@ paired_all(x=NDVI_xcont,
            path_ind="output/2.2_paired_analysis/plot_NDVI_xcont_ind",   # Don't include extension
            path_all="output/2.2_paired_analysis/plot_NDVI_xcont_all.pdf")
 
-paired_all(x=nNDVI_xcont,
-           xcont=TRUE,
-           path_ind="output/2.2_paired_analysis/plot_nNDVI_xcont_ind",   # Don't include extension
-           path_all="output/2.2_paired_analysis/plot_nNDVI_xcont_all.pdf")
+# paired_all(x=nNDVI_xcont,
+#            xcont=TRUE,
+#            path_ind="output/2.2_paired_analysis/plot_nNDVI_xcont_ind",   # Don't include extension
+#            path_all="output/2.2_paired_analysis/plot_nNDVI_xcont_all.pdf")
 
 # Note: Legend for the combined plot is wrong for the following two plots (need a legend for each row).
 
-paired_all(x=NDVI_xvar,
-           xcont=FALSE,
-           path_ind="output/2.2_paired_analysis/plot_NDVI_xvar_ind",   # Don't include extension
-           path_all="output/2.2_paired_analysis/plot_NDVI_xvar_all.pdf")
-
-paired_all(x=nNDVI_xvar,
-           xcont=FALSE,
-           path_ind="output/2.2_paired_analysis/plot_nNDVI_xvar_ind",   # Don't include extension
-           path_all="output/2.2_paired_analysis/plot_nNDVI_xvar_all.pdf")
+# paired_all(x=NDVI_xvar,
+#            xcont=FALSE,
+#            path_ind="output/2.2_paired_analysis/plot_NDVI_xvar_ind",   # Don't include extension
+#            path_all="output/2.2_paired_analysis/plot_NDVI_xvar_all.pdf")
+# 
+# paired_all(x=nNDVI_xvar,
+#            xcont=FALSE,
+#            path_ind="output/2.2_paired_analysis/plot_nNDVI_xvar_ind",   # Don't include extension
+#            path_all="output/2.2_paired_analysis/plot_nNDVI_xvar_all.pdf")
 
 
 

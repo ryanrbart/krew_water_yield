@@ -90,7 +90,7 @@ ggsave("output/1.6/plot_timeseries_ndvi_n.jpg", plot=x, width = 8, height = 5)
 # Figure: Paired watershed: NDVI All
 
 watershed_id <- c(
-  "P301" = "Treated: P301", "P303" = "Control: P303",
+  "P301" = "Treated: P301", "P303" = "Treated: P303",
   "P304" = "Control: P304", "D102" = "Treated: D102",
   "B201" = "Treated: B201", "B203" = "Treated: B203",
   "B204" = "Treated: B204", "T003" = "Control: T003"
@@ -98,32 +98,32 @@ watershed_id <- c(
 
 
 # Plot pre and post-treatment NDVI for all watersheds
-x <- ggplot(krew_paired, aes(x = ndvi_control, y = ndvi_treated, label=treatment_label)) +
-  geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
-  stat_summary() + 
-  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
-  geom_text_repel(size = 2.5) +
-  #geom_abline(aes(intercept = 0, slope = 1), linetype = 2) +
-  facet_wrap(.~shed_treated) +
-  scale_x_continuous(breaks=c(0.6,0.65,0.7,0.75,0.8), label=c(0.6,0.65,0.7,0.75,0.8), limits=c(0.6,0.8)) +
-  scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7,0.75,0.8), label=c(0.55,0.6,0.65,0.7,0.75,0.8), limits=c(0.53,0.77)) +
-  scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
-  scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
-  labs(title="Paired NDVI: All Watersheds",
-       y = "Annual NDVI: Treated Watershed",
-       x = "Annual NDVI: Control Watershed") +
-  coord_fixed(ratio = 1) +
-  theme_bw(base_size = 10) +
-  theme(legend.position="bottom") +
-  NULL
-ggsave("output/1.6/plot_paired_ndvi_all.jpg", plot=x, width = 5, height = 5.5)
+# x <- ggplot(krew_paired, aes(x = ndvi_control, y = ndvi_treated, label=treatment_label)) +
+#   geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
+#   stat_summary() + 
+#   geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
+#   geom_text_repel(size = 2.5) +
+#   #geom_abline(aes(intercept = 0, slope = 1), linetype = 2) +
+#   facet_wrap(.~shed_treated) +
+#   scale_x_continuous(breaks=c(0.6,0.65,0.7,0.75,0.8), label=c(0.6,0.65,0.7,0.75,0.8), limits=c(0.6,0.8)) +
+#   scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7,0.75,0.8), label=c(0.55,0.6,0.65,0.7,0.75,0.8), limits=c(0.53,0.77)) +
+#   scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
+#   scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
+#   labs(title="Paired NDVI: All Watersheds",
+#        y = "Annual NDVI: Treated Watershed",
+#        x = "Annual NDVI: Control Watershed") +
+#   coord_fixed(ratio = 1) +
+#   theme_bw(base_size = 10) +
+#   theme(legend.position="bottom") +
+#   NULL
+# ggsave("output/1.6/plot_paired_ndvi_all.jpg", plot=x, width = 5, height = 5.5)
 
 
 
 # ---------------------------------------------------------------------
 # Figure: Paired watershed: NDVI Bull
 
-x <- krew_paired %>% 
+plot_paired_ndvi_bull <- krew_paired %>% 
   dplyr::filter(location=="Bull") %>% 
   ggplot(., aes(x = ndvi_control, y = ndvi_treated, label=treatment_label)) +
   geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
@@ -135,23 +135,24 @@ x <- krew_paired %>%
   # labeller = labeller(.cols = label_parsed, .rows = label_parsed)
   scale_x_continuous(breaks=c(0.6,0.65,0.7), label=c(0.6,0.65,0.7), limits=c(0.6,0.71)) +
   scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7), label=c(0.55,0.6,0.65,0.7), limits=c(0.53,0.7)) +
-  scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
-  scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
-  labs(title="Paired NDVI: Bull Watersheds",
-       y = "Annual NDVI: Treated Watershed",
-       x = "Annual NDVI: Control Watershed (T003)") +
+  scale_shape_discrete(name="Treatment", labels = c("Pre-Treatment", "Post-Treatment")) +
+  #scale_color_brewer(palette = "Paired", name="Treatment", labels = c("Pre", "Post")) +
+  scale_color_manual(values = c("#33a02c", "#1f78b4"), name="Treatment", labels = c("Pre-Treatment", "Post-Treatment")) + 
+  labs(title="Bull",
+       y = expression('Max. Annual NDVI'[treated]),
+       x = expression('Max. Annual NDVI'[control]~': T003')) +
   coord_fixed(ratio = 1) +
   theme_bw(base_size = 10) +
   theme(legend.position="bottom") +
   NULL
-ggsave("output/1.6/plot_paired_ndvi_bull.jpg", plot=x, width = 5, height = 3.5)
+ggsave("output/1.6/plot_paired_ndvi_bull.jpg", plot=plot_paired_ndvi_bull, width = 5, height = 3.5)
 
 
 
 # ---------------------------------------------------------------------
 # Figure: Paired watershed: NDVI Prov
 
-x <- krew_paired %>% 
+plot_paired_ndvi_prov <- krew_paired %>% 
   dplyr::filter(location=="Prov") %>% 
   ggplot(., aes(x = ndvi_control, y = ndvi_treated, label=treatment_label)) +
   geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
@@ -163,98 +164,127 @@ x <- krew_paired %>%
   # labeller = labeller(.cols = label_parsed, .rows = label_parsed)
   scale_x_continuous(breaks=c(0.6,0.65,0.7,0.75,0.8), label=c(0.6,0.65,0.7,0.75,0.8), limits=c(0.67,0.8)) +
   scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7,0.75,0.8), label=c(0.55,0.6,0.65,0.7,0.75,0.8), limits=c(0.57,0.77)) +
-  scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
-  scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
-  labs(title="Paired NDVI: Providence Watersheds",
-       y = "Annual NDVI: Treated Watershed",
-       x = "Annual NDVI: Control Watershed (P304)") +
+  scale_shape_discrete(name="Treatment", labels = c("Pre-Treatment", "Post-Treatment")) +
+  #scale_color_brewer(palette = "Paired", name="Treatment", labels = c("Pre", "Post")) +  
+  scale_color_manual(values = c("#33a02c", "#1f78b4"), name="Treatment", labels = c("Pre-Treatment", "Post-Treatment")) + 
+  labs(title="Providence",
+       y = expression('Max. Annual NDVI'[treated]),
+       x = expression('Max. Annual NDVI'[control]~': P304')) +
   coord_fixed(ratio = 1) +
   theme_bw(base_size = 10) +
   theme(legend.position="bottom") +
   NULL
-ggsave("output/1.6/plot_paired_ndvi_prov.jpg", plot=x, width = 5, height = 3.5)
+ggsave("output/1.6/plot_paired_ndvi_prov.jpg", plot=plot_paired_ndvi_prov, width = 5, height = 3.5)
+
+
+# ---------------------------------------------------------------------
+# Cowplot Bull and Prov together
+
+plot_legend <- get_legend(plot_paired_ndvi_prov)
+
+# Make cowplot
+plot_paired_ndvi <- cowplot::plot_grid(plot_paired_ndvi_bull + theme(legend.position="none"),
+                                  plot_paired_ndvi_prov + theme(legend.position="none"),
+                                  plot_legend,
+                                  nrow=3,
+                                  rel_heights = c(1, 1, 0.15))
+
+
+save_plot("output/1.6/plot_paired_ndvi.pdf",
+          plot=plot_paired_ndvi,
+          nrow = 3,
+          base_height = 1.7,
+          base_width =  3.6)
+
+
+
+
+
+
 
 
 
 # ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 # Figure: Paired watershed: nNDVI All
 
 # Plot pre and post-treatment NDVI for all watersheds
-x <- ggplot(krew_paired, aes(x = ndvi_control_n, y = ndvi_treated_n, label=treatment_label)) +
-  geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
-  stat_summary() + 
-  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
-  geom_text_repel(size = 2.5) +
-  #geom_abline(aes(intercept = 0, slope = 1), linetype = 2) +
-  facet_wrap(.~shed_treated) +
-  # scale_x_continuous(breaks=c(0.6,0.65,0.7,0.75,0.8), label=c(0.6,0.65,0.7,0.75,0.8), limits=c(0.6,0.8)) +
-  # scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7,0.75,0.8), label=c(0.55,0.6,0.65,0.7,0.75,0.8), limits=c(0.53,0.77)) +
-  scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
-  scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
-  labs(title="Paired nNDVI: All Watersheds",
-       y = "Annual nNDVI: Treated Watershed",
-       x = "Annual nNDVI: Control Watershed") +
-  coord_fixed(ratio = 1) +
-  theme_bw(base_size = 10) +
-  theme(legend.position="bottom") +
-  NULL
-ggsave("output/1.6/plot_paired_ndvi_n_all.jpg", plot=x, width = 5, height = 5.5)
+# x <- ggplot(krew_paired, aes(x = ndvi_control_n, y = ndvi_treated_n, label=treatment_label)) +
+#   geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
+#   stat_summary() + 
+#   geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
+#   geom_text_repel(size = 2.5) +
+#   #geom_abline(aes(intercept = 0, slope = 1), linetype = 2) +
+#   facet_wrap(.~shed_treated) +
+#   # scale_x_continuous(breaks=c(0.6,0.65,0.7,0.75,0.8), label=c(0.6,0.65,0.7,0.75,0.8), limits=c(0.6,0.8)) +
+#   # scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7,0.75,0.8), label=c(0.55,0.6,0.65,0.7,0.75,0.8), limits=c(0.53,0.77)) +
+#   scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
+#   scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
+#   labs(title="Paired nNDVI: All Watersheds",
+#        y = "Annual nNDVI: Treated Watershed",
+#        x = "Annual nNDVI: Control Watershed") +
+#   coord_fixed(ratio = 1) +
+#   theme_bw(base_size = 10) +
+#   theme(legend.position="bottom") +
+#   NULL
+# ggsave("output/1.6/plot_paired_ndvi_n_all.jpg", plot=x, width = 5, height = 5.5)
 
 
 
 # ---------------------------------------------------------------------
 # Figure: Paired watershed: nNDVI Bull
 
-x <- krew_paired %>% 
-  dplyr::filter(location=="Bull") %>% 
-  ggplot(., aes(x = ndvi_control_n, y = ndvi_treated_n, label=treatment_label)) +
-  geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
-  stat_summary() + 
-  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
-  geom_text_repel(size = 2.5) +
-  #geom_abline(aes(intercept = 0, slope = 1), linetype = 2) +
-  facet_wrap(.~shed_treated, labeller = labeller(shed_treated = watershed_id)) +
-  # labeller = labeller(.cols = label_parsed, .rows = label_parsed)
-  # scale_x_continuous(breaks=c(0.6,0.65,0.7), label=c(0.6,0.65,0.7), limits=c(0.6,0.71)) +
-  # scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7), label=c(0.55,0.6,0.65,0.7), limits=c(0.53,0.7)) +
-  scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
-  scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
-  labs(title="Paired nNDVI: Bull Watersheds",
-       y = "Annual nNDVI: Treated Watershed",
-       x = "Annual nNDVI: Control Watershed (T003)") +
-  coord_fixed(ratio = 1) +
-  theme_bw(base_size = 10) +
-  theme(legend.position="bottom") +
-  NULL
-ggsave("output/1.6/plot_paired_ndvi_n_bull.jpg", plot=x, width = 5, height = 3.5)
+# x <- krew_paired %>% 
+#   dplyr::filter(location=="Bull") %>% 
+#   ggplot(., aes(x = ndvi_control_n, y = ndvi_treated_n, label=treatment_label)) +
+#   geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
+#   stat_summary() + 
+#   geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
+#   geom_text_repel(size = 2.5) +
+#   #geom_abline(aes(intercept = 0, slope = 1), linetype = 2) +
+#   facet_wrap(.~shed_treated, labeller = labeller(shed_treated = watershed_id)) +
+#   # labeller = labeller(.cols = label_parsed, .rows = label_parsed)
+#   # scale_x_continuous(breaks=c(0.6,0.65,0.7), label=c(0.6,0.65,0.7), limits=c(0.6,0.71)) +
+#   # scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7), label=c(0.55,0.6,0.65,0.7), limits=c(0.53,0.7)) +
+#   scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
+#   scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
+#   labs(title="Paired nNDVI: Bull Watersheds",
+#        y = "Annual nNDVI: Treated Watershed",
+#        x = "Annual nNDVI: Control Watershed (T003)") +
+#   coord_fixed(ratio = 1) +
+#   theme_bw(base_size = 10) +
+#   theme(legend.position="bottom") +
+#   NULL
+# ggsave("output/1.6/plot_paired_ndvi_n_bull.jpg", plot=x, width = 5, height = 3.5)
 
 
 
 # ---------------------------------------------------------------------
 # Figure: Paired watershed: nNDVI Prov
 
-x <- krew_paired %>% 
-  dplyr::filter(location=="Prov") %>% 
-  ggplot(., aes(x = ndvi_control_n, y = ndvi_treated_n, label=treatment_label)) +
-  geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
-  stat_summary() + 
-  geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
-  geom_text_repel(size = 2.5) +
-  #geom_abline(aes(intercept = 0, slope = 1), linetype = 2) +
-  facet_wrap(.~shed_treated, labeller = labeller(shed_treated = watershed_id)) +
-  # labeller = labeller(.cols = label_parsed, .rows = label_parsed)
-  # scale_x_continuous(breaks=c(0.6,0.65,0.7,0.75,0.8), label=c(0.6,0.65,0.7,0.75,0.8), limits=c(0.64,0.8)) +
-  # scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7,0.75,0.8), label=c(0.55,0.6,0.65,0.7,0.75,0.8), limits=c(0.57,0.77)) +
-  scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
-  scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
-  labs(title="Paired nNDVI: Providence Watersheds",
-       y = "Annual nNDVI: Treated Watershed",
-       x = "Annual nNDVI: Control Watershed (P304)") +
-  coord_fixed(ratio = 1) +
-  theme_bw(base_size = 10) +
-  theme(legend.position="bottom") +
-  NULL
-ggsave("output/1.6/plot_paired_ndvi_n_prov.jpg", plot=x, width = 5, height = 3.5)
+# x <- krew_paired %>% 
+#   dplyr::filter(location=="Prov") %>% 
+#   ggplot(., aes(x = ndvi_control_n, y = ndvi_treated_n, label=treatment_label)) +
+#   geom_point(aes(shape = treatment_dummy, color = treatment_dummy), size=2) +
+#   stat_summary() + 
+#   geom_smooth(method='lm',formula=y~x, se=FALSE, aes(color=treatment_dummy)) +
+#   geom_text_repel(size = 2.5) +
+#   #geom_abline(aes(intercept = 0, slope = 1), linetype = 2) +
+#   facet_wrap(.~shed_treated, labeller = labeller(shed_treated = watershed_id)) +
+#   # labeller = labeller(.cols = label_parsed, .rows = label_parsed)
+#   # scale_x_continuous(breaks=c(0.6,0.65,0.7,0.75,0.8), label=c(0.6,0.65,0.7,0.75,0.8), limits=c(0.64,0.8)) +
+#   # scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7,0.75,0.8), label=c(0.55,0.6,0.65,0.7,0.75,0.8), limits=c(0.57,0.77)) +
+#   scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
+#   scale_color_brewer(palette = "Set1", name="Treatment", labels = c("Pre", "Post")) +  
+#   labs(title="Paired nNDVI: Providence Watersheds",
+#        y = "Annual nNDVI: Treated Watershed",
+#        x = "Annual nNDVI: Control Watershed (P304)") +
+#   coord_fixed(ratio = 1) +
+#   theme_bw(base_size = 10) +
+#   theme(legend.position="bottom") +
+#   NULL
+# ggsave("output/1.6/plot_paired_ndvi_n_prov.jpg", plot=x, width = 5, height = 3.5)
 
 
 
