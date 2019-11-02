@@ -164,7 +164,7 @@ x <- es_values %>%
   dplyr::filter(response_variable == 6) %>% 
   ggplot(data=.) +
   geom_ribbon(aes(x=ndvi_chg, ymin=treatment_es_lower, ymax=treatment_es_upper),
-              alpha=0.7, fill="#b2df8a") +
+              alpha=0.7, fill="#33a02c") +
   geom_line(aes(x=ndvi_chg, y=treatment_es)) +
   geom_line(aes(x=ndvi_chg, y=treatment_es_lower), linetype=2, color="black") +
   geom_line(aes(x=ndvi_chg, y=treatment_es_upper), linetype=2, color="black") +

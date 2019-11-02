@@ -223,15 +223,15 @@ watershed_id <- c(all_data = "All\nWatersheds",
 plot_q_diff_draws <- out_q_diff_draws %>%
   dplyr::filter(model != "all_data", response_variable == 6) %>%
   ggplot(data=., aes(y = model, x = ndvi_diff)) +
-  ggridges::geom_density_ridges(scale = 0.9, fill="#b2df8a", color=NA, alpha=0.7) +
+  ggridges::geom_density_ridges(scale = 0.9, fill="#33a02c", color=NA, alpha=0.7) +
   stat_pointintervalh(.width = c(0.9, 0.95)) +
-  #tidybayes::geom_halfeyeh(.width = c(0.9, 0.95), fill="#b2df8a") +
+  #tidybayes::geom_halfeyeh(.width = c(0.9, 0.95), fill="#33a02c") +
   geom_vline(xintercept = 0) +
   scale_y_discrete(labels = c(watershed_id)) +
   labs(title = "Paired Streamflow Model",
        x = expression('NDVI'[diff]~'Coefficient ('*beta[0]*')'),
        y = "Watershed Group") +
-  theme_bw(base_size = 7.5) +
+  theme_bw(base_size = 9) +
   theme(axis.text.y = element_text(angle = 90, hjust=0.5, vjust=1)) +
   panel_border() +
   background_grid() +
@@ -246,15 +246,15 @@ write_rds(x, "output/2.5_mixed_model_betas/plot_q_diff_draws.rds")
 plot_QP2_draws <- out_QP2_draws %>%
   dplyr::filter(model != "all_data") %>%
   ggplot(data=., aes(y = model, x = ndvi_annual)) +
-  ggridges::geom_density_ridges(scale = 0.9, fill="#b2df8a", color=NA, alpha=0.7) +
+  ggridges::geom_density_ridges(scale = 0.9, fill="#33a02c", color=NA, alpha=0.7) +
   stat_pointintervalh(.width = c(0.9, 0.95)) +
-  #tidybayes::geom_halfeyeh(.width = c(0.9, 0.95), fill="#b2df8a") +
+  #tidybayes::geom_halfeyeh(.width = c(0.9, 0.95), fill="#33a02c") +
   geom_vline(xintercept = 0) +
   scale_y_discrete(labels = c(watershed_id)) +
   labs(title = "Precipitation Model",
        x = expression('NDVI'[annual]~'Coefficient ('*beta[0]*')'),
        y = "Watershed Group") +
-  theme_bw(base_size = 7.5) +
+  theme_bw(base_size = 9) +
   theme(axis.text.y = element_text(angle = 90, hjust=0.5, vjust=1)) +
   panel_border() +
   background_grid() +
@@ -276,8 +276,8 @@ plot_q_beta <- cowplot::plot_grid(plot_q_diff_draws,
 save_plot("output/2.5_mixed_model_betas/plot_q_beta.pdf",
           plot=plot_q_beta,
           ncol = 1,
-          base_height = 3.71,
-          base_asp = 0.5)
+          base_height = 4.5,
+          base_width = 2.5)
 
 
 
