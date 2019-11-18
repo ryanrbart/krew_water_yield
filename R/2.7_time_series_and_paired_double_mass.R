@@ -52,6 +52,7 @@ x <- ggplot(data=happy) +
   scale_color_brewer(palette = "Set1", name="Management", labels = c("Treated", "Control")) + 
   scale_linetype(name="Watershed") + 
   scale_shape(name="Watershed") + 
+  scale_y_log10() +
   # http://www.quantide.com/ggplot-multiple-legends-for-the-same-aesthetic/
   scale_size_manual(
     "Fuel Treatment", values=c(3,3),

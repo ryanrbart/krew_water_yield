@@ -25,11 +25,10 @@ pair_seasonal_4 <- dplyr::filter(pair_seasonal, Season==4)
 out_q_diff_all <- read_rds("output/2.4_mixed_model/out_q_diff_all.rds")
 out_q_diff_bull <- read_rds("output/2.4_mixed_model/out_q_diff_bull.rds")
 out_q_diff_prov <- read_rds("output/2.4_mixed_model/out_q_diff_prov.rds")
-
-out_q_regr_diff_all <- read_rds("output/2.4_mixed_model/out_q_regr_diff_all.rds")
-
 out_QP2_bull <- read_rds("output/2.4_mixed_model/out_QP2_bull.rds")
 out_QP2_prov <- read_rds("output/2.4_mixed_model/out_QP2_prov.rds")
+
+out_q_regr_diff_all <- read_rds("output/2.4_mixed_model/out_q_regr_diff_all.rds")
 
 
 # ---------------------------------------------------------------------
@@ -366,4 +365,5 @@ write_rds(out_q_diff_draws, "output/2.5_mixed_model_betas/out_q_diff_draws.rds")
 # write_rds(out_q_ndiff_draws, "output/2.5_mixed_model_betas/out_q_ndiff_draws.rds")
 # write_rds(out_q_ratio_draws, "output/2.5_mixed_model_betas/out_q_ratio_draws.rds")
 
+write_rds(out_QP2_draws, "output/2.5_mixed_model_betas/out_QP2_draws.rds")
 
