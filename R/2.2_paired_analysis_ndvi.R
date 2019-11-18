@@ -31,7 +31,8 @@ paired_function <- function(data, x, y, var, var_lab, title, x_lab, y_lab){
     scale_y_log10() +
     scale_size_continuous(name = var_lab) +  
     scale_color_continuous(name = var_lab,
-                           low= "#1f78b4", high="#b2df8a") +
+                           # low= "#a6cee3", high="#33a02c") +
+                           low= "#b2df8a", high="#1f78b4") +
     guides(colour = guide_colourbar(reverse=T)) +
     labs(title=title,
          y = y_lab,

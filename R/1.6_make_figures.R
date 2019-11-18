@@ -44,7 +44,7 @@ x <- ggplot(data=happy) +
   labs(title="NDVI Time-Series",
        y = "Watershed Averaged NDVI",
        x = "Year") +
-  scale_color_brewer(palette = "Set1", name="Management", labels = c("Treated", "Control")) + 
+  scale_color_manual(values=c("#33a02c", "#1f78b4"), name="Management", labels = c("Treated", "Control")) + 
   scale_linetype(name="Watershed") + 
   scale_shape(name="Watershed") + 
   # http://www.quantide.com/ggplot-multiple-legends-for-the-same-aesthetic/
