@@ -32,15 +32,17 @@ happy <- krew_annual %>%
   dplyr::mutate(ndvi_thin = if_else(year==ndvi_thin, ndvi_thin, NA_integer_)) %>% 
   dplyr::mutate(ndvi_burn = if_else(year==ndvi_burn, ndvi_burn, NA_integer_))
 
+happy <- happy %>% 
+  dplyr::mutate(ndvi_lag = lag(ndvi_annual)) %>% 
+  dplyr::mutate(ndvi_between_thin = (ndvi_annual*0.75 + ndvi_lag*0.25)) %>% 
+  dplyr::mutate(ndvi_between_burn = (ndvi_annual*0.5 + ndvi_lag*0.5))
 
 # NDVI
 x <- ggplot(data=happy) +
   geom_line(aes(x=year, y=ndvi_annual, linetype=shed, color=control)) +
-  #geom_vline(aes(xintercept=2012), color="blue") +
   geom_point(aes(x=year, y=ndvi_annual, shape=shed, color=control)) +
-  geom_point(aes(x=ndvi_burn, y=ndvi_annual, size = "Prescribed\nFire"), shape=2, color="black", stroke=0.8) +
-  geom_point(aes(x=ndvi_thin, y=ndvi_annual, size = "Thinning"), shape=1, color="black", stroke=0.8) +
-  geom_point(aes(x=ndvi_burn, y=ndvi_annual, size = "Prescribed\nFire"), shape=2, color="black", stroke=0.8) +
+  geom_point(aes(x=(ndvi_thin-0.25), y=ndvi_between_thin, size = "Thinning"), shape=22, fill="#b2df8a", color="black", stroke=0.8) +
+  geom_point(aes(x=(ndvi_burn-0.5), y=ndvi_between_burn, size = "Prescribed\nFire"), shape=21, fill="#b2df8a", color="black", stroke=0.8) +  
   labs(title="NDVI Time-Series",
        y = "Watershed Averaged NDVI",
        x = "Year") +
@@ -49,36 +51,37 @@ x <- ggplot(data=happy) +
   scale_shape(name="Watershed") + 
   # http://www.quantide.com/ggplot-multiple-legends-for-the-same-aesthetic/
   scale_size_manual(
-    "Fuel Treatment", values=c(3,3),
-    guide=guide_legend(override.aes = list(shape=c(2,1)))) +
+    "Fuel Treatment", values=c(2.5,2.5),
+    guide=guide_legend(override.aes = list(shape=c(21,22)))) +
   facet_grid(location~.) +
+  scale_x_continuous(breaks=c(2000,2004,2008,2012,2016)) +
   theme_bw(base_size = 12) +
   NULL
 ggsave("output/1.6/plot_timeseries_ndvi.jpg", plot=x, width = 8, height = 5)
 
 
-# Normalized NDVI
-x <- ggplot(data=happy) +
-  geom_line(aes(x=year, y=ndvi_annual_n, linetype=shed, color=control)) +
-  #geom_vline(aes(xintercept=2012), color="blue") +
-  geom_point(aes(x=year, y=ndvi_annual_n, shape=shed, color=control)) +
-  geom_point(aes(x=ndvi_burn, y=ndvi_annual_n, size = "Prescribed\nFire"), shape=2, color="black", stroke=0.8) +
-  geom_point(aes(x=ndvi_thin, y=ndvi_annual_n, size = "Thinning"), shape=1, color="black", stroke=0.8) +
-  geom_point(aes(x=ndvi_burn, y=ndvi_annual_n, size = "Prescribed\nFire"), shape=2, color="black", stroke=0.8) +
-  labs(title="nNDVI Time-Series",
-       y = "Watershed Averaged nNDVI",
-       x = "Year") +
-  scale_color_brewer(palette = "Set1", name="Management", labels = c("Treated", "Control")) + 
-  scale_linetype(name="Watershed") + 
-  scale_shape(name="Watershed") + 
-  # http://www.quantide.com/ggplot-multiple-legends-for-the-same-aesthetic/
-  scale_size_manual(
-    "Fuel Treatment", values=c(3,3),
-    guide=guide_legend(override.aes = list(shape=c(2,1)))) +
-  facet_grid(location~.) +
-  theme_bw(base_size = 12) +
-  NULL
-ggsave("output/1.6/plot_timeseries_ndvi_n.jpg", plot=x, width = 8, height = 5)
+# # Normalized NDVI
+# x <- ggplot(data=happy) +
+#   geom_line(aes(x=year, y=ndvi_annual_n, linetype=shed, color=control)) +
+#   #geom_vline(aes(xintercept=2012), color="blue") +
+#   geom_point(aes(x=year, y=ndvi_annual_n, shape=shed, color=control)) +
+#   geom_point(aes(x=ndvi_burn, y=ndvi_annual_n, size = "Prescribed\nFire"), shape=2, color="black", stroke=0.8) +
+#   geom_point(aes(x=ndvi_thin, y=ndvi_annual_n, size = "Thinning"), shape=1, color="black", stroke=0.8) +
+#   geom_point(aes(x=ndvi_burn, y=ndvi_annual_n, size = "Prescribed\nFire"), shape=2, color="black", stroke=0.8) +
+#   labs(title="nNDVI Time-Series",
+#        y = "Watershed Averaged nNDVI",
+#        x = "Year") +
+#   scale_color_brewer(palette = "Set1", name="Management", labels = c("Treated", "Control")) + 
+#   scale_linetype(name="Watershed") + 
+#   scale_shape(name="Watershed") + 
+#   # http://www.quantide.com/ggplot-multiple-legends-for-the-same-aesthetic/
+#   scale_size_manual(
+#     "Fuel Treatment", values=c(3,3),
+#     guide=guide_legend(override.aes = list(shape=c(2,1)))) +
+#   facet_grid(location~.) +
+#   theme_bw(base_size = 12) +
+#   NULL
+# ggsave("output/1.6/plot_timeseries_ndvi_n.jpg", plot=x, width = 8, height = 5)
 
 
 
