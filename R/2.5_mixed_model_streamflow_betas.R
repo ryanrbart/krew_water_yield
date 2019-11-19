@@ -104,7 +104,7 @@ watershed_id <- c(all_data = "All\nWatersheds",
                   prov_data = "Providence")
 
 
-# Plot uncertainty intervals by parameter (paired_diff - Non-interaction)
+# Plot uncertainty intervals by parameter (Paired streamflow model)
 plot_q_diff_draws <- out_q_diff_draws %>%
   ggplot(data=., aes(y = model, x = ndvi_diff)) +
   ggridges::geom_density_ridges(scale = 0.9, fill="#33a02c", color=NA, alpha=0.7) +
@@ -113,7 +113,7 @@ plot_q_diff_draws <- out_q_diff_draws %>%
   geom_vline(xintercept = 0) +
   scale_y_discrete(labels = c(watershed_id)) +
   labs(title = "Paired Streamflow Model",
-       x = expression('NDVI'[diff]~'Coefficient ('*beta[0]*')'),
+       x = expression('NDVI'[diff]~'Coefficient ('*beta[2]*')'),
        y = "Watershed Group") +
   theme_bw(base_size = 9) +
   theme(axis.text.y = element_text(angle = 90, hjust=0.5, vjust=1)) +
@@ -121,12 +121,12 @@ plot_q_diff_draws <- out_q_diff_draws %>%
   background_grid() +
   xlim(-12,10) +
   NULL
-ggsave("output/2.5_mixed_model_betas/plot_q_diff_draws.jpg",plot=x, width = 4, height = 2.5)
+ggsave("output/2.5_mixed_model_betas/plot_q_diff_draws.jpg",plot=plot_q_diff_draws, width = 4, height = 2.5)
 write_rds(plot_q_diff_draws, "output/2.5_mixed_model_betas/plot_q_diff_draws.rds")
 
 
 
-# Plot uncertainty intervals by parameter
+# Plot uncertainty intervals by parameter (Precipitation model)
 plot_QP2_draws <- out_QP2_draws %>%
   ggplot(data=., aes(y = model, x = ndvi_annual)) +
   ggridges::geom_density_ridges(scale = 0.9, fill="#33a02c", color=NA, alpha=0.7) +
@@ -135,7 +135,7 @@ plot_QP2_draws <- out_QP2_draws %>%
   geom_vline(xintercept = 0) +
   scale_y_discrete(labels = c(watershed_id)) +
   labs(title = "Precipitation Model",
-       x = expression('NDVI'[annual]~'Coefficient ('*beta[0]*')'),
+       x = expression('NDVI'[t]~'Coefficient ('*beta[3]*')'),
        y = "Watershed Group") +
   theme_bw(base_size = 9) +
   theme(axis.text.y = element_text(angle = 90, hjust=0.5, vjust=1)) +

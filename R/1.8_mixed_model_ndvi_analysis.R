@@ -90,7 +90,7 @@ x <- out_ndvi_int_combine_draws %>%
   geom_vline(xintercept = 0) +
   scale_y_discrete(labels = c(watershed_id)) +
   labs(title = "Paired NDVI Model",
-       x = expression('Treatment*NDVI'[control]~'Coefficient ('*beta[0]*')'),
+       x = expression('NDVI'[c]*'*Treatment'~'Coefficient ('*beta[3]*')'),
        y = "Watershed Group") +  
   theme_bw(base_size = 11) +
   theme(axis.text.y = element_text(angle = 90, hjust=0.5, vjust=1)) +
