@@ -15,13 +15,13 @@ krew_paired <- read_rds("output/1.5/krew_paired.rds")
 # Mixed modeling with rstanarm
 
 # Inputs
-ITER <- 5000
-WARMUP <- 1000
+ITER <- 55000
+WARMUP <- 5000
 CHAINS <- 4
 CORES <- 2
-THIN <- 5
+THIN <- 10
 SEED <- 49
-ADAPT_DELTA <- 0.98
+ADAPT_DELTA <- 0.99
 
 
 # ---------------------------------------------------------------------
@@ -55,42 +55,10 @@ out_ndvi_int_prov <- function_paired_ndvi_int(DATA=dplyr::filter(krew_paired,loc
 
 
 # ----
-# Mixed model code - ndvi normalized
-function_paired_ndvi_n_int <- function(DATA, ITER, WARMUP, CHAINS,
-                      CORES, THIN, SEED, ADAPT_DELTA){
-  out <- stan_glmer(ndvi_treated_n ~ ndvi_control_n + treatment_dummy + ndvi_control_n*treatment_dummy +
-                      (1 | shed_treated),
-                    data = DATA,
-                    family = gaussian, 
-                    prior = normal(),
-                    prior_intercept = normal(),
-                    chains = CHAINS, cores = CORES, seed = SEED,
-                    iter = ITER, warmup = WARMUP, thin = THIN,
-                    adapt_delta = ADAPT_DELTA)
-  return(out)
-}
-
-# out_ndvi_n_int_all <- function_paired_ndvi_n_int(DATA=krew_paired, ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
-#                                                  CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
-
-out_ndvi_n_int_bull <- function_paired_ndvi_n_int(DATA=dplyr::filter(krew_paired,location=="Bull"), ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
-                                                  CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
-
-out_ndvi_n_int_prov <- function_paired_ndvi_n_int(DATA=dplyr::filter(krew_paired,location=="Prov"), ITER=ITER, WARMUP=WARMUP, CHAINS=CHAINS,
-                                                   CORES=CORES, THIN=THIN, SEED=SEED, ADAPT_DELTA=ADAPT_DELTA)
-
-
-# ----
 # Quick assessment of results
 #summary(out_ndvi_int_all, digits=2)
 summary(out_ndvi_int_bull, digits=2)
 summary(out_ndvi_int_prov, digits=2)
-
-#summary(out_ndvi_n_int_all, digits=2)
-summary(out_ndvi_n_int_bull, digits=2)
-summary(out_ndvi_n_int_prov, digits=2)
-
-
 
 
 
@@ -99,7 +67,5 @@ summary(out_ndvi_n_int_prov, digits=2)
 
 write_rds(out_ndvi_int_bull, "output/1.7/out_ndvi_int_bull.rds")
 write_rds(out_ndvi_int_prov, "output/1.7/out_ndvi_int_prov.rds")
-write_rds(out_ndvi_n_int_bull, "output/1.7/out_ndvi_n_int_bull.rds")
-write_rds(out_ndvi_n_int_prov, "output/1.7/out_ndvi_n_int_prov.rds")
 
 

@@ -9,8 +9,6 @@ source("R/0_utilities.R")
 
 out_ndvi_int_bull <- read_rds("output/1.7/out_ndvi_int_bull.rds")
 out_ndvi_int_prov <- read_rds("output/1.7/out_ndvi_int_prov.rds")
-out_ndvi_n_int_bull <- read_rds("output/1.7/out_ndvi_n_int_bull.rds")
-out_ndvi_n_int_prov <- read_rds("output/1.7/out_ndvi_n_int_prov.rds")
 
 
 # ---------------------------------------------------------------------
@@ -30,17 +28,11 @@ generate_draws <- function(out_q, normal){
   out_q_draws$.iteration <- factor(out_q_draws$.iteration)
   out_q_draws$.draw <- factor(out_q_draws$.draw)
   
-  # Change draws to effect size
-  # out_q_draws <- out_q_draws %>%
-  #   dplyr::mutate(treatment_effect_size_percent = (exp(treatment_dummy1 * 1) /  exp(treatment_dummy1 * 0))*100 - 100)
-  
   return(out_q_draws)
 }
 
 out_ndvi_int_bull_draws <- generate_draws(out_ndvi_int_bull, normal=FALSE)
 out_ndvi_int_prov_draws <- generate_draws(out_ndvi_int_prov, normal=FALSE)
-out_ndvi_n_int_bull_draws <- generate_draws(out_ndvi_n_int_bull, normal=TRUE)
-out_ndvi_n_int_prov_draws <- generate_draws(out_ndvi_n_int_prov, normal=TRUE)
 
 
 # ----
@@ -53,12 +45,6 @@ out_ndvi_int_combine_draws <- bind_rows(Bull=out_ndvi_int_bull_draws,
 out_ndvi_int_combine_draws$pair_type <- factor(out_ndvi_int_combine_draws$pair_type,
                                                levels=c("Providence","Bull"))
 
-# Normalized NDVI
-out_ndvi_n_int_combine_draws <- bind_rows(Bull=out_ndvi_n_int_bull_draws,
-                                          Providence=out_ndvi_n_int_prov_draws,                                          
-                                          .id="pair_type")
-out_ndvi_n_int_combine_draws$pair_type <- factor(out_ndvi_n_int_combine_draws$pair_type,
-                                                 levels=c("Providence","Bull"))
 
 # ---------------------------------------------------------------------
 # Modeling Checks
@@ -115,26 +101,11 @@ x <- out_ndvi_int_combine_draws %>%
 ggsave("output/1.8/plot_ndvi_int_combine.pdf",plot=x, width = 3, height = 3.2)
 
 
-# Mixed model results: Interaction variable (beta) nNDVI
-# x <- out_ndvi_n_int_combine_draws %>%      
-#   ggplot(data=., aes(y = pair_type, x = `ndvi_control_n:treatment_dummy1`)) +
-#   tidybayes::geom_halfeyeh(.width = c(0.9, 0.95)) +
-#   geom_vline(xintercept = 0) +
-#   scale_y_discrete(labels = c(watershed_id)) +
-#   labs(title = "Change in Paired nNDVI Slope", x = expression('Coefficient ('*beta*')'), y = "Watershed Group") + 
-#   theme_tidybayes() +
-#   panel_border() + 
-#   background_grid() +
-#   NULL
-# ggsave("output/1.8/plot_ndvi_n_int_combine.jpg",plot=x, width = 5, height = 3)
-
-
 
 
 # ---------------------------------------------------------------------
 # Save output
 write_rds(out_ndvi_int_combine_draws, "output/1.8/out_ndvi_int_combine_draws.rds")
-# write_rds(out_ndvi_n_int_combine_draws, "output/1.8/out_ndvi_n_int_combine_draws.rds")
 
 
 
