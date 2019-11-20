@@ -134,7 +134,7 @@ plot_QP2_draws <- out_QP2_draws %>%
   #tidybayes::geom_halfeyeh(.width = c(0.9, 0.95), fill="#33a02c") +
   geom_vline(xintercept = 0) +
   scale_y_discrete(labels = c(watershed_id)) +
-  labs(title = "Precipitation Model",
+  labs(title = "Longitudinal Model",
        x = expression('NDVI'[t]~'Coefficient ('*beta[3]*')'),
        y = "Watershed Group") +
   theme_bw(base_size = 9) +

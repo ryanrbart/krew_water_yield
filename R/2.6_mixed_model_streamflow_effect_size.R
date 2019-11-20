@@ -149,7 +149,7 @@ x_p_model <- es_values %>%
   geom_line(aes(x=ndvi_chg, y=treatment_es_upper), linetype=2, color="black") +
   #geom_hline(aes(yintercept=0), color="red") +
   scale_linetype_discrete(name="Watershed\nGroup") +
-  labs(title = "Precipitation Model",
+  labs(title = "Longitudinal Model",
        x = "Change in NDVI",
        y = "Predicted change in streamflow (%)") +
   facet_wrap(.~site, ncol=1) + 
