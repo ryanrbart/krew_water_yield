@@ -38,13 +38,13 @@ QP2 <- QP2 %>%
 # Mixed modeling with rstanarm
 
 # Inputs
-ITER <- 55000
-WARMUP <- 5000
+ITER <- 13500
+WARMUP <- 1000
 CHAINS <- 4
 CORES <- 2
-THIN <- 10
-SEED <- 49
-ADAPT_DELTA <- 0.99
+THIN <- 5
+SEED <- 52
+ADAPT_DELTA <- 0.9999
 
 
 # ---------------------------------------------------------------------

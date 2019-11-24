@@ -60,7 +60,7 @@ x <- ggplot(data=happy) +
   geom_point(aes(x=(ndvi_burn-0.5), y=q_between_burn_unlog, size = "Prescribed\nFire"), shape=21, fill="#b2df8a", color="black", stroke=0.8) +
   labs(title="Annual Streamflow Time-Series",
        y = "Annual Streamflow (mm)",
-       x = "Year") +
+       x = "Water Year") +
   scale_color_manual(values=c("#33a02c", "#1f78b4"), name="Management", labels = c("Treated", "Control")) + 
   scale_linetype(name="Watershed") + 
   scale_shape(name="Watershed") + 

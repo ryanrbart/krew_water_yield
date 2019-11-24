@@ -22,9 +22,12 @@ library(rstanarm)
 library(tidybayes)
 library(ggstance)
 library(rstantools)
+library(rstan)
 library(cowplot)
 library(lme4)
 
+library(flextable)
+library(officer)
 
 # ---------------------------------------------------------------------
 # Files and Directories - Empirical Analysis
