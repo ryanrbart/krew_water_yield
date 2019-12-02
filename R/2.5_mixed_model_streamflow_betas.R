@@ -121,7 +121,7 @@ plot_q_diff_draws <- out_q_diff_draws %>%
   background_grid() +
   xlim(-12,10) +
   NULL
-ggsave("output/2.5_mixed_model_betas/plot_q_diff_draws.jpg",plot=plot_q_diff_draws, width = 4, height = 2.5)
+ggsave("output/2.5_mixed_model_betas/plot_q_diff_draws.pdf",plot=plot_q_diff_draws, width = 2.5, height = 2.5)
 write_rds(plot_q_diff_draws, "output/2.5_mixed_model_betas/plot_q_diff_draws.rds")
 
 
@@ -143,7 +143,7 @@ plot_QP2_draws <- out_QP2_draws %>%
   background_grid() +
   xlim(-12,10) +
   NULL
-ggsave("output/2.5_mixed_model_betas/plot_q_precip_draws.jpg",plot=plot_QP2_draws, width = 4, height = 2.5)
+ggsave("output/2.5_mixed_model_betas/plot_q_precip_draws.pdf",plot=plot_QP2_draws, width = 2.5, height = 2.5)
 write_rds(plot_QP2_draws, "output/2.5_mixed_model_betas/plot_q_precip_draws.rds")
 
 

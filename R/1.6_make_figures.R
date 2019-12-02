@@ -4,8 +4,6 @@
 # NDVI through time
 # Paired watershed: NDVI
 
-# Todo
-# Maybe change "treated" color label to be "thinned", "fire" and "thinned/fire"
 
 source("R/0_utilities.R")
 
@@ -138,15 +136,17 @@ plot_paired_ndvi_bull <- krew_paired %>%
   # labeller = labeller(.cols = label_parsed, .rows = label_parsed)
   scale_x_continuous(breaks=c(0.6,0.65,0.7), label=c(0.6,0.65,0.7), limits=c(0.6,0.71)) +
   scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7), label=c(0.55,0.6,0.65,0.7), limits=c(0.53,0.7)) +
-  scale_shape_discrete(name="Treatment", labels = c("Pre-Treatment", "Post-Treatment")) +
+  scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
   #scale_color_brewer(palette = "Paired", name="Treatment", labels = c("Pre", "Post")) +
-  scale_color_manual(values = c("#33a02c", "#1f78b4"), name="Treatment", labels = c("Pre-Treatment", "Post-Treatment")) + 
+  scale_color_manual(values = c("#33a02c", "#1f78b4"), name="Treatment", labels = c("Pre", "Post")) + 
   labs(title="Bull",
        y = expression('Max. Annual NDVI'[t]),
        x = expression('Max. Annual NDVI'[c]~': T003')) +
   coord_fixed(ratio = 1) +
-  theme_bw(base_size = 10) +
-  theme(legend.position="bottom") +
+  theme_bw(base_size = 11) +
+  theme(legend.position="right",
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 8)) +
   NULL
 ggsave("output/1.6/plot_paired_ndvi_bull.jpg", plot=plot_paired_ndvi_bull, width = 5, height = 3.5)
 
@@ -167,15 +167,17 @@ plot_paired_ndvi_prov <- krew_paired %>%
   # labeller = labeller(.cols = label_parsed, .rows = label_parsed)
   scale_x_continuous(breaks=c(0.6,0.65,0.7,0.75,0.8), label=c(0.6,0.65,0.7,0.75,0.8), limits=c(0.67,0.8)) +
   scale_y_continuous(breaks=c(0.55,0.6,0.65,0.7,0.75,0.8), label=c(0.55,0.6,0.65,0.7,0.75,0.8), limits=c(0.57,0.77)) +
-  scale_shape_discrete(name="Treatment", labels = c("Pre-Treatment", "Post-Treatment")) +
+  scale_shape_discrete(name="Treatment", labels = c("Pre", "Post")) +
   #scale_color_brewer(palette = "Paired", name="Treatment", labels = c("Pre", "Post")) +  
-  scale_color_manual(values = c("#33a02c", "#1f78b4"), name="Treatment", labels = c("Pre-Treatment", "Post-Treatment")) + 
+  scale_color_manual(values = c("#33a02c", "#1f78b4"), name="Treatment", labels = c("Pre", "Post")) + 
   labs(title="Providence",
        y = expression('Max. Annual NDVI'[t]),
        x = expression('Max. Annual NDVI'[c]~': P304')) +
   coord_fixed(ratio = 1) +
-  theme_bw(base_size = 10) +
-  theme(legend.position="bottom") +
+  theme_bw(base_size = 11) +
+  theme(legend.position="right",
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 8)) +
   NULL
 ggsave("output/1.6/plot_paired_ndvi_prov.jpg", plot=plot_paired_ndvi_prov, width = 5, height = 3.5)
 
@@ -185,19 +187,23 @@ ggsave("output/1.6/plot_paired_ndvi_prov.jpg", plot=plot_paired_ndvi_prov, width
 
 plot_legend <- get_legend(plot_paired_ndvi_prov)
 
-# Make cowplot
-plot_paired_ndvi <- cowplot::plot_grid(plot_paired_ndvi_bull + theme(legend.position="none"),
-                                  plot_paired_ndvi_prov + theme(legend.position="none"),
-                                  plot_legend,
-                                  nrow=3,
-                                  rel_heights = c(1, 1, 0.15))
+# Make cowplot 1
+plot_paired_ndvi_tmp <- cowplot::plot_grid(plot_paired_ndvi_bull + theme(legend.position="none"),
+                                           plot_paired_ndvi_prov + theme(legend.position="none"),
+                                           nrow=2,
+                                           rel_heights = c(1, 1),
+                                           align = "v")
 
+# Make cowplot 2
+plot_paired_ndvi <- cowplot::plot_grid(plot_paired_ndvi_tmp,
+                                       plot_legend,
+                                       ncol=2,
+                                       rel_widths = c(1, 0.15))
 
 save_plot("output/1.6/plot_paired_ndvi.pdf",
           plot=plot_paired_ndvi,
-          nrow = 3,
-          base_height = 1.7,
-          base_width =  3.6)
+          base_height = 6,
+          base_width =  5.5)
 
 
 
