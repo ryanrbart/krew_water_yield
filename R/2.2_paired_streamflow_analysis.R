@@ -24,10 +24,10 @@ pair_seasonal_4 <- dplyr::filter(pair_seasonal, Season==4)
 
 
 watershed_id <- c(
-  "P301" = "Treated: P301", "P303" = "Treated: P303",
-  "P304" = "Control: P304", "D102" = "Treated: D102",
-  "B201" = "Treated: B201", "B203" = "Treated: B203",
-  "B204" = "Treated: B204", "T003" = "Control: T003"
+  "P301" = "P301", "P303" = "P303",
+  "P304" = "P304", "D102" = "D102",
+  "B201" = "B201", "B203" = "B203",
+  "B204" = "B204", "T003" = "T003"
 )
 
 paired_function <- function(data, title1, x_label){
@@ -37,21 +37,22 @@ paired_function <- function(data, title1, x_label){
     geom_smooth(method='lm',se=FALSE, formula=y~x) +
     scale_x_log10(limits = c(40,1600)) +
     scale_y_log10(limits = c(10,2000)) +
-    scale_size_continuous(name = expression('NDVI'[diff])) +  
+    scale_size_continuous(name = expression('NDVI'[diff]),
+                          limits = c(-0.128694160, -0.003139498),
+                          breaks = c(-0.125, -0.1, -0.075, -0.05, -0.025, 0)) +  
     scale_color_continuous(name = expression('NDVI'[diff]),
-                           # low= "#a6cee3", high="#33a02c"),
                            low= "#b2df8a", high="#1f78b4",
-                           limits = c(-0.128694160, -0.003139498), breaks = c(-0.125, -0.1, -0.075, -0.05, -0.025, 0)) +
-    guides(colour = guide_colourbar(reverse=T)) +
+                           limits = c(-0.128694160, -0.003139498),
+                           breaks = c(-0.125, -0.1, -0.075, -0.05, -0.025, 0)) +
+    guides(colour = guide_legend(),size=guide_legend()) +
+    #guides(color= guide_legend(), size=guide_legend())
     labs(title=title1,
          x = x_label,
          y = expression('Annual Streamflow'[treated]~'(mm)')) +
     facet_wrap(.~shed_treated, ncol=3, labeller = labeller(shed_treated = watershed_id)) +
     coord_fixed(ratio = 1) +
-    theme_bw(base_size = 11) +
-    theme(legend.position="right",
-          legend.title = element_text(size = 10),
-          legend.text = element_text(size = 8)) +
+    theme_bw(base_size = 12) +
+    theme(legend.position="bottom") +
     NULL
   return(plot_paired)
 }
@@ -63,12 +64,11 @@ wy_NDVI_xcont <- paired_function(data = pair_wy,
 
 wy_NDVI_xcont_bull <- paired_function(data = dplyr::filter(pair_wy, location=="Bull"),
                                       title1 = "Bull",
-                                      x_label = expression('Annual Streamflow'[control]~'(mm) : T003'))
+                                      x_label = expression('Annual Streamflow'[control]~'(mm)'))
 
 wy_NDVI_xcont_prov <- paired_function(data = dplyr::filter(pair_wy, location=="Prov"),
                                       title1 = "Providence",
-                                      x_label = expression('Annual Streamflow'[control]~'(mm) : P304'))
-
+                                      x_label = expression('Annual Streamflow'[control]~'(mm)'))
 
 
 # ---------------------------------------------------------------------
@@ -76,33 +76,21 @@ wy_NDVI_xcont_prov <- paired_function(data = dplyr::filter(pair_wy, location=="P
 # ---------------------------------------------------------------------
 # Cowplot
 
-
-
 plot_legend <- get_legend(wy_NDVI_xcont)
 
 # Make cowplot 1
-plot_paired_q_tmp <- cowplot::plot_grid(wy_NDVI_xcont_bull + theme(legend.position="none"),
-                                        wy_NDVI_xcont_prov + theme(legend.position="none"),
-                                        nrow=2,
-                                        rel_heights = c(1, 1),
-                                        align = "v")
-
-# Make cowplot 2
-plot_paired_q <- cowplot::plot_grid(plot_paired_q_tmp,
+plot_paired_q <- cowplot::plot_grid(wy_NDVI_xcont_bull + theme(legend.position="none"),
+                                    wy_NDVI_xcont_prov + theme(legend.position="none"),
                                     plot_legend,
-                                    ncol=2,
-                                    rel_widths = c(1, 0.15))
+                                    nrow=3,
+                                    rel_heights = c(1, 1, 0.15),
+                                    align = "v")
 
 
 save_plot("output/2.2_paired_analysis/plot_paired_q.pdf",
           plot=plot_paired_q,
-          base_height = 6,
-          base_width =  5.5)
-
-
-
-
-
+          base_height = 7,
+          base_width =  5.3)
 
 
 

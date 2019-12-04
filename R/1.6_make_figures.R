@@ -91,10 +91,10 @@ ggsave("output/1.6/plot_timeseries_ndvi.jpg", plot=x, width = 8, height = 5)
 # Figure: Paired watershed: NDVI All
 
 watershed_id <- c(
-  "P301" = "Treated: P301", "P303" = "Treated: P303",
-  "P304" = "Control: P304", "D102" = "Treated: D102",
-  "B201" = "Treated: B201", "B203" = "Treated: B203",
-  "B204" = "Treated: B204", "T003" = "Control: T003"
+  "P301" = "P301", "P303" = "P303",
+  "P304" = "P304", "D102" = "D102",
+  "B201" = "B201", "B203" = "B203",
+  "B204" = "B204", "T003" = "T003"
 )
 
 
@@ -120,7 +120,6 @@ watershed_id <- c(
 # ggsave("output/1.6/plot_paired_ndvi_all.jpg", plot=x, width = 5, height = 5.5)
 
 
-
 # ---------------------------------------------------------------------
 # Figure: Paired watershed: NDVI Bull
 
@@ -140,16 +139,13 @@ plot_paired_ndvi_bull <- krew_paired %>%
   #scale_color_brewer(palette = "Paired", name="Treatment", labels = c("Pre", "Post")) +
   scale_color_manual(values = c("#33a02c", "#1f78b4"), name="Treatment", labels = c("Pre", "Post")) + 
   labs(title="Bull",
-       y = expression('Max. Annual NDVI'[t]),
-       x = expression('Max. Annual NDVI'[c]~': T003')) +
+       y = expression('Max. Annual NDVI'[treatment]),
+       x = expression('Max. Annual NDVI'[control])) +
   coord_fixed(ratio = 1) +
-  theme_bw(base_size = 11) +
-  theme(legend.position="right",
-        legend.title = element_text(size = 10),
-        legend.text = element_text(size = 8)) +
+  theme_bw(base_size = 12) +
+  theme(legend.position="bottom") +
   NULL
 ggsave("output/1.6/plot_paired_ndvi_bull.jpg", plot=plot_paired_ndvi_bull, width = 5, height = 3.5)
-
 
 
 # ---------------------------------------------------------------------
@@ -171,13 +167,11 @@ plot_paired_ndvi_prov <- krew_paired %>%
   #scale_color_brewer(palette = "Paired", name="Treatment", labels = c("Pre", "Post")) +  
   scale_color_manual(values = c("#33a02c", "#1f78b4"), name="Treatment", labels = c("Pre", "Post")) + 
   labs(title="Providence",
-       y = expression('Max. Annual NDVI'[t]),
-       x = expression('Max. Annual NDVI'[c]~': P304')) +
+       y = expression('Max. Annual NDVI'[treatment]),
+       x = expression('Max. Annual NDVI'[control])) +
   coord_fixed(ratio = 1) +
-  theme_bw(base_size = 11) +
-  theme(legend.position="right",
-        legend.title = element_text(size = 10),
-        legend.text = element_text(size = 8)) +
+  theme_bw(base_size = 12) +
+  theme(legend.position="bottom") +
   NULL
 ggsave("output/1.6/plot_paired_ndvi_prov.jpg", plot=plot_paired_ndvi_prov, width = 5, height = 3.5)
 
@@ -188,23 +182,18 @@ ggsave("output/1.6/plot_paired_ndvi_prov.jpg", plot=plot_paired_ndvi_prov, width
 plot_legend <- get_legend(plot_paired_ndvi_prov)
 
 # Make cowplot 1
-plot_paired_ndvi_tmp <- cowplot::plot_grid(plot_paired_ndvi_bull + theme(legend.position="none"),
-                                           plot_paired_ndvi_prov + theme(legend.position="none"),
-                                           nrow=2,
-                                           rel_heights = c(1, 1),
-                                           align = "v")
-
-# Make cowplot 2
-plot_paired_ndvi <- cowplot::plot_grid(plot_paired_ndvi_tmp,
+plot_paired_ndvi <- cowplot::plot_grid(plot_paired_ndvi_bull + theme(legend.position="none"),
+                                       plot_paired_ndvi_prov + theme(legend.position="none"),
                                        plot_legend,
-                                       ncol=2,
-                                       rel_widths = c(1, 0.15))
+                                       nrow=3,
+                                       rel_heights = c(1, 1, 0.15),
+                                       align = "v")
+
 
 save_plot("output/1.6/plot_paired_ndvi.pdf",
           plot=plot_paired_ndvi,
-          base_height = 6,
-          base_width =  5.5)
-
+          base_height = 7,
+          base_width =  5.3)
 
 
 
