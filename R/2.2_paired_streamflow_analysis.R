@@ -24,10 +24,10 @@ pair_seasonal_4 <- dplyr::filter(pair_seasonal, Season==4)
 
 
 watershed_id <- c(
-  "P301" = "P301", "P303" = "P303",
-  "P304" = "P304", "D102" = "D102",
-  "B201" = "B201", "B203" = "B203",
-  "B204" = "B204", "T003" = "T003"
+  "P301" = "P301: Thinning &\nPrescribed Fire", "P303" = "P303:\nPrescribed Fire",
+  "P304" = "P304", "D102" = "D102: Thinning",
+  "B201" = "B201: Thinning", "B203" = "B203:\nPrescribed Fire",
+  "B204" = "B204: Thinning &\nPrescribed Fire", "T003" = "T003"
 )
 
 paired_function <- function(data, title1, x_label){
@@ -90,7 +90,7 @@ plot_paired_q <- cowplot::plot_grid(wy_NDVI_xcont_bull + theme(legend.position="
 save_plot("output/2.2_paired_analysis/plot_paired_q.pdf",
           plot=plot_paired_q,
           base_height = 7,
-          base_width =  5.3)
+          base_width =  5.1)
 
 
 

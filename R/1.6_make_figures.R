@@ -91,10 +91,10 @@ ggsave("output/1.6/plot_timeseries_ndvi.jpg", plot=x, width = 8, height = 5)
 # Figure: Paired watershed: NDVI All
 
 watershed_id <- c(
-  "P301" = "P301", "P303" = "P303",
-  "P304" = "P304", "D102" = "D102",
-  "B201" = "B201", "B203" = "B203",
-  "B204" = "B204", "T003" = "T003"
+  "P301" = "P301: Thinning &\nPrescribed Fire", "P303" = "P303:\nPrescribed Fire",
+  "P304" = "P304", "D102" = "D102: Thinning",
+  "B201" = "B201: Thinning", "B203" = "B203:\nPrescribed Fire",
+  "B204" = "B204: Thinning &\nPrescribed Fire", "T003" = "T003"
 )
 
 
@@ -193,7 +193,7 @@ plot_paired_ndvi <- cowplot::plot_grid(plot_paired_ndvi_bull + theme(legend.posi
 save_plot("output/1.6/plot_paired_ndvi.pdf",
           plot=plot_paired_ndvi,
           base_height = 7,
-          base_width =  5.3)
+          base_width =  5.1)
 
 
 
