@@ -77,8 +77,8 @@ broom::tidy(out_ndvi_int_bull)
 # ---------------------------------------------------------------------
 # Plot mixed modeling output
 
-watershed_id <- c(Bull = "Bull",
-                  Providence1 = "Providence")
+location_id <- c(Bull = "Bull",
+                 Providence1 = "Providence")
 
 
 # Mixed model results: Interaction variable (beta) NDVI
@@ -88,9 +88,9 @@ x <- out_ndvi_int_combine_draws %>%
   stat_pointintervalh(.width = c(0.9, 0.95)) +
   #tidybayes::geom_halfeyeh(.width = c(0.9, 0.95)) +
   geom_vline(xintercept = 0) +
-  scale_y_discrete(labels = c(watershed_id)) +
+  scale_y_discrete(labels = c(location_id)) +
   labs(title = "Paired NDVI Model",
-       x = expression('NDVI'[c]*'*Treatment'~'Coefficient ('*beta[3]*')'),
+       x = expression('NDVI'[c]*'*T'~'Coefficient ('*beta[3]*')'),
        y = "Watershed Group") +  
   theme_bw(base_size = 11) +
   theme(axis.text.y = element_text(angle = 90, hjust=0.5, vjust=1)) +

@@ -24,10 +24,10 @@ pair_seasonal_4 <- dplyr::filter(pair_seasonal, Season==4)
 
 
 watershed_id <- c(
-  "P301" = "P301: Thinning &\nPrescribed Fire", "P303" = "P303:\nPrescribed Fire",
+  "P301" = "P301: Thinning & Prescribed Fire", "P303" = "P303: Prescribed Fire",
   "P304" = "P304", "D102" = "D102: Thinning",
-  "B201" = "B201: Thinning", "B203" = "B203:\nPrescribed Fire",
-  "B204" = "B204: Thinning &\nPrescribed Fire", "T003" = "T003"
+  "B201" = "B201: Thinning", "B203" = "B203: Prescribed Fire",
+  "B204" = "B204: Thinning & Prescribed Fire", "T003" = "T003"
 )
 
 paired_function <- function(data, title1, x_label){
@@ -48,8 +48,9 @@ paired_function <- function(data, title1, x_label){
     #guides(color= guide_legend(), size=guide_legend())
     labs(title=title1,
          x = x_label,
-         y = expression('Annual Streamflow'[treated]~'(mm)')) +
-    facet_wrap(.~shed_treated, ncol=3, labeller = labeller(shed_treated = watershed_id)) +
+         y = "Annual Streamflow in\nTreated Watershed (mm)") +
+    facet_wrap(.~shed_treated, ncol=3, labeller = labeller(shed_treated = watershed_id),
+               strip.position = "left") +
     coord_fixed(ratio = 1) +
     theme_bw(base_size = 12) +
     theme(legend.position="bottom") +
@@ -64,11 +65,11 @@ wy_NDVI_xcont <- paired_function(data = pair_wy,
 
 wy_NDVI_xcont_bull <- paired_function(data = dplyr::filter(pair_wy, location=="Bull"),
                                       title1 = "Bull",
-                                      x_label = expression('Annual Streamflow'[control]~'(mm)'))
+                                      x_label = "Annual Streamflow in Control Watershed (T003) (mm)")
 
 wy_NDVI_xcont_prov <- paired_function(data = dplyr::filter(pair_wy, location=="Prov"),
                                       title1 = "Providence",
-                                      x_label = expression('Annual Streamflow'[control]~'(mm)'))
+                                      x_label = "Annual Streamflow in Control Watershed (P304) (mm)")
 
 
 # ---------------------------------------------------------------------
@@ -78,7 +79,7 @@ wy_NDVI_xcont_prov <- paired_function(data = dplyr::filter(pair_wy, location=="P
 
 plot_legend <- get_legend(wy_NDVI_xcont)
 
-# Make cowplot 1
+
 plot_paired_q <- cowplot::plot_grid(wy_NDVI_xcont_bull + theme(legend.position="none"),
                                     wy_NDVI_xcont_prov + theme(legend.position="none"),
                                     plot_legend,
@@ -89,8 +90,8 @@ plot_paired_q <- cowplot::plot_grid(wy_NDVI_xcont_bull + theme(legend.position="
 
 save_plot("output/2.2_paired_analysis/plot_paired_q.pdf",
           plot=plot_paired_q,
-          base_height = 7,
-          base_width =  5.1)
+          base_height = 7.1,
+          base_width =  7.5)
 
 
 

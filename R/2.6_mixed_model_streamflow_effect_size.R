@@ -68,7 +68,7 @@ es_values_prov2 <- extact_es_values(out=out_wy_diff_prov, ndvi_chg <- seq(-0.15,
 # Combine ES values
 es_values <- es_values_bull2 %>% 
   dplyr::bind_rows(.,es_values_prov2, .id="site") %>% 
-  dplyr::mutate(site = if_else(site==1, "Bull", "Prov"))
+  dplyr::mutate(site = if_else(site==1, "Bull", "Providence"))
 
 
 # ----
@@ -127,7 +127,7 @@ es_values_prov2 <- extact_es_values(out=out_QP2_prov, ndvi_chg <- seq(-0.15,0,0.
 # Combine ES values
 es_values <- es_values_bull2 %>% 
   dplyr::bind_rows(.,es_values_prov2, .id="site") %>% 
-  dplyr::mutate(site = if_else(site==1, "Bull", "Prov"))
+  dplyr::mutate(site = if_else(site==1, "Bull", "Providence"))
 
 
 # ----

@@ -41,11 +41,6 @@ out_QP2_draws <- read_rds("output/2.5_mixed_model_betas/out_QP2_draws.rds")
 # ---------------------------------------------------------------------
 # Generate mixed model traceplots (convergence figures)
 
-watershed_id <- c(
-  "bull_data" = "Bull",
-  "prov_data" = "Providence"
-)
-
 
 # ------------------------------
 # Paired NDVI Model
@@ -61,15 +56,15 @@ out_ndvi_int_combine_draws2$.draw <- as.double(out_ndvi_int_combine_draws2$.draw
 out_ndvi_int_combine_draws2$parameter <- factor(out_ndvi_int_combine_draws2$parameter)
 levels(out_ndvi_int_combine_draws2$parameter) <- c("Intercept",
                                                    expression('NDVI'[c]),
-                                                   expression('NDVI'[c]*'*treatment'),
-                                                   "treatment")                           # Note that this order has to match factoring order
+                                                   expression('NDVI'[c]*'*T'),
+                                                   "T")                           # Note that this order has to match factoring order
 
 # Plot chains through time
 x <- out_ndvi_int_combine_draws2 %>%
   ggplot(data=.) +
   geom_line(aes(x = .draw, y = value, group=parameter)) +
   facet_grid(rows = vars(parameter), cols = vars(pair_type),
-             labeller = labeller(.rows = label_parsed, .cols=watershed_id),
+             labeller = labeller(.rows = label_parsed),
              scales = "free_y") +
   labs(title = "Paired NDVI Model",
        x="Iteration",
@@ -82,6 +77,11 @@ ggsave("output/2.8_sup_material/plot_chains_paired_ndvi_model.pdf", plot=x, widt
 
 # ------------------------------
 # Paired Streamflow Model
+
+watershed_id <- c(
+  "bull_data" = "Bull",
+  "prov_data" = "Providence"
+)
 
 # Stack the parameters
 out_q_diff_draws2 <- out_q_diff_draws %>% 
@@ -161,11 +161,11 @@ make_results_table <- function(out_file, path_file, model, shed){
     dplyr::slice(-((nrow(.)-4):nrow(.)))
   
   if (model == 1 && shed == "Bull"){
-    tmp$name = c("Intercept","NDVIc","treatment","NDVIc*treatment",
+    tmp$name = c("Intercept","NDVIc","T","NDVIc*T",
                  "b[B201]","b[B203]","b[B204]")
   }
   if (model == 1 && shed == "Prov"){
-    tmp$name = c("Intercept","NDVIc","treatment","NDVIc*treatment",
+    tmp$name = c("Intercept","NDVIc","T","NDVIc*T",
                  "b[D102]","b[P301]","b[P303]")
   }
   if (model == 2 && shed == "Bull"){

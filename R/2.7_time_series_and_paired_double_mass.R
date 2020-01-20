@@ -51,6 +51,10 @@ happy <- happy %>%
 # Since the annual streamflow plot is logged, have to do the above logging and
 # unlogging to get correct placement of treatment points.
 
+location_id <- c(
+  "Prov" = "Providence",
+  "Bull" = "Bull"
+)
 
 # Annual Streamflow
 x <- ggplot(data=happy) +
@@ -69,10 +73,10 @@ x <- ggplot(data=happy) +
   scale_size_manual(
     "Fuel Treatment", values=c(2.5,2.5),
     guide=guide_legend(override.aes = list(shape=c(21,22)))) +
-  facet_grid(location~.) +
+  facet_grid(location~., labeller = labeller(location = location_id)) +
   theme_bw(base_size = 12) +
   NULL
-ggsave("output/2.7_timeseries_double_mass/plot_timeseries_q.pdf", plot=x, width = 8, height = 5)
+ggsave("output/2.7_timeseries_double_mass/plot_timeseries_q.jpg", plot=x, width = 8, height = 5)
 
 
 
